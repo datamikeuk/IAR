@@ -79,10 +79,11 @@
                       render: function(data, type, row){
                           return new Date(data).toLocaleDateString();
                       } },
+                    // edit button
                     {
                         date: null,
                         render : function(data, type, row){
-                            return '<a class = "btn btn-secondary bi-pencil-square" href = Edit/' + row.id + '"></button></a>';
+                            return '<a class = "btn btn-secondary bi-pencil-square" href = "Edit/' + row.id + '"></button></a>';
                         },
                         searchable: false,
                         orderable: false,

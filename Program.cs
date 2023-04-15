@@ -1,6 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-// using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using IAR.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using IAR.Authorization;
 // using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +15,27 @@ builder.Services.AddDbContext<RegisterContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RegisterContext") ?? throw new InvalidOperationException("Connection string 'RegisterContext' not found.")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddDefaultIdentity<IdentityUser>(
+    options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<RegisterContext>();
+
+builder.Services.AddRazorPages();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
+
+// Authorization handlers
+builder.Services.AddScoped<IAuthorizationHandler,
+                      UserIsOwnerAuthorizationHandler>();
+
+builder.Services.AddSingleton<IAuthorizationHandler,
+                      AdminAuthorizationHandler>();
 
 // builder.Services.AddWebOptimizer();
 

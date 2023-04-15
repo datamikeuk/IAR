@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using IAR.Data;
 using static System.Environment;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IAR.Pages
 {
+    [AllowAnonymous]
     public class TableModel : PageModel
     {
         private readonly RegisterContext _context;

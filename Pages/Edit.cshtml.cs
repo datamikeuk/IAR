@@ -8,21 +8,51 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using IAR.Data;
 using IAR.Models;
-using IAR.Models.RegisterViewModels;
+using IAR.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity; 
 
 namespace IAR.Pages
 {
-    public class EditModel : EditPageModel
+    public class EditModel : DI_BasePageModel
     {
-        private readonly IAR.Data.RegisterContext _context;
+        private readonly RegisterContext _context;
 
-        public EditModel(IAR.Data.RegisterContext context)
+        public EditModel(RegisterContext context,
+            IAuthorizationService authorizationService,
+            UserManager<IdentityUser> userManager) : base(context, 
+                                                         authorizationService, 
+                                                         userManager)
         {
             _context = context;
         }
 
         [BindProperty]
         public Asset Asset { get; set; } = default!;
+
+        public SelectList BackEndPlatformNameSL { get; set; } = null!;
+        public SelectList FrontEndPlatformNameSL { get; set; } = null!;
+
+        public void PopulateBackEndPlatformsDropDownList(RegisterContext _context, object? selectedBackEndPlatform = null)
+        {
+            var BackEndPlatformsQuery = from p in _context.BackEndPlatforms
+                                   orderby p.Name
+                                   select p;
+                BackEndPlatformNameSL = new SelectList(BackEndPlatformsQuery.AsNoTracking(),
+                    nameof(BackEndPlatform.ID),
+                    nameof(BackEndPlatform.Name),
+                    selectedBackEndPlatform);
+        }
+        public void PopulateFrontEndPlatformsDropDownList(RegisterContext _context, object? selectedFrontEndPlatform = null)
+        {
+            var FrontEndPlatformsQuery = from p in _context.FrontEndPlatforms
+                                   orderby p.Name
+                                   select p;
+            FrontEndPlatformNameSL = new SelectList(FrontEndPlatformsQuery.AsNoTracking(),
+                nameof(FrontEndPlatform.ID),
+                nameof(FrontEndPlatform.Name),
+                selectedFrontEndPlatform);
+        }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -48,6 +78,15 @@ namespace IAR.Pages
                 return Partial("_ThirdPartyTable", assetToEdit.ThirdParties);
             }
             Asset = assetToEdit;
+                    var isAuthorized = User.IsInRole(Constants.AssetOwnersRole) ||
+                           User.IsInRole(Constants.AssetAdministratorsRole);
+
+            var currentUserId = UserManager.GetUserId(User);
+
+            if (!isAuthorized && currentUserId != Asset.OwnerID)
+            {
+                return Forbid();
+            }
             PopulateBackEndPlatformsDropDownList(_context, Asset.BackEndPlatformID);
             PopulateFrontEndPlatformsDropDownList(_context, Asset.FrontEndPlatformID);
             return Page();

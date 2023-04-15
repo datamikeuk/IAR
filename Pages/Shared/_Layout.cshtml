@@ -37,7 +37,7 @@
                     <a class="nav-link" data-bs-toggle=".nav-item" asp-page="/About">About</a>
                 </li>
             </ul>
-            <p class="nav navbar-text navbar-right">Hello, @User.Identity.Name!</p>
+            <partial name="_LoginPartial" />
             @* <p class="nav navbar-text navbar-right">Hello, Michael</p> *@
             <div class="vr d-none d-lg-flex h-120 mx-lg-2 text-white"></div>
             <div class="nav-item dropdown navbar-theme-dropdown">

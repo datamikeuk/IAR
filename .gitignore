@@ -1,0 +1,10 @@
+/bin
+/obj
+/IAR.code-workspace
+/wwwroot/lib/*
+!/wwwroot/lib/bootstrap5-autocomplete
+!/wwwroot/lib/jquery-validation
+!/wwwroot/lib/jquery-validation-unobtrusive
+/wwwroot/css/site.css
+/wwwroot/css/site.css.map
+/publish

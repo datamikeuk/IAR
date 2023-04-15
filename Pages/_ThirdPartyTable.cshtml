@@ -1,0 +1,21 @@
+@model IEnumerable<IAR.Models.ThirdParty>;
+
+<table id="third-party-table" class="table">
+    <thead>
+        <th> ID </th>
+        <th> Name </th>
+    </thead>
+    <tbody>
+        @{
+            if (Model != null)
+            {
+                foreach (var item in Model) {
+                    <tr>
+                        <td> @item.ID </td>
+                        <td> @item.Name </td>
+                    </tr>
+                }   
+            }
+        }
+    </tbody>
+</table>

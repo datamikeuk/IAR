@@ -1,0 +1,36 @@
+@model IAR.Models.ThirdParty 
+<div class="modal fade" id="thirdparty-modal" tabindex="-1" role="dialog" aria-labelledby="addThirdPartyLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addThirdPartyLabel">Add Third Party</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-page-handler="ThirdPartyModal" method="post" id="thirdPartyModal">
+                <input type="hidden" asp-for="AssetID"/>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control"/>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Use" class="control-label"></label>
+                    <input asp-for="Use" class="form-control"/>
+                    <span asp-validation-for="Use" class="text-danger"></span>
+                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-save="modal">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

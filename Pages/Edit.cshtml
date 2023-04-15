@@ -1,0 +1,70 @@
+@page "{id?}"
+@model IAR.Pages.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div id="modal-placeholder"></div>
+
+<body>
+    <h1 style="text-align: center; margin-top: 10px;">@Model.Asset.Name</h1>
+    <label for="editToggle">Lock Fields</label>
+    <input id="editToggle" type="checkbox" onchange="toggleDisable(this);"/>
+    </br>
+    <div class="row">
+        <div>
+            <form method="post">
+                <fieldset id="editFields">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Asset.ID" />
+                <div class="form-group">
+                    <label asp-for="Asset.Name" class="control-label"></label>
+                    <input asp-for="Asset.Name" class="form-control" />
+                    <span asp-validation-for="Asset.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Asset.DataOwner" class="control-label"></label>
+                    <input asp-for="Asset.DataOwner" class="form-control" />
+                    <span asp-validation-for="Asset.DataOwner" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Asset.BackEndPlatform" class="control-label"></label>
+                    <select asp-for="Asset.BackEndPlatformID" class="form-control" 
+                            asp-items="@Model.BackEndPlatformNameSL">
+                            <option value="">-- Select Platform --</option>
+                    </select>
+                    <span asp-validation-for="Asset.BackEndPlatformID" class="text-danger"></span>
+                    <span data-bs-toggle="tooltip" data-bs-placement="right" title="This is where the data is stored.">
+                    <i class="bi bi-question-circle" style="font-size: 1.5rem;"></i>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Asset.FrontEndPlatform" class="control-label"></label>
+                    <select asp-for="Asset.FrontEndPlatformID" class="form-control" 
+                            asp-items="@Model.FrontEndPlatformNameSL">
+                        <option value="">-- Select Platform --</option>
+                    </select>
+                    <span asp-validation-for="Asset.FrontEndPlatformID" class="text-danger"></span>
+                </div>
+                <partial name="_ThirdPartyTable", model="Model.Asset.ThirdParties"/>
+                <button type="button" class="btn btn-secondary" data-toggle="ajax-modal"
+                    data-url="@Url.Page("Edit","ThirdPartyModal")">
+                    Add Third Party
+                </button>
+                <br />
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-secondary" style="margin-top: 10px" />
+                </div>
+                <div>
+                    <a asp-page="./Table">Back to List</a>
+                </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</body>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

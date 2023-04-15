@@ -1,0 +1,106 @@
+@page "{handler?}"
+@model IAR.Pages.TableModel
+
+@{
+    ViewData["Title"] = "Table";
+}
+
+<div id="modal-placeholder"></div>
+
+<body>
+    </br>
+    <div class="form-group">
+        <button type="button" class="btn btn-secondary" data-toggle="ajax-modal" 
+            data-url="@Url.Page("Table","AssetModal")">
+            +
+        </button>
+        @* <input id="nameFilter" type="text" placeholder="Filter by Name" />
+        <button type="button" class="btn btn-secondary" onclick="$('#asset-table').DataTable().ajax.reload();">
+            Filter
+        </button> *@
+        <label for="editcheck">My Assets</label>
+        <input id="editCheck" type="checkbox" onclick="$('#asset-table').DataTable().ajax.reload();"/>
+    </div>
+    </br>
+    <table id="asset-table" class="table table-striped table-hover table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Data Owner</th>
+                @* <th>Used For</th> *@
+                @* <th>Back End Platform Name</th> *@
+                @* <th>Front End Platform Name</th> *@
+                @* <th>Third Parties</th> *@
+                @* <th>Created Date</th> *@
+                <th>Updated Date</th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+</body>
+
+@section Scripts {
+    <link rel="stylesheet" href="~/lib/datatables.net-bs5/dataTables.bootstrap5.min.css" />
+    <script src="~/lib/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-bs5/dataTables.bootstrap5.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#asset-table').DataTable({
+                ajax: {
+                    url: 'Table/TableData',
+                    data: function(d){
+                        d.nameFilter = $('#nameFilter').val();
+                        d.editCheck = $('#editCheck').is(':checked');
+                        @* 'nameFilter': "", *@
+                        @* 'editCheck': true, *@
+                    },
+                    dataSrc: '',
+                },
+                columns: [
+                    { data: 'id', visible: false},
+                    { data: 'name' },
+                    { data: 'dataOwner' },
+                    @* { data: 'usedFor' }, *@
+                    @* { data: 'backEndPlatformName' }, *@
+                    @* { data: 'frontEndPlatformName' }, *@
+                    @* { data: 'thirdPartyNames',
+                        render: function(data, type, row){
+                            return data.split(",").join("<br/>");
+                        }
+                    }, *@
+                    // render as date
+                    @* { data: 'createdDate',
+                      render: function(data, type, row){
+                          return new Date(data).toLocaleDateString() + ' ' + new Date(data).toLocaleTimeString();
+                      } }, *@
+                    //render as date
+                    { data: 'updatedDate',
+                      render: function(data, type, row){
+                          return new Date(data).toLocaleDateString();
+                      } },
+                    {
+                        date: null,
+                        render : function(data, type, row){
+                            return '<a class = "btn btn-secondary bi-pencil-square" href = Edit/' + row.id + '"></button></a>';
+                        },
+                        searchable: false,
+                        orderable: false,
+
+                    }
+                ],
+                paging: true, 
+                @* serverSide: true *@
+            });
+        });
+        $(document).ready(function () {
+            var table = $('#asset-table').DataTable();
+
+            $('#asset-table tbody').on('click', 'tr', function () {
+                var data = table.row(this).data();
+                @* alert(data['id'] + ' ' + data['name']); *@
+                window.location.href = "Edit/" + data['id'];
+            });
+        });
+    </script>
+}

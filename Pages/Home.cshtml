@@ -1,0 +1,54 @@
+﻿@page "/{handler?}"
+@model IAR.Pages.HomeModel
+@{
+    ViewData["Title"] = "Home";
+}
+<body>
+    <div class="d-flex justify-content-center align-items-center" style="padding-top: 9px;padding-bottom: 9px;"><img
+            class="img-fluid" src="~/img/logo colour.png" width="143" height="93" /></div>
+    <div class="text-center d-flex flex-column justify-content-center align-items-center"
+        style="padding-top: 4px;padding-bottom: 4px;">
+        <h1 class="display-1 fw-bold"
+            style="padding-left: 40px;padding-right: 40px;">Information Asset
+            Register</h1>
+        <p>Assets, systems and applications used for processing or storing personal data across the organisation</p>
+        <div class="mx-auto col-10 col-md-8 col-lg-6">
+            <input type="text" class="form-control autocomplete" id="autocompleteInput" name="autocompleteInput" placeholder="Search..." />
+        </div>
+        <a asp-page="/Table"><button class="btn btn-secondary" type="button"
+            style="margin-top: 10px;">View All</button></a>
+    </div>
+        @* <div id="main" style="display: none"></div>
+        <div class="container text-center">
+            <div class="row">
+                <div class="mx-auto col-10 col-md-8 col-lg-6">
+                    <h1 class="text-center">Information Asset Register</h1>
+                    <p class="lead">A simple application to manage your information assets</p>
+                    <form>
+                        <label for="autocompleteInput" class="form-label">Search for an asset</label>
+                        <input data-bs-display="static" type="text" class="form-control autocomplete" id="autocompleteInput" name="autocompleteInput" placeholder="Search..." />
+                    </form>
+                </div>
+            </div>
+            <h1 class="text-center">What is an information asset register?</h1>
+            <p>An Information Asset Register is a catalogue of the information the business holds and processes. It records where information assets are stored, how data moves in and out of the business and who it is shared with, so that we can understand its value and ensure that it is appropriately protected.</p>
+            <h1 class="text-center">What is an information asset?</h1>
+            <p>An information asset is any data stored in any manner that has some value either to you or the business such that if it was lost/inaccessible or inaccurate it would be difficult to replace without cost, skill, time or resource. Information assets include, for example, databases, data files, contracts and agreements, system documentation, user manuals, training materials, operational/support procedure, business continuity plans, back up plans, audit trails, archived information.</p>
+        </div> *@
+</body>
+
+@section Scripts {
+    <script type="module">
+        import Autocomplete from "@Url.Content("~/lib/bootstrap5-autocomplete/autocomplete.js")";
+        Autocomplete.init("input.autocomplete", {
+            highlightTyped: true,
+            server: "@Url.Content("~/AssetList")",
+            valueField: "id",
+            labelField: "name",
+            fullWidth: true,
+            onSelectItem: (data) => window.location.href = "Edit/" + data.id,
+            fixed: true,
+            maximumItems: 10,
+        });
+    </script>
+}

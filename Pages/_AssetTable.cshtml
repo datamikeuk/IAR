@@ -1,0 +1,71 @@
+@* @model IAR.Pages.TableModel;
+
+<table id="asset-table" class="table table-striped table-hover table-bordered">
+    <thead>
+        <tr>
+            <th> Name </th>
+            <th> UsedFor </th>
+            <th> Back End Platform </th>
+            <th> Front End Platform </th>
+            <th> Third Parties </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.AssetList) {   
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UsedFor)
+                </td>
+                <td>
+                    @if (item.BackEndPlatform != null) 
+                    {
+                        @Html.DisplayFor(modelItem => item.BackEndPlatform.Name)
+                    }
+                </td>
+                <td>
+                    @if (item.FrontEndPlatform != null) 
+                    {
+                        @Html.DisplayFor(modelItem => item.FrontEndPlatform.Name)
+                    }
+                </td>
+                <td>
+                    @{
+                        if (item.ThirdParties != null)
+                        {
+                            foreach (var thirdparty in item.ThirdParties)
+                            {
+                                @thirdparty.Name <br />
+                            }
+                        }
+                    }
+                </td>
+                <td class="text-center">
+                    <a asp-page="./Edit" asp-route-id="@item.ID"><button class="btn btn-secondary bi-pencil-square"></button></a>
+                    <a asp-page="./Details" asp-route-id="@item.ID"><button class="btn btn-secondary bi-search"></button></a>
+                    <a asp-page="./Delete" asp-route-id="@item.ID"><button class="btn btn-secondary bi-trash"></button></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
+<link rel="stylesheet" href="~/lib/datatables.net-bs5/dataTables.bootstrap5.min.css" />
+
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="~/lib/datatables/jquery.dataTables.min.js"></script>
+<script src="~/lib/datatables.net-bs5/dataTables.bootstrap5.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#asset-table').DataTable({
+            paging: true
+        });
+    });
+</script> *@

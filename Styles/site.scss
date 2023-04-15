@@ -1,0 +1,110 @@
+@import '../wwwroot/lib/bootstrap/scss/bootstrap.scss';
+// @import '_buttons.scss';
+// @import '_autocomplete.scss';
+
+// Variables
+$hg-poppy: #E03C31;
+$hg-bumblebee: #FFDC20;
+$navbar-light-color: white;
+$navbar-light-brand-color: white;
+$navbar-light-brand-hover-color: white;
+$navbar-light-hover-color: $hg-bumblebee;
+$navbar-light-active-color: $hg-bumblebee;
+
+@import '../wwwroot/lib/bootstrap/scss/bootstrap.scss';
+
+// Fonts
+
+*{
+  font-family: Monstserrat, sans-serif ;
+}
+
+*:not(i){
+  font-family: Monstserrat, sans-serif;
+}
+
+// Bootstrap Icons
+.bi {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    fill: currentcolor;
+}
+.navbar-logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 5px;
+}
+.navbar-text {
+  padding-right: 0.5rem;
+}
+// .nav-item :active {
+//   color: $hg-bumblebee;
+// }
+
+button:focus:not(:focus-visible) {
+  outline: 0;
+}
+
+// .nav-link {
+//   color: white;
+// }
+// .nav-link :hover {
+//   color: $hg-bumblebee;
+// }
+
+// Customise light mode
+@include color-mode(light) {
+  .navbar {
+    background-color: $hg-poppy !important;
+  }
+  .navbar-theme-dropdown {
+    color: white;
+  }
+  .navbar-theme-dropdown :hover :active {
+    color: $hg-bumblebee;
+  }
+  .navbar-theme-button :active {
+    color: white;
+  }
+  .btn-check:checked + .btn, :not(.btn-check) + .btn:active, .btn:first-child:active, .btn.active, .btn.show {
+    color: white;
+  }
+  // .navbar-logo {
+  //   filter: invert(100%);
+  //   -webkit-filter: invert(100%);
+  // }
+}
+
+// Customise dark mode
+@include color-mode(dark) {
+  .btn-check:checked + .btn, :not(.btn-check) + .btn:active, .btn:first-child:active, .btn.active, .btn.show {
+    color: currentColor;
+  }
+
+}
+
+// From default site.css
+html {
+    font-size: 14px;
+  }
+  
+  @media (min-width: 768px) {
+    html {
+      font-size: 16px;
+    }
+  }
+  
+  // .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  //   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  // }
+  
+  html {
+    position: relative;
+    min-height: 100%;
+  }
+  
+  body {
+    margin-bottom: 60px;
+  }
+

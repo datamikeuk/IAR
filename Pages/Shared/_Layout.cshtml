@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - IAR</title>
+
+    @* <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment> *@
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/lib/datatables.net-bs5/dataTables.bootstrap5.min.css" />
+    @* <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" />
+    <link rel="stylesheet" href="~/lib/select2-bootstrap-5-theme/select2-bootstrap-5-theme.min.css"> *@
+</head>
+<body font>
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-page="/Home">
+                <img src="~/img/navbar logo.png" alt="Logo" class="navbar-logo d-inline-block align-text-center">
+                Information Asset Register</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" data-bs-toggle=".nav-item" asp-page="/Home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle=".nav-item" asp-page="/Table">Table</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle=".nav-item" asp-page="/About">About</a>
+                </li>
+            </ul>
+            @* <p class="nav navbar-text navbar-right">Hello, @User.Identity.Name! @User.Identity.AuthenticationType</p> *@
+            <p class="nav navbar-text navbar-right">Hello, Michael</p>
+            <div class="vr d-none d-lg-flex h-120 mx-lg-2 text-white"></div>
+            <div class="nav-item dropdown navbar-theme-dropdown">
+                <button class="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center navbar-theme-button pl-2" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme (dark)">
+                    <svg class="bi my-1 theme-icon-active"><use href="@Url.Content("~/lib/bootstrap-icons/bootstrap-icons.svg#moon-stars-fill")"></use></svg>
+                    <span class="d-lg-none ms-2" id="bd-theme-text">Toggle theme</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+                        <svg class="bi me-2 opacity-50 theme-icon"><use href="@Url.Content("~/lib/bootstrap-icons/bootstrap-icons.svg#sun-fill")"></use></svg>
+                        Light
+                        @* <svg class="bi ms-auto d-none"><use href="#check2"></use></svg> *@
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="dark" aria-pressed="true">
+                        <svg class="bi me-2 opacity-50 theme-icon"><use href="@Url.Content("~/lib/bootstrap-icons/bootstrap-icons.svg#moon-stars-fill")"></use></svg>
+                        Dark
+                        @* <svg class="bi ms-auto d-none"><use href="#check2"></use></svg> *@
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="false">
+                        <svg class="bi me-2 opacity-50 theme-icon"><use href="@Url.Content("~/lib/bootstrap-icons/bootstrap-icons.svg#circle-half")"></use></svg>
+                        Auto
+                        @* <svg class="bi ms-auto d-none"><use href="#check2"></use></svg> *@
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            @* <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form> *@
+        </div>
+        </nav>
+    </header>
+    <div class="container-fluid">
+        <div class="row" style="height: 100vh;">
+            <div class="col-1" style="background: url('@Url.Content("~/img/left.png")'); repeat-y; background-size: contain;"></div>
+            <div class="col">
+                <div class="container">
+                    <main role="main" class="pb-3">
+                        @RenderBody()
+                    </main>
+                </div>
+            </div>
+            <div class="col-1" style="background: url('@Url.Content("~/img/right.png")'); repeat-y; background-size: contain;"></div>
+        </div>
+    </div>
+
+    @* <footer class="border-top footer text-muted">
+        <div class="container">
+            <a asp-page="/">&copy; 2023 - Information Asset Register</a>
+        </div>
+    </footer> *@
+
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/popper.js/umd/popper.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+    @* <script src="~/lib/select2/js/select2.min.js"></script> *@
+    <script src="~/lib/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-bs5/dataTables.bootstrap5.min.js"></script>
+    @* <script src="~/lib/autocomplete.js/autocomplete.min.js"></script> *@
+
+    <script src="~/js/site.js" asp-append-version="true" defer></script>
+    <script src="~/js/toggle.js" asp-append-version="true" defer></script>
+
+    @* // Highlight the active nav link *@
+    <script>
+        document.querySelectorAll(".nav-link").forEach((link) => {
+            if (link.href === window.location.href) {
+                link.classList.add("active");
+                link.setAttribute("aria-current", "page");
+                console.log(window.location.href);
+            }
+        });
+        console.log(window.location.href);
+    </script>
+
+    @* <environment include="Development">
+        <script src="~/js/site.js" asp-append-version="true" defer></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/site.min.js" asp-append-version="true" defer></script>
+    </environment> *@
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

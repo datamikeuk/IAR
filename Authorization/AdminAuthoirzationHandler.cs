@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using IAR.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -9,9 +8,9 @@ namespace IAR.Authorization
                     : AuthorizationHandler<OperationAuthorizationRequirement, Asset>
     {
         protected override Task HandleRequirementAsync(
-                                              AuthorizationHandlerContext context,
+                                    AuthorizationHandlerContext context,
                                     OperationAuthorizationRequirement requirement, 
-                                     Asset resource)
+                                    Asset resource)
         {
             if (context.User == null)
             {

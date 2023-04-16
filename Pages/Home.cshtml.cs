@@ -2,23 +2,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 // using Microsoft.AspNetCore.Mvc.RazorPages;
 using IAR.Models;
-using IAR.Authorization;
-using Microsoft.AspNetCore.Identity;
-// using IAR.Pages;
+// using IAR.Authorization;
+// using Microsoft.AspNetCore.Identity;
+using IAR.Pages;
 using IAR.Data;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace IAR.Pages
 {
     [AllowAnonymous]
-    public class HomeModel : DI_BasePageModel
+    public class HomeModel : PageModel
     {
         private readonly RegisterContext _context;
 
-        public HomeModel(RegisterContext context,
-            IAuthorizationService authorizationService,
-            UserManager<IdentityUser> userManager) : base(context, 
-                                                         authorizationService, 
-                                                         userManager)
+        public HomeModel(RegisterContext context)
         {
             _context = context;
         }

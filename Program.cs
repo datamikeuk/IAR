@@ -1,12 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using IAR.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using IAR.Authorization;
-// using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using IAR.Data;
+using IAR.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,28 +12,15 @@ builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization(options =>
 {
-    options.FallbackPolicy = options.DefaultPolicy;
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
 });
 
-// Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddDbContext<RegisterContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("RegisterContext") ?? throw new InvalidOperationException("Connection string 'RegisterContext' not found.")));
-
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
+// Set the fallback authorization policy to require users to be authenticated
 builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<RegisterContext>();
-
-builder.Services.AddRazorPages();
-
-// builder.Services.AddAuthorization(options =>
-// {
-//     options.FallbackPolicy = new AuthorizationPolicyBuilder()
-//         .RequireAuthenticatedUser()
-//         .Build();
-// });
 
 // Authorization handlers
 builder.Services.AddScoped<IAuthorizationHandler,
@@ -45,37 +29,32 @@ builder.Services.AddScoped<IAuthorizationHandler,
 builder.Services.AddSingleton<IAuthorizationHandler,
                       AdminAuthorizationHandler>();
 
-// builder.Services.AddWebOptimizer();
+builder.Services.AddDbContext<RegisterContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("RegisterContext") ?? 
+        throw new InvalidOperationException("Connection string 'RegisterContext' not found.")));
 
-// builder.Services.AddRazorPages(options =>
-//     {
-//         options.Conventions.AddPageRoute(
-//             "/Home", "");
-//     });
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
 app.UsePathBase("/IAR");
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-    // app.UseWebOptimizer();
 }
 else
 {
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
-    // builder.Services.AddWebOptimizer(minifyJavaScript:false,minifyCss:false);
 }
 
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-
     var context = services.GetRequiredService<RegisterContext>();
     context.Database.EnsureCreated();
     DbInitializer.Initialize(context);
@@ -83,9 +62,6 @@ using (var scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-// var options = new RewriteOptions()
-//     .AddRedirect("(.*[^/])$", "$1/");
 
 app.UseRouting();
 

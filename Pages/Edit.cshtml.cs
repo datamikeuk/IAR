@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using IAR.Data;
 using IAR.Models;
-using IAR.Authorization;
+// using IAR.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity; 
 
@@ -77,16 +77,16 @@ namespace IAR.Pages
                 // Pass IEnumerable<ThirdParty> to PartialView
                 return Partial("_ThirdPartyTable", assetToEdit.ThirdParties);
             }
-            Asset = assetToEdit;
-                    var isAuthorized = User.IsInRole(Constants.AssetOwnersRole) ||
-                           User.IsInRole(Constants.AssetAdministratorsRole);
+            // Asset = assetToEdit;
+            //         var isAuthorized = User.IsInRole(Constants.AssetOwnersRole) ||
+            //                User.IsInRole(Constants.AssetAdministratorsRole);
 
-            var currentUserId = UserManager.GetUserId(User);
+            // var currentUserId = UserManager.GetUserId(User);
 
-            if (!isAuthorized && currentUserId != Asset.OwnerID)
-            {
-                return Forbid();
-            }
+            // if (!isAuthorized && currentUserId != Asset.OwnerID)
+            // {
+            //     return Forbid();
+            // }
             PopulateBackEndPlatformsDropDownList(_context, Asset.BackEndPlatformID);
             PopulateFrontEndPlatformsDropDownList(_context, Asset.FrontEndPlatformID);
             return Page();

@@ -2,7 +2,6 @@ using IAR.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 
 namespace IAR.Authorization
 {

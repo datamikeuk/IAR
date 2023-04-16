@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace IAR.Pages
 {
+    [AllowAnonymous]
     public class CreateModel : DI_BasePageModel
     {
         private readonly RegisterContext _context;
@@ -27,18 +28,34 @@ namespace IAR.Pages
             _context = context;
         }
 
-        public IActionResult OnGet()
+        public IList<String> Roles { get; set; } = null!;
+
+        public async Task<IActionResult> OnGetAsync()
         {
             var isAuthorized = User.IsInRole(Constants.AssetOwnersRole) ||
                             User.IsInRole(Constants.AssetAdministratorsRole);
 
+            Console.WriteLine(User.Identity.Name);
+            
             var currentUserId = UserManager.GetUserId(User);
+            Console.WriteLine("Current user ID: " + currentUserId);
 
             if (!isAuthorized)
             {
                 return Forbid();
             }
 
+            if (currentUserId == null) {
+                return Forbid();
+            }
+
+            Roles = new List<string>();
+            var user = await UserManager.FindByIdAsync(currentUserId);
+            if (user != null) {
+                var roles = await UserManager.GetRolesAsync(user);
+                Roles = roles;
+            }
+            
             ViewData["BackEndPlatformID"] = new SelectList(_context.BackEndPlatforms, "ID", "ID");
             ViewData["FrontEndPlatformID"] = new SelectList(_context.FrontEndPlatforms, "ID", "ID");
             return Page();

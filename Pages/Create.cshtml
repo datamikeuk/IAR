@@ -57,6 +57,23 @@
         </form>
     </div>
 </div>
+@Model.Roles.Count
+@* // Show list of roles *@
+@if (Model.Roles.Count > 0)
+{
+    @foreach (var role in Model.Roles)
+    {
+        <div>
+            <ul>
+                <li>
+                    <label>
+                        <input type="checkbox" name="role" value="@role" />
+                    </label>
+                </li>
+            </ul>
+        </div>
+    }
+}
 
 <div>
     <a asp-page="Index">Back to List</a>

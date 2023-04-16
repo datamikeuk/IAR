@@ -25,7 +25,7 @@ namespace IAR.Authorization
         public static readonly string DeleteOperationName = "Delete";
         public static readonly string ApproveOperationName = "Review";
         // Roles
-        public static readonly string AssetAdministratorsRole = "AssetAdministrators";
+        public static readonly string AssetAdministratorsRole = "ICT";
         public static readonly string AssetOwnersRole = "AssetOwners";
     }
 }

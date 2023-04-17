@@ -1,16 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using IAR.Data;
 using IAR.Models;
 using IAR.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity; 
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace IAR.Pages
 {
@@ -28,32 +22,13 @@ namespace IAR.Pages
             _context = context;
         }
 
-        public IList<String> Roles { get; set; } = null!;
-
-        public async Task<IActionResult> OnGetAsync()
+        public IActionResult OnGet()
         {
-            var isAuthorized = User.IsInRole(Constants.AssetOwnersRole) ||
-                            User.IsInRole(Constants.AssetAdministratorsRole);
-
-            Console.WriteLine(User.Identity.Name);
-            
-            var currentUserId = UserManager.GetUserId(User);
-            Console.WriteLine("Current user ID: " + currentUserId);
+            var isAuthorized = User.IsInRole(Constants.AssetOwnersRole) || User.IsInRole(Constants.AssetAdministratorsRole);
 
             if (!isAuthorized)
             {
                 return Forbid();
-            }
-
-            if (currentUserId == null) {
-                return Forbid();
-            }
-
-            Roles = new List<string>();
-            var user = await UserManager.FindByIdAsync(currentUserId);
-            if (user != null) {
-                var roles = await UserManager.GetRolesAsync(user);
-                Roles = roles;
             }
             
             ViewData["BackEndPlatformID"] = new SelectList(_context.BackEndPlatforms, "ID", "ID");
@@ -64,7 +39,6 @@ namespace IAR.Pages
         [BindProperty]
         public Asset Asset { get; set; } = default!;
         
-
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {

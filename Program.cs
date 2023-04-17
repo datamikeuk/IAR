@@ -3,31 +3,42 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using IAR.Data;
+using IAR.Services;
 using IAR.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using IAR;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
    .AddNegotiate();
 
+builder.Services.AddTransient<IClaimsTransformation, MyClaimsTransformation>();
+
+// Set the fallback authorization policy to require users to be authenticated
 builder.Services.AddAuthorization(options =>
 {
+    options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "Admin"));
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build();
-});
+}
+);
 
-// Set the fallback authorization policy to require users to be authenticated
-builder.Services.AddDefaultIdentity<IdentityUser>()
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<RegisterContext>();
+// builder.Services
+//     .AddDefaultIdentity<IdentityUser>()
+//     .AddRoles<IdentityRole>()
+//     .AddEntityFrameworkStores<RegisterContext>()
+//     ;
+
+builder.Services.AddSingleton<ValidateAuthentication>();
 
 // Authorization handlers
-builder.Services.AddScoped<IAuthorizationHandler,
-                      UserIsOwnerAuthorizationHandler>();
+// builder.Services.AddScoped<IAuthorizationHandler,
+//                       UserIsOwnerAuthorizationHandler>();
 
-builder.Services.AddSingleton<IAuthorizationHandler,
-                      AdminAuthorizationHandler>();
+// builder.Services.AddSingleton<IAuthorizationHandler,
+//                       AdminAuthorizationHandler>();
 
 builder.Services.AddDbContext<RegisterContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RegisterContext") ?? 
@@ -43,7 +54,8 @@ app.UsePathBase("/IAR");
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseDeveloperExceptionPage();
+    // app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 else
@@ -67,7 +79,40 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<ValidateAuthentication>();
 
 app.MapRazorPages();
 
 app.Run();
+
+internal class ValidateAuthentication : IMiddleware
+{
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    {
+        if (context.User.Identity != null)
+        {
+            if (context.User.Identity.IsAuthenticated)
+            {
+                Console.WriteLine("User is authenticated");
+                await next(context);
+            }
+            else
+            {
+                Console.WriteLine("User is not authenticated");
+                await context.ChallengeAsync();
+            }
+        }
+        else
+        {
+            Console.WriteLine("User is null");
+        }
+    }
+
+    private bool HasAnonymousAttribute(HttpContext context)
+    {
+        var endpoint = context.GetEndpoint();
+        var retVal = (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() != null);
+
+        return retVal;
+    }
+}

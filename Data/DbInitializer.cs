@@ -52,6 +52,13 @@ namespace IAR.Data
             // context.AddRange(assets);
             // context.SaveChanges();
 
+            var users = new User[]
+            {
+                new User{Name="STAFFSHOUSING\\michaelj", Role="Admin"},
+                new User{Name="Other"}
+            };
+            context.Users.AddRange(users);
+
             var backendplatforms = new BackEndPlatform[]
             {
                 new BackEndPlatform{Name="BackEndPlatform1"},

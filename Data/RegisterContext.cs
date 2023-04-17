@@ -14,6 +14,7 @@ namespace IAR.Data
         public DbSet<BackEndPlatform> BackEndPlatforms => Set<BackEndPlatform>();
         public DbSet<FrontEndPlatform> FrontEndPlatforms => Set<FrontEndPlatform>();
         public DbSet<ThirdParty> ThirdParties => Set<ThirdParty>();
+        public DbSet<User> Users => Set<User>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

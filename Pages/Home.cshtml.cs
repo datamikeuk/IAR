@@ -1,16 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-// using Microsoft.AspNetCore.Mvc.RazorPages;
 using IAR.Models;
-// using IAR.Authorization;
-// using Microsoft.AspNetCore.Identity;
 using IAR.Pages;
 using IAR.Data;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IAR.Pages
 {
-    [AllowAnonymous]
+    [Authorize(Policy ="Admin")]
     public class HomeModel : PageModel
     {
         private readonly RegisterContext _context;
@@ -19,6 +16,14 @@ namespace IAR.Pages
         {
             _context = context;
         }
+
+        // public void OnGet()
+        // {
+        //     if (User.Identity != null)
+        //     {
+        //         Console.WriteLine(User.Identity.Name);
+        //     }
+        // }
 
         public JsonResult OnGetAssetList()
         {

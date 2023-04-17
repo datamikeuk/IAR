@@ -1,30 +1,32 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Runtime.Versioning;
+using System.Security.Claims;
 
-namespace IAR.Pages;
-
-[AllowAnonymous]
-public class UserModel : PageModel
+namespace IAR.Pages
 {
-    private readonly ILogger<AboutModel> _logger;
-
-    public UserModel(ILogger<AboutModel> logger)
+    [AllowAnonymous]
+    public class UserModel : PageModel
     {
-        _logger = logger;
-    }
+        private readonly ILogger<UserModel> _logger;
 
-    public List<String> Roles { get; set; } = null!;
+        public UserModel(ILogger<UserModel> logger)
+        {
+            _logger = logger;
+        }
 
-    public void OnGet()
-    {
-        GetADRoles();
-    }
+        public List<String> Roles { get; set; } = null!;
 
-    public void GetADRoles()
-    {
-        if (User.Identity != null){
-            var identity = (ClaimsIdentity)User.Identity;
+        [SupportedOSPlatform("windows")]
+        public void OnGet()
+        {
+            // if (User.Identity != null) { GetADRoles(User.Identity); }
+        }
+
+        [SupportedOSPlatform("windows")]
+        public List<String> GetADRoles(System.Security.Principal.IIdentity user)
+        {
+            var identity = (ClaimsIdentity)user;
             var claims = identity.Claims;
             // var name = identity.Name;
             // var email = claims.Where(c => c.Type == ClaimTypes.Email).Select(c => c.Value).SingleOrDefault();
@@ -41,6 +43,8 @@ public class UserModel : PageModel
                     .Translate(typeof(System.Security.Principal.NTAccount)).ToString();
                 Roles.Add(name);
             }
+
+            return new List<string>(Roles);
         }
     }
 }

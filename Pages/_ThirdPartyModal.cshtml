@@ -1,4 +1,5 @@
 @model IAR.Models.ThirdParty 
+
 <div class="modal fade" id="thirdparty-modal" tabindex="-1" role="dialog" aria-labelledby="addThirdPartyLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -10,17 +11,17 @@
             </div>
             <div class="modal-body">
                 <form asp-page-handler="ThirdPartyModal" method="post" id="thirdPartyModal">
-                <input type="hidden" asp-for="AssetID"/>
-                <div class="form-group">
-                    <label asp-for="Name" class="control-label"></label>
-                    <input asp-for="Name" class="form-control"/>
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Use" class="control-label"></label>
-                    <input asp-for="Use" class="form-control"/>
-                    <span asp-validation-for="Use" class="text-danger"></span>
-                </div>
+                    <input type="hidden" asp-for="AssetID"/>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control"/>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Use" class="control-label"></label>
+                        <input asp-for="Use" class="form-control"/>
+                        <span asp-validation-for="Use" class="text-danger"></span>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -30,7 +31,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

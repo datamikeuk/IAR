@@ -9,7 +9,6 @@ namespace IAR.Models
         public required string Name { get; set; }
         public string? UsedFor { get; set; }
         public string? DataOwner { get; set; }
-        // user ID from AspNetUser table.
         public string? OwnerID { get; set; }
         public int? BackEndPlatformID { get; set; }
         public BackEndPlatform? BackEndPlatform { get; set; }

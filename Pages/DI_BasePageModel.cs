@@ -1,7 +1,7 @@
-using IAR.Data;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using IAR.Data;
 
 namespace IAR.Pages
 {

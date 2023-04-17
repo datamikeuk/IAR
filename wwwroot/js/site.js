@@ -1,18 +1,4 @@
-﻿// Import autocomplete from the lib folder and initialize it
-// import Autocomplete from "/lib/bootstrap5-autocomplete/autocomplete.js";
-// Autocomplete.init("input.autocomplete", {
-//     highlightTyped: true,
-//     onSelectItem: console.log,
-//     server: "~/AssetList",
-//     valueField: "id",
-//     labelField: "name",
-//     fullWidth: true,
-//     onSelectItem: (data) => window.location.href = "Edit/" + data.id,
-//     fixed: true,
-//     maximumItems: 10,
-// });
-
-// Enable Bootstrap tooltips
+﻿// Enable Bootstrap tooltips
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
   return new bootstrap.Tooltip(tooltipTriggerEl)

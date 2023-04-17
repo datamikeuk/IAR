@@ -12,51 +12,12 @@ namespace IAR.Data
                 return;   // DB has been seeded
             }
 
-            // var tp1 = new ThirdParty
-            // {
-            //     AssetID = 1,
-            //     Name = "ThirdParty1"
-            // };
-            // var tp2 = new ThirdParty
-            // {
-            //     AssetID = 1,
-            //     Name = "ThirdParty2"
-            // };
-
-            // var thirdparties = new ThirdParty[]
-            // {
-            //     tp1,
-            //     tp2
-            // };
-
-            // context.AddRange(thirdparties);
-
-            // var a1 = new Asset
-            // {
-            //     Name = "Asset1",
-            //     ThirdParties = new List<ThirdParty> {tp1,tp2}
-            // };
-
-            // var a2 = new Asset
-            // {
-            //     Name = "Asset2",
-            //     ThirdParties = new List<ThirdParty> {tp2}
-            // };
-
-            // var assets = new Asset[]
-            // {
-            //     a1,
-            //     a2
-            // };
-
-            // context.AddRange(assets);
-            // context.SaveChanges();
-
             var users = new User[]
             {
                 new User{Name="STAFFSHOUSING\\michaelj", Role="Admin"},
-                new User{Name="Other"}
+                new User{Name="LEGION\\m1kej", Role="Admin"}
             };
+
             context.Users.AddRange(users);
 
             var backendplatforms = new BackEndPlatform[]
@@ -80,8 +41,10 @@ namespace IAR.Data
 
             var assets = new Asset[]
             {
-                new Asset{Name="Test1", BackEndPlatformID=1, FrontEndPlatformID=1, DataOwner="Michael Jones", CreatedDate=currentDateTime, UpdatedDate=currentDateTime},
-                new Asset{Name="Test2", BackEndPlatformID=2, FrontEndPlatformID=2, CreatedDate=currentDateTime, UpdatedDate=currentDateTime}
+                new Asset{Name="Test1", BackEndPlatformID=1, FrontEndPlatformID=1, 
+                    DataOwner="Michael Jones", CreatedDate=currentDateTime, UpdatedDate=currentDateTime},
+                new Asset{Name="Test2", BackEndPlatformID=2, FrontEndPlatformID=2, 
+                    CreatedDate=currentDateTime, UpdatedDate=currentDateTime}
             };
 
             context.Assets.AddRange(assets);

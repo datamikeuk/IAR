@@ -5,9 +5,9 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-Total Roles: @Model.Roles.Count
-@* // Show list of roles *@
+@* // List AD Roles *@
 @if (Model.Roles.Count > 0) {
+    <p>Total Roles: @Model.Roles.Count</p>
     @foreach (var role in Model.Roles) {
         <div><ul><li>@role</li></ul></div>
     }

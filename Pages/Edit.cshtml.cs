@@ -1,39 +1,27 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using IAR.Data;
 using IAR.Models;
-// using IAR.Authorization;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity; 
 
 namespace IAR.Pages
 {
-    public class EditModel : DI_BasePageModel
+    public class EditModel : PageModel
     {
         private readonly RegisterContext _context;
 
-        public EditModel(RegisterContext context,
-            IAuthorizationService authorizationService,
-            UserManager<IdentityUser> userManager) : base(context, 
-                                                         authorizationService, 
-                                                         userManager)
+        public EditModel(RegisterContext context)
         {
             _context = context;
         }
 
         [BindProperty]
         public Asset Asset { get; set; } = default!;
-
         public SelectList BackEndPlatformNameSL { get; set; } = null!;
         public SelectList FrontEndPlatformNameSL { get; set; } = null!;
-
-        public void PopulateBackEndPlatformsDropDownList(RegisterContext _context, object? selectedBackEndPlatform = null)
+        public void PopulateBackEndPlatformsDropDownList(RegisterContext _context, 
+            object? selectedBackEndPlatform = null)
         {
             var BackEndPlatformsQuery = from p in _context.BackEndPlatforms
                                    orderby p.Name
@@ -43,7 +31,8 @@ namespace IAR.Pages
                     nameof(BackEndPlatform.Name),
                     selectedBackEndPlatform);
         }
-        public void PopulateFrontEndPlatformsDropDownList(RegisterContext _context, object? selectedFrontEndPlatform = null)
+        public void PopulateFrontEndPlatformsDropDownList(RegisterContext _context, 
+            object? selectedFrontEndPlatform = null)
         {
             var FrontEndPlatformsQuery = from p in _context.FrontEndPlatforms
                                    orderby p.Name
@@ -67,19 +56,18 @@ namespace IAR.Pages
                 .Include(a => a.ThirdParties)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-            if (assetToEdit == null)
-            {
-                return NotFound();
-            }
+            if (assetToEdit == null) { return NotFound(); }
 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" && assetToEdit.ThirdParties != null)
             {
                 // Pass IEnumerable<ThirdParty> to PartialView
                 return Partial("_ThirdPartyTable", assetToEdit.ThirdParties);
             }
-            // Asset = assetToEdit;
-            //         var isAuthorized = User.IsInRole(Constants.AssetOwnersRole) ||
-            //                User.IsInRole(Constants.AssetAdministratorsRole);
+
+            Asset = assetToEdit;
+
+            // var isAuthorized = User.IsInRole(Constants.AssetOwnersRole) ||
+            //             User.IsInRole(Constants.AssetAdministratorsRole);
 
             // var currentUserId = UserManager.GetUserId(User);
 
@@ -87,6 +75,7 @@ namespace IAR.Pages
             // {
             //     return Forbid();
             // }
+
             PopulateBackEndPlatformsDropDownList(_context, Asset.BackEndPlatformID);
             PopulateFrontEndPlatformsDropDownList(_context, Asset.FrontEndPlatformID);
             return Page();
@@ -142,7 +131,7 @@ namespace IAR.Pages
                     await _context.SaveChangesAsync();
                     return new JsonResult(new { success = true });
                 }
-                return Partial("_AddThirdPartyModal", thirdPartyData);
+                return Partial("_ThirdPartyModal", thirdPartyData);
         }
     }
 }

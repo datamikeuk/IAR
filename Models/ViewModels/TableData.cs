@@ -1,4 +1,4 @@
-namespace IAR.Models.RegisterViewModels
+namespace IAR.Models.ViewModels
 {
     public class TableData
     {

@@ -1,12 +1,9 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.EntityFrameworkCore;
 using IAR.Data;
 using IAR.Services;
-using IAR.Authorization;
-using Microsoft.AspNetCore.Authentication;
-using IAR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,14 +19,7 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build();
-}
-);
-
-// builder.Services
-//     .AddDefaultIdentity<IdentityUser>()
-//     .AddRoles<IdentityRole>()
-//     .AddEntityFrameworkStores<RegisterContext>()
-//     ;
+});
 
 builder.Services.AddSingleton<ValidateAuthentication>();
 
@@ -54,8 +44,7 @@ app.UsePathBase("/IAR");
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
-    // app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 else
@@ -85,6 +74,7 @@ app.MapRazorPages();
 
 app.Run();
 
+// Customer middleware to validate authentication when using Kestrel
 internal class ValidateAuthentication : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)

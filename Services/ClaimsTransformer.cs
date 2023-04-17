@@ -19,13 +19,10 @@ namespace IAR.Services
             {
                 userName = principal.Identity.Name;
             }
-            Console.WriteLine(userName);
 
-            // get Role from DB if Name == userName
             var role = _context.Users
                 .Where(u => u.Name == userName)
                 .Select(u => u.Role).FirstOrDefault();
-            Console.WriteLine(role);
             
             ClaimsIdentity claimsIdentity = new ClaimsIdentity();
             var claimType = "Role";

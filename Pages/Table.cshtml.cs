@@ -1,13 +1,10 @@
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using IAR.Models;
-using IAR.Models.RegisterViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using IAR.Data;
-using static System.Environment;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using IAR.Data;
+using IAR.Models;
+using IAR.Models.ViewModels;
 
 namespace IAR.Pages
 {

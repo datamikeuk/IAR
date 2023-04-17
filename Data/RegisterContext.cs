@@ -6,9 +6,7 @@ namespace IAR.Data
     public class RegisterContext : DbContext
     {
         public RegisterContext (DbContextOptions<RegisterContext> options)
-            : base(options)
-        {
-        }
+            : base(options) {}
 
         public DbSet<Asset> Assets => Set<Asset>();
         public DbSet<BackEndPlatform> BackEndPlatforms => Set<BackEndPlatform>();

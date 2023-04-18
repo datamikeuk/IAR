@@ -11,22 +11,10 @@ namespace IAR.Pages
     public class HomeModel : PageModel
     {
         private readonly RegisterContext _context;
-        private readonly UserResolver _userResolver;
 
-        public HomeModel(RegisterContext context, UserResolver userResolver)
+        public HomeModel(RegisterContext context)
         {
             _context = context;
-            _userResolver = userResolver;
-        }
-
-        public User User { get; set; } = default!;
-
-        [SupportedOSPlatform("windows")]
-        public void OnGet()
-        {
-            // Console.WriteLine(_userResolver.GetIdentityName());
-            // _userResolver.GetAllUsers();
-            // Console.WriteLine(_userResolver.GetDisplayName());
         }
 
         public JsonResult OnGetAssetList()

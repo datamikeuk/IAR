@@ -31,13 +31,14 @@
                     <a class="nav-link" aria-current="page" data-bs-toggle=".nav-item" asp-page="/Home">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle=".nav-item" asp-page="/Table">Table</a>
+                    <a class="nav-link" data-bs-toggle=".nav-item" asp-page="/View">View Assets</a>
                 </li>
-                <li class="nav-item">
+                @* <li class="nav-item">
                     <a class="nav-link" data-bs-toggle=".nav-item" asp-page="/About">About</a>
-                </li>
+                </li> *@
             </ul>
-            <p class="nav navbar-text navbar-right">Hello, @(User.FindFirst("DisplayName")?.Value)!</p>
+            <svg class="bi user-icon"><use href="@Url.Content("~/lib/bootstrap-icons/bootstrap-icons.svg#person-fill")"></use></svg>
+            <p class="nav navbar-text navbar-right">@(User.FindFirst("DisplayName")?.Value)</p>
             <div class="vr d-none d-lg-flex h-120 mx-lg-2 text-white"></div>
             <div class="nav-item dropdown navbar-theme-dropdown">
                 <button class="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center navbar-theme-button pl-2" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme (dark)">

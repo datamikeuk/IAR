@@ -9,10 +9,11 @@ namespace IAR.Pages
     public class UserModel : PageModel
     {
         private readonly ILogger<UserModel> _logger;
-
-        public UserModel(ILogger<UserModel> logger)
+        private readonly UserResolver _userResolver;
+        public UserModel(ILogger<UserModel> logger, UserResolver userResolver)
         {
             _logger = logger;
+            _userResolver = userResolver;
         }
 
         public List<String> Roles { get; set; } = null!;
@@ -21,6 +22,7 @@ namespace IAR.Pages
         public void OnGet()
         {
             // if (User.Identity != null) { GetADRoles(User.Identity); }
+            _userResolver.GetCurrentDomainPath();
         }
 
         [SupportedOSPlatform("windows")]

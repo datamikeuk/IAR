@@ -6,11 +6,18 @@ namespace IAR.Data
     {
         public static void Initialize(RegisterContext context)
         {
-            // Look for any assets.
             if (context.Assets.Any())
             {
-                return;   // DB has been seeded
+                return;
             }
+
+            var users = new User[]
+            {
+                new User{AccountName="michaelj", DisplayName="Michael Jones"},
+                new User{AccountName="m1kej", DisplayName="Michael Jones"}
+            };
+
+            context.Users.AddRange(users);
 
             var roles = new Role[]
             {

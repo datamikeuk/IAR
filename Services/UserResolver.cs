@@ -4,9 +4,11 @@ using System.DirectoryServices;
 public class UserResolver
 {
     public readonly IHttpContextAccessor _context;
-    public UserResolver(IHttpContextAccessor context)
+    private readonly IConfiguration _configuration;
+    public UserResolver(IHttpContextAccessor context, IConfiguration configuration)
     {
         _context = context;
+        _configuration = configuration;
     }
 
     public string GetIdentityName()
@@ -14,8 +16,13 @@ public class UserResolver
         return _context.HttpContext?.User.Identity?.Name??"";
     }
 
+    public string GetUserName()
+    {
+        return GetIdentityName().Split('\\')[1];;
+    }
+
     [SupportedOSPlatform("windows")]
-    private string GetCurrentDomainPath()
+    public string GetCurrentDomainPath()
     {
         DirectoryEntry de = new DirectoryEntry("LDAP://RootDSE");
 
@@ -26,9 +33,9 @@ public class UserResolver
     public string GetDisplayName()
     {
         DirectorySearcher ds = new DirectorySearcher();
-        DirectoryEntry de = new DirectoryEntry(GetCurrentDomainPath());
+        DirectoryEntry de = new DirectoryEntry(_configuration.GetValue<string>("LDAP"));
 
-        var name = GetIdentityName().Split('\\')[1]; // Get the username from the domain
+        var name = GetUserName();
         ds = new DirectorySearcher(de);
         ds.Filter = "(&(objectClass=user)(objectcategory=person)(sAMAccountName=" + name + "))";
         SearchResult? userProperty = ds.FindOne();
@@ -42,9 +49,9 @@ public class UserResolver
     public string GetEmail()
     {
         DirectorySearcher ds = new DirectorySearcher();
-        DirectoryEntry de = new DirectoryEntry(GetCurrentDomainPath());
+        DirectoryEntry de = new DirectoryEntry(_configuration.GetValue<string>("LDAP"));
 
-        var name = GetIdentityName().Split('\\')[1]; // Get the username from the domain
+        var name = GetUserName();
         ds = new DirectorySearcher(de);
         ds.Filter = "(&(objectClass=user)(objectcategory=person)(sAMAccountName=" + name + "))";
         SearchResult? userProperty = ds.FindOne();

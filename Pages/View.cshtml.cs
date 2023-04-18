@@ -9,11 +9,11 @@ using IAR.Models.ViewModels;
 namespace IAR.Pages
 {
     [AllowAnonymous]
-    public class TableModel : PageModel
+    public class ViewModel : PageModel
     {
         private readonly RegisterContext _context;
 
-        public TableModel(RegisterContext context)
+        public ViewModel(RegisterContext context)
         {
             _context = context;
         }
@@ -56,7 +56,8 @@ namespace IAR.Pages
                     FrontEndPlatformName = frontEndPlatformName,
                     ThirdPartyNames = thirdPartyNames,
                     CreatedDate = asset.CreatedDate,
-                    UpdatedDate = asset.UpdatedDate
+                    UpdatedDate = asset.UpdatedDate,
+                    UpdatedBy = asset.UpdatedBy
                 });
             }
             return new JsonResult(tableData);

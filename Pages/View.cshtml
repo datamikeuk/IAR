@@ -1,8 +1,8 @@
 @page "{handler?}"
-@model IAR.Pages.TableModel
+@model IAR.Pages.ViewModel
 
 @{
-    ViewData["Title"] = "Table";
+    ViewData["Title"] = "View";
 }
 
 <div id="modal-placeholder"></div>
@@ -11,7 +11,7 @@
     </br>
     <div class="form-group">
         <button type="button" class="btn btn-secondary" data-toggle="ajax-modal" 
-            data-url="@Url.Page("Table","AssetModal")">
+            data-url="@Url.Page("View","AssetModal")">
             +
         </button>
         @* <input id="nameFilter" type="text" placeholder="Filter by Name" />
@@ -34,6 +34,7 @@
                 @* <th>Third Parties</th> *@
                 @* <th>Created Date</th> *@
                 <th>Updated Date</th>
+                <th>Updated By</th>
                 <th></th>
             </tr>
         </thead>
@@ -48,7 +49,7 @@
         $(document).ready(function () {
             $('#asset-table').DataTable({
                 ajax: {
-                    url: 'Table/TableData',
+                    url: 'View/TableData',
                     data: function(d){
                         d.nameFilter = $('#nameFilter').val();
                         d.editCheck = $('#editCheck').is(':checked');
@@ -79,6 +80,7 @@
                       render: function(data, type, row){
                           return new Date(data).toLocaleDateString();
                       } },
+                    { data: 'updatedBy' },
                     // edit button
                     {
                         date: null,

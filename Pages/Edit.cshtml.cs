@@ -102,7 +102,7 @@ namespace IAR.Pages
                 a => a.ID, a => a.DataOwner, a => a.BackEndPlatformID, a => a.FrontEndPlatformID, a => a.Name))
             {
                 await _context.SaveChangesAsync();
-                return RedirectToPage("./Table");
+                return RedirectToPage("./View");
             }
 
             PopulateBackEndPlatformsDropDownList(_context, assetToUpdate.BackEndPlatformID);

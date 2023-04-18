@@ -17,7 +17,9 @@ namespace IAR.Models
         public ICollection<ThirdParty>? ThirdParties { get; set; }
         [Display(Name = "Updated Date")]
         public DateTime UpdatedDate { get; set; }
+        public string? UpdatedBy { get; set; }
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+        public string? CreatedBy { get; set; }
 		}
 }

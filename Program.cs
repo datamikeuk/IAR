@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
    .AddNegotiate();
 
-builder.Services.AddTransient<IClaimsTransformation, MyClaimsTransformation>();
+builder.Services.AddSingleton<ValidateAuthentication>();
 
 // Set the fallback authorization policy to require users to be authenticated
 builder.Services.AddAuthorization(options =>
@@ -21,7 +21,9 @@ builder.Services.AddAuthorization(options =>
         .Build();
 });
 
-builder.Services.AddSingleton<ValidateAuthentication>();
+builder.Services.AddTransient<IClaimsTransformation, MyClaimsTransformation>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<UserResolverService>();
 
 // Authorization handlers
 // builder.Services.AddScoped<IAuthorizationHandler,

@@ -1,12 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using IAR.Models;
+using System.Security.Claims;
 
 namespace IAR.Data
 {
     public class RegisterContext : DbContext
     {
-        public RegisterContext (DbContextOptions<RegisterContext> options)
-            : base(options) {}
+        private readonly UserResolverService _userResolverService;
+        public RegisterContext (DbContextOptions<RegisterContext> options, UserResolverService userResolverService) : base(options)
+        {
+            _userResolverService = userResolverService;
+        }
 
         public DbSet<Asset> Assets => Set<Asset>();
         public DbSet<BackEndPlatform> BackEndPlatforms => Set<BackEndPlatform>();
@@ -65,6 +69,8 @@ namespace IAR.Data
         
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
+            var userID = _userResolverService.GetIdentityName();
+
             var entries = ChangeTracker
                 .Entries()
                 .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
@@ -74,10 +80,12 @@ namespace IAR.Data
             foreach (var entityEntry in entries)
             {
                 entityEntry.Property("UpdatedDate").CurrentValue = DateTime.Now;
+                entityEntry.Property("UpdatedBy").CurrentValue = userID;
 
                 if (entityEntry.State == EntityState.Added)
                 {
                     entityEntry.Property("CreatedDate").CurrentValue = DateTime.Now;
+                    entityEntry.Property("CreatedBy").CurrentValue = userID;
                 }
             }
 

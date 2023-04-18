@@ -22,7 +22,8 @@ namespace IAR.Pages
         public void OnGet()
         {
             // if (User.Identity != null) { GetADRoles(User.Identity); }
-            _userResolver.GetCurrentDomainPath();
+            // _userResolver.GetCurrentDomainPath();
+            _userResolver.GetDisplayName();
         }
 
         [SupportedOSPlatform("windows")]

@@ -1,25 +1,30 @@
 using Microsoft.EntityFrameworkCore;
 using IAR.Models;
-using System.Security.Claims;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace IAR.Data
 {
     public class RegisterContext : DbContext
     {
-        private readonly UserResolverService _userResolverService;
-        public RegisterContext (DbContextOptions<RegisterContext> options, UserResolverService userResolverService) : base(options)
+        private readonly UserResolver _userResolver;
+        public RegisterContext (DbContextOptions<RegisterContext> options, UserResolver userResolver) : base(options)
         {
-            _userResolverService = userResolverService;
+            _userResolver = userResolver;
         }
 
         public DbSet<Asset> Assets => Set<Asset>();
         public DbSet<BackEndPlatform> BackEndPlatforms => Set<BackEndPlatform>();
         public DbSet<FrontEndPlatform> FrontEndPlatforms => Set<FrontEndPlatform>();
         public DbSet<ThirdParty> ThirdParties => Set<ThirdParty>();
+        public DbSet<Role> Roles => Set<Role>();
         public DbSet<User> Users => Set<User>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // modelBuilder.Entity<Role>()
+            //     .HasNoKey();
+            // modelBuilder.Entity<User>()
+            //     .HasNoKey();
             modelBuilder.Entity<ThirdParty>()
                 .ToTable("ThirdParty")
                 .HasOne(t => t.Asset)
@@ -66,10 +71,10 @@ namespace IAR.Data
                 .IsRequired(false)
                 ;
         }
-        
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            var userID = _userResolverService.GetIdentityName();
+            var userID = _userResolver.GetIdentityName();
 
             var entries = ChangeTracker
                 .Entries()

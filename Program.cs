@@ -23,7 +23,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddTransient<IClaimsTransformation, MyClaimsTransformation>();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddTransient<UserResolverService>();
+builder.Services.AddTransient<UserResolver>();
 
 // Authorization handlers
 // builder.Services.AddScoped<IAuthorizationHandler,
@@ -35,6 +35,8 @@ builder.Services.AddTransient<UserResolverService>();
 builder.Services.AddDbContext<RegisterContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RegisterContext") ?? 
         throw new InvalidOperationException("Connection string 'RegisterContext' not found.")));
+
+builder.Services.AddHostedService<UpdateUsersHostedService>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

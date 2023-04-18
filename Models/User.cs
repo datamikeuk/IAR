@@ -1,9 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace IAR.Models
 {
     public class User
     {
-        public int ID { get; set; }
-        public string? Name { get; set; }
-        public string? Role { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public string? AccountName { get; set; }
+        public string? DisplayName { get; set; }
     }
 }

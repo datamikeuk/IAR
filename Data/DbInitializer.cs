@@ -12,13 +12,13 @@ namespace IAR.Data
                 return;   // DB has been seeded
             }
 
-            var users = new User[]
+            var roles = new Role[]
             {
-                new User{Name="STAFFSHOUSING\\michaelj", Role="Admin"},
-                new User{Name="LEGION\\m1kej", Role="Admin"}
+                new Role{AccountName="michaelj", RoleName="Admin"},
+                new Role{AccountName="m1kej", RoleName="Admin"}
             };
 
-            context.Users.AddRange(users);
+            context.Roles.AddRange(roles);
 
             var backendplatforms = new BackEndPlatform[]
             {

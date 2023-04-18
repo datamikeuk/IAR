@@ -1,35 +1,55 @@
-using System.Security.Claims;
+using System.Runtime.Versioning;
+using System.DirectoryServices;
 
-public class UserResolverService
+public class UserResolver
 {
     public readonly IHttpContextAccessor _context;
-    public UserResolverService(IHttpContextAccessor context)
+    public UserResolver(IHttpContextAccessor context)
     {
         _context = context;
     }
 
     public string GetIdentityName()
     {
-        return _context.HttpContext.User.Identity.Name;
+        return _context.HttpContext?.User.Identity?.Name??"";
     }
 
-    public string GetGivenName()
+    [SupportedOSPlatform("windows")]
+    private string GetCurrentDomainPath()
     {
-        return _context.HttpContext.User.FindFirst(ClaimTypes.GivenName).Value;
+        DirectoryEntry de = new DirectoryEntry("LDAP://RootDSE");
+
+        return "LDAP://" + de.Properties["defaultNamingContext"][0]?.ToString();
     }
 
-    // public string GetSurname()
-    // {
-    //     return _context.HttpContext.User.FindFirst(ClaimTypes.Surname).Value;
-    // }
+    [SupportedOSPlatform("windows")]
+    public string GetDisplayName()
+    {
+        DirectorySearcher ds = new DirectorySearcher();
+        DirectoryEntry de = new DirectoryEntry(GetCurrentDomainPath());
 
-    // public string GetNameIdentifier()
-    // {
-    //     return _context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-    // }
+        var name = GetIdentityName().Split('\\')[1]; // Get the username from the domain
+        ds = new DirectorySearcher(de);
+        ds.Filter = "(&(objectClass=user)(objectcategory=person)(sAMAccountName=" + name + "))";
+        SearchResult? userProperty = ds.FindOne();
 
-    // public string GetEmails()
-    // {
-    //     return _context.HttpContext.User.FindFirst("emails").Value;
-    // }
+        // var userEmail = userProperty?.Properties["mail"][0];
+        var userName = userProperty?.Properties["displayname"][0].ToString();
+        return userName??"";
+    }
+
+        [SupportedOSPlatform("windows")]
+    public string GetEmail()
+    {
+        DirectorySearcher ds = new DirectorySearcher();
+        DirectoryEntry de = new DirectoryEntry(GetCurrentDomainPath());
+
+        var name = GetIdentityName().Split('\\')[1]; // Get the username from the domain
+        ds = new DirectorySearcher(de);
+        ds.Filter = "(&(objectClass=user)(objectcategory=person)(sAMAccountName=" + name + "))";
+        SearchResult? userProperty = ds.FindOne();
+
+        var userEmail = userProperty?.Properties["mail"][0].ToString();
+        return userEmail??"";
+    }
 }

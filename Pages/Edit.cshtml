@@ -25,7 +25,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Asset.DataOwner" class="control-label"></label>
-                    <input asp-for="Asset.DataOwner" class="form-control" />
+                    <select asp-for="Asset.DataOwner" class="form-control data-owner-select" selected="@Model.Asset.DataOwner"></select>
                     <span asp-validation-for="Asset.DataOwner" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -57,7 +57,7 @@
                     <input type="submit" value="Save" class="btn btn-secondary" style="margin-top: 10px" />
                 </div>
                 <div>
-                    <a asp-page="./Table">Back to List</a>
+                    <a asp-page="View">Retun to View Assets</a>
                 </div>
                 </fieldset>
             </form>
@@ -66,5 +66,18 @@
 </body>
 
 @section Scripts {
+    <script type="module">
+        import Autocomplete from "@Url.Content("~/lib/bootstrap5-autocomplete/autocomplete.js")";
+        Autocomplete.init("input.autocomplete", {
+            highlightTyped: true,
+            server: "@Url.Content("~/UserList")",
+            valueField: "accountName",
+            labelField: "displayName",
+            fullWidth: true,
+            fixed: true,
+            maximumItems: 10,
+        });
+    </script>
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

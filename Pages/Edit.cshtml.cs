@@ -109,6 +109,7 @@ namespace IAR.Pages
             PopulateFrontEndPlatformsDropDownList(_context, assetToUpdate.FrontEndPlatformID);
             return Page();
         }
+
         public PartialViewResult OnGetThirdPartyModal(int id)
         {   
                 var emptyThirdParty = new ThirdParty{Name="", AssetID=id};

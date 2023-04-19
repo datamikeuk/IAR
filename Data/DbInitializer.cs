@@ -14,7 +14,7 @@ namespace IAR.Data
             var users = new User[]
             {
                 new User{AccountName="michaelj", DisplayName="Michael Jones"},
-                new User{AccountName="m1kej", DisplayName="Michael Jones"}
+                new User{AccountName="m1kej", DisplayName="Mike Jones"}
             };
 
             context.Users.AddRange(users);

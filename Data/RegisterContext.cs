@@ -74,7 +74,7 @@ namespace IAR.Data
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            var userID = _userResolver.GetIdentityName();
+            var userID = _userResolver.GetUserName();
 
             var entries = ChangeTracker
                 .Entries()

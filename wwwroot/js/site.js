@@ -1,4 +1,22 @@
-﻿// Enable Bootstrap tooltips
+﻿// In your Javascript (external .js resource or <script> tag)
+$(document).ready(function() {
+    $('.data-owner-select').select2({
+        theme: "bootstrap-5",
+        ajax: {
+            url: "/UserList",
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function(obj) {
+                        return { id: obj.id, text: obj.text };
+                    })
+                };
+                }
+        }
+    });
+});
+
+// Enable Bootstrap tooltips
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
   return new bootstrap.Tooltip(tooltipTriggerEl)

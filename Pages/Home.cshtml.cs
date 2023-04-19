@@ -23,5 +23,13 @@ namespace IAR.Pages
                 .Select(a => new { a.ID, a.Name }).ToList();
             return new JsonResult(assetList);
         }
+
+        public JsonResult OnGetUserList()
+        {
+            var userList = _context.Users
+                .Select(u => new { id = u.AccountName, text = u.DisplayName }).ToList();
+                // .Select(u => new {u.AccountName, u.DisplayName }).ToList();
+            return new JsonResult(userList);
+        }
     }
 }

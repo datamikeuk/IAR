@@ -17,6 +17,9 @@ namespace IAR.Pages
             _context = context;
         }
 
+        [BindProperty]
+        public User UserProp { get; set; } = default!;
+
         public JsonResult OnGetAssetList()
         {
             var assetList = _context.Assets
@@ -24,11 +27,19 @@ namespace IAR.Pages
             return new JsonResult(assetList);
         }
 
-        public JsonResult OnGetUserList()
+        public JsonResult OnGetUserList(string? search)
         {
-            var userList = _context.Users
-                .Select(u => new { id = u.AccountName, text = u.DisplayName }).ToList();
-                // .Select(u => new {u.AccountName, u.DisplayName }).ToList();
+            IQueryable<User> userListQuery = _context.Users;
+
+            if (search != null) { userListQuery = userListQuery
+                .Where(a => a.DisplayName != null && a.DisplayName.Contains(search));
+            }
+
+            var userList = userListQuery
+                .Select(u => new { u.AccountName, u.DisplayName })
+                .Take(10)
+                .ToList();
+
             return new JsonResult(userList);
         }
     }

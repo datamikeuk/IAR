@@ -25,7 +25,8 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Asset.DataOwner" class="control-label"></label>
-                    <select asp-for="Asset.DataOwner" class="form-control data-owner-select" selected="@Model.Asset.DataOwner"></select>
+                    @* <select asp-for="Asset.DataOwner" class="form-control data-owner-select" selected="@Model.Asset.DataOwner"></select> *@
+                    <select asp-for="Asset.DataOwner" class="form-control data-owner-select"></select>
                     <span asp-validation-for="Asset.DataOwner" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -78,6 +79,21 @@
             maximumItems: 10,
         });
     </script>
+
+    <script>
+        $(".data-owner-select").append($('<option>', {value: "@Model.Asset.DataOwner", text: "@Model.Asset.DataOwner"}));
+        
+        $('.data-owner-select').on('select2:open', function (e) {
+            console.log("clear");
+        });
+
+        @* var option = new Option("@Model.Asset.DataOwner", "@Model.Asset.DataOwner");
+        option.selected = true;
+
+        $(".data-owner-select").append(option);
+        $(".data-owner-select").trigger("change"); *@
+    </script>
+    
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

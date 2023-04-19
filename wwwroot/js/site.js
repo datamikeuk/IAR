@@ -1,18 +1,32 @@
-﻿// In your Javascript (external .js resource or <script> tag)
+﻿// Select2
 $(document).ready(function() {
     $('.data-owner-select').select2({
         theme: "bootstrap-5",
+        minimumInputLength: 2,
+        allowClear: true,
         ajax: {
             url: "/UserList",
             dataType: 'json',
+            delay: 250,
             processResults: function (data) {
                 return {
-                    results: $.map(data, function(obj) {
-                        return { id: obj.id, text: obj.text };
+                    results: $.map(data, function (item) {
+                        return {
+                            id: item.accountName,
+                            text: item.displayName
+                        }
                     })
                 };
+            },
+            data: function (params) {
+                var query = {
+                  search: params.term,
                 }
-        }
+                // Query parameters will be ?search=[term]
+                return query;
+            }
+
+        } 
     });
 });
 

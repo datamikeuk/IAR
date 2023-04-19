@@ -8,7 +8,6 @@ using IAR.Models.ViewModels;
 
 namespace IAR.Pages
 {
-    [AllowAnonymous]
     public class ViewModel : PageModel
     {
         private readonly RegisterContext _context;

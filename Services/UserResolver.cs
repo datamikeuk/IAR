@@ -18,7 +18,7 @@ public class UserResolver
 
     public string GetUserName()
     {
-        return GetIdentityName().Split('\\')[1];;
+        return GetIdentityName().Split('\\')[1];
     }
 
     [SupportedOSPlatform("windows")]

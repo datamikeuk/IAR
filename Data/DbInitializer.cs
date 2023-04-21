@@ -6,6 +6,8 @@ namespace IAR.Data
     {
         public static void Initialize(RegisterContext context)
         {
+            var currentDateTime = DateTime.Now;
+
             if (context.Assets.Any())
             {
                 return;
@@ -14,7 +16,8 @@ namespace IAR.Data
             var users = new User[]
             {
                 new User{AccountName="michaelj", DisplayName="Michael Jones"},
-                new User{AccountName="m1kej", DisplayName="Mike Jones"}
+                new User{AccountName="m1kej", DisplayName="Mike Jones"},
+                new User{AccountName="test", DisplayName="Test Test"}
             };
 
             context.Users.AddRange(users);
@@ -44,14 +47,30 @@ namespace IAR.Data
             context.FrontEndPlatforms.AddRange(frontendplatforms);
             context.SaveChanges();
 
-            var currentDateTime = DateTime.Now;
-
             var assets = new Asset[]
             {
-                new Asset{Name="Test1", BackEndPlatformID=1, FrontEndPlatformID=1, 
-                    DataOwner="Michael Jones", CreatedDate=currentDateTime, UpdatedDate=currentDateTime},
-                new Asset{Name="Test2", BackEndPlatformID=2, FrontEndPlatformID=2, 
-                    CreatedDate=currentDateTime, UpdatedDate=currentDateTime}
+                new Asset {
+                    Name="Test1",
+                    BackEndPlatformID=1,
+                    FrontEndPlatformID=2, 
+                    ExecutiveSponsorAccountName="m1kej",
+                    DataOwnerAccountName="michaelj",
+                    DataStewardAccountName="test",
+                    CreatedDate=currentDateTime,
+                    CreatedBy="m1kej",
+                    UpdatedDate=currentDateTime,
+                    UpdatedBy="michaelj" },
+                new Asset {
+                    Name="Test2",
+                    BackEndPlatformID=2,
+                    FrontEndPlatformID=1, 
+                    ExecutiveSponsorAccountName="michaelj",
+                    DataOwnerAccountName="test",
+                    DataStewardAccountName="m1kej",
+                    CreatedDate=currentDateTime,
+                    CreatedBy="michaelj",
+                    UpdatedDate=currentDateTime,
+                    UpdatedBy="m1kej" }
             };
 
             context.Assets.AddRange(assets);
@@ -59,9 +78,30 @@ namespace IAR.Data
 
             var thirdparties = new ThirdParty[]
             {
-                new ThirdParty{Name="ThirdParty1", Use="Test1", AssetID=1},
-                new ThirdParty{Name="ThirdParty2", Use="Test2", AssetID=1},
-                new ThirdParty{Name="ThirdParty3", Use="Test3", AssetID=2},
+                new ThirdParty{
+                    Name="ThirdParty1",
+                    Use="Test1",
+                    AssetID=1,
+                    CreatedDate=currentDateTime,
+                    CreatedBy="michaelj",
+                    UpdatedDate=currentDateTime,
+                    UpdatedBy="m1kej" },
+                new ThirdParty{
+                    Name="ThirdParty2",
+                    Use="Test2",
+                    AssetID=1,
+                    CreatedDate=currentDateTime,
+                    CreatedBy="m1kej",
+                    UpdatedDate=currentDateTime,
+                    UpdatedBy="michaelj" },
+                new ThirdParty{
+                    Name="ThirdParty3",
+                    Use="Test3",
+                    AssetID=2,
+                    CreatedDate=currentDateTime,
+                    CreatedBy="michaelj",
+                    UpdatedDate=currentDateTime,
+                    UpdatedBy="test" },
             };
             context.ThirdParties.AddRange(thirdparties);
             context.SaveChanges();

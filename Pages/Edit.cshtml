@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    var userListApiUrl = Url.Content("~/api/userlist?listLength=10");
 }
 
 <div id="modal-placeholder"></div>
@@ -25,8 +26,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Asset.DataOwner" class="control-label"></label>
-                    @* <select asp-for="Asset.DataOwner" class="form-control data-owner-select" selected="@Model.Asset.DataOwner"></select> *@
-                    <select asp-for="Asset.DataOwner" class="form-control data-owner-select"></select>
+                    <select asp-for="Asset.DataOwner" class="form-control data-owner-select" data-ajax--url=@userListApiUrl></select>
                     <span asp-validation-for="Asset.DataOwner" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -81,17 +81,48 @@
     </script>
 
     <script>
-        $(".data-owner-select").append($('<option>', {value: "@Model.Asset.DataOwner", text: "@Model.Asset.DataOwner"}));
-        
-        $('.data-owner-select').on('select2:open', function (e) {
-            console.log("clear");
+        $(document).ready(function() {
+            $('.data-owner-select').select2({
+                theme: "bootstrap-5",
+                minimumInputLength: 2,
+                allowClear: true,
+                placeholder: "Select Data Owner",
+                ajax: {
+                    url: "~/api/userlist?listLength=10",
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.accountName,
+                                    text: item.displayName
+                                }
+                            })
+                        };
+                    },
+                    data: function (params) {
+                        var query = {
+                        search: params.term,
+                        }
+                        // Query parameters will be ?search=[term]
+                        return query;
+                    }
+
+                } 
+            });
         });
 
-        @* var option = new Option("@Model.Asset.DataOwner", "@Model.Asset.DataOwner");
-        option.selected = true;
+        var option = new Option("@Model.Asset.DataOwner", "@Model.Asset.DataOwner", true, true);
+        $(".data-owner-select").append(option).trigger('change');
+        
+        $('.data-owner-select').on('select2:clear', function (e) {
+            console.log("clear");
+            $(".data-owner-select").empty();
+            var option = new Option("", "", true, true);
+            $(".data-owner-select").append(option).trigger('change');
 
-        $(".data-owner-select").append(option);
-        $(".data-owner-select").trigger("change"); *@
+        });
     </script>
     
 

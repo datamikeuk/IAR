@@ -1,0 +1,85 @@
+@page
+@model IAR.Pages.EditTestModel
+
+@{
+    ViewData["Title"] = "EditTest";
+}
+
+<h1>EditTest</h1>
+
+<h4>Asset</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Asset.ID" />
+            <div class="form-group">
+                <label asp-for="Asset.Name" class="control-label"></label>
+                <input asp-for="Asset.Name" class="form-control" />
+                <span asp-validation-for="Asset.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Asset.UsedFor" class="control-label"></label>
+                <input asp-for="Asset.UsedFor" class="form-control" />
+                <span asp-validation-for="Asset.UsedFor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Asset.ExecutiveSponsorAccountName" class="control-label"></label>
+                <select asp-for="Asset.ExecutiveSponsorAccountName" class="form-control" asp-items="ViewBag.ExecutiveSponsorAccountName"></select>
+                <span asp-validation-for="Asset.ExecutiveSponsorAccountName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Asset.DataOwnerAccountName" class="control-label"></label>
+                <select asp-for="Asset.DataOwnerAccountName" class="form-control" asp-items="ViewBag.DataOwnerAccountName"></select>
+                <span asp-validation-for="Asset.DataOwnerAccountName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Asset.DataStewardAccountName" class="control-label"></label>
+                <select asp-for="Asset.DataStewardAccountName" class="form-control" asp-items="ViewBag.DataStewardAccountName"></select>
+                <span asp-validation-for="Asset.DataStewardAccountName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Asset.BackEndPlatformID" class="control-label"></label>
+                <select asp-for="Asset.BackEndPlatformID" class="form-control" asp-items="ViewBag.BackEndPlatformID"></select>
+                <span asp-validation-for="Asset.BackEndPlatformID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Asset.FrontEndPlatformID" class="control-label"></label>
+                <select asp-for="Asset.FrontEndPlatformID" class="form-control" asp-items="ViewBag.FrontEndPlatformID"></select>
+                <span asp-validation-for="Asset.FrontEndPlatformID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Asset.UpdatedDate" class="control-label"></label>
+                <input asp-for="Asset.UpdatedDate" class="form-control" />
+                <span asp-validation-for="Asset.UpdatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Asset.UpdatedBy" class="control-label"></label>
+                <input asp-for="Asset.UpdatedBy" class="form-control" />
+                <span asp-validation-for="Asset.UpdatedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Asset.CreatedDate" class="control-label"></label>
+                <input asp-for="Asset.CreatedDate" class="form-control" />
+                <span asp-validation-for="Asset.CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Asset.CreatedBy" class="control-label"></label>
+                <input asp-for="Asset.CreatedBy" class="form-control" />
+                <span asp-validation-for="Asset.CreatedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

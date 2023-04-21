@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 using IAR.Data;
 using IAR.Services;
+using IAR.Apis;
+using IAR.Middleware;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +27,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddTransient<IClaimsTransformation, MyClaimsTransformation>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<UserResolver>();
+// Background service to update users from AD
 // builder.Services.AddHostedService<UpdateUsersHostedService>();
 
 // Authorization handlers
@@ -72,41 +76,10 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<ValidateAuthentication>();
+app.UseValidateAuthentication();
 
 app.MapRazorPages();
 
+Apis.GetApis(app);
+
 app.Run();
-
-// Customer middleware to validate authentication when using Kestrel
-internal class ValidateAuthentication : IMiddleware
-{
-    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
-    {
-        if (context.User.Identity != null)
-        {
-            if (context.User.Identity.IsAuthenticated)
-            {
-                Console.WriteLine("User is authenticated");
-                await next(context);
-            }
-            else
-            {
-                Console.WriteLine("User is not authenticated");
-                await context.ChallengeAsync();
-            }
-        }
-        else
-        {
-            Console.WriteLine("User is null");
-        }
-    }
-
-    private bool HasAnonymousAttribute(HttpContext context)
-    {
-        var endpoint = context.GetEndpoint();
-        var retVal = (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() != null);
-
-        return retVal;
-    }
-}

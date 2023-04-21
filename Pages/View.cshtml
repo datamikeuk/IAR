@@ -1,4 +1,4 @@
-@page "{handler?}"
+@page ""
 @model IAR.Pages.ViewModel
 
 @{
@@ -14,27 +14,24 @@
             data-url="@Url.Page("View","AssetModal")">
             +
         </button>
-        @* <input id="nameFilter" type="text" placeholder="Filter by Name" />
-        <button type="button" class="btn btn-secondary" onclick="$('#asset-table').DataTable().ajax.reload();">
-            Filter
-        </button> *@
-        <label for="editcheck">My Assets</label>
-        <input id="editCheck" type="checkbox" onclick="$('#asset-table').DataTable().ajax.reload();"/>
+        <label for="ownerFilter">My Assets</label>
+        <input id="ownerFilter" type="checkbox" onclick="$('#asset-table').DataTable().ajax.reload();"/>
     </div>
     </br>
     <table id="asset-table" class="table table-striped table-hover table-bordered" style="width:100%">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Data Owner</th>
-                @* <th>Used For</th> *@
-                @* <th>Back End Platform Name</th> *@
-                @* <th>Front End Platform Name</th> *@
+                @* Created table headers using asp labels *@
+                <th>@Html.DisplayNameFor(model => model.Asset.ID)</th>
+                <th>@Html.DisplayNameFor(model => model.Asset.Name)</th>
+                <th>Responisibilites</th>
+                <th>@Html.DisplayNameFor(model => model.Asset.BackEndPlatform)</th>
+                <th>@Html.DisplayNameFor(model => model.Asset.FrontEndPlatform)</th>
                 @* <th>Third Parties</th> *@
-                @* <th>Created Date</th> *@
-                <th>Updated Date</th>
-                <th>Updated By</th>
+                <th>@Html.DisplayNameFor(model => model.Asset.CreatedDate)</th>
+                <th>@Html.DisplayNameFor(model => model.Asset.CreatedBy)</th>
+                <th>@Html.DisplayNameFor(model => model.Asset.UpdatedDate)</th>
+                <th>@Html.DisplayNameFor(model => model.Asset.UpdatedBy)</th>
                 <th></th>
             </tr>
         </thead>
@@ -49,32 +46,49 @@
         $(document).ready(function () {
             $('#asset-table').DataTable({
                 ajax: {
-                    url: 'View/TableData',
+                    url: "@Url.Content("~/api/tabledata")",
+                    //if owner filter is checked, run function to compare owner to current user
                     data: function(d){
-                        d.nameFilter = $('#nameFilter').val();
-                        d.editCheck = $('#editCheck').is(':checked');
-                        @* 'nameFilter': "", *@
-                        @* 'editCheck': true, *@
+                        if ($('#ownerFilter').is(':checked')) {
+                            d.owner = "@User.Identity?.Name?.Split('\\')[1]";
+                        }
                     },
+                    // Tell datatables to expect an array
                     dataSrc: '',
                 },
                 columns: [
                     { data: 'id', visible: false},
                     { data: 'name' },
-                    { data: 'dataOwner' },
-                    @* { data: 'usedFor' }, *@
-                    @* { data: 'backEndPlatformName' }, *@
-                    @* { data: 'frontEndPlatformName' }, *@
+                    // combine executive sponsor, data owner and data steward as list
+                    { data: null,
+                        render: function(data, type, row){
+                            var list = [];
+                            if (data.executiveSponsorName != null) {
+                                list.push('Executive Sponsor: ' + data.executiveSponsorName);
+                            }
+                            if (data.dataOwnerName != null) {
+                                list.push('Data Owner: ' + data.dataOwnerName);
+                            }
+                            if (data.dataStewardName != null) {
+                                list.push('Data Steward: ' + data.dataStewardName);
+                            }
+                            // list join with line breaks
+                            return list.join("<br/>");
+                        }
+                    },
+                    { data: 'backEndPlatformName' },
+                    { data: 'frontEndPlatformName' },
                     @* { data: 'thirdPartyNames',
                         render: function(data, type, row){
                             return data.split(",").join("<br/>");
                         }
                     }, *@
                     // render as date
-                    @* { data: 'createdDate',
+                    { data: 'createdDate',
                       render: function(data, type, row){
                           return new Date(data).toLocaleDateString() + ' ' + new Date(data).toLocaleTimeString();
-                      } }, *@
+                      } },
+                    { data: 'createdBy' },
                     //render as date
                     { data: 'updatedDate',
                       render: function(data, type, row){
@@ -96,12 +110,13 @@
                 @* serverSide: true *@
             });
         });
+
+        // redirect to edit page on row click
         $(document).ready(function () {
             var table = $('#asset-table').DataTable();
 
             $('#asset-table tbody').on('click', 'tr', function () {
                 var data = table.row(this).data();
-                @* alert(data['id'] + ' ' + data['name']); *@
                 window.location.href = "Edit/" + data['id'];
             });
         });

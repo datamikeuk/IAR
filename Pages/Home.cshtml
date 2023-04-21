@@ -1,4 +1,4 @@
-﻿@page "/{handler?}"
+﻿@page "/"
 @model IAR.Pages.HomeModel
 @{
     ViewData["Title"] = "Home";
@@ -42,7 +42,7 @@
         import Autocomplete from "@Url.Content("~/lib/bootstrap5-autocomplete/autocomplete.js")";
         Autocomplete.init("input.autocomplete", {
             highlightTyped: true,
-            server: "@Url.Content("~/AssetList")",
+            server: "@Url.Content("~/api/assetlist")",
             valueField: "id",
             labelField: "name",
             fullWidth: true,

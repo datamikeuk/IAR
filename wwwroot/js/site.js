@@ -1,11 +1,13 @@
-﻿// Select2
-$(document).ready(function() {
+﻿// Select2 Data Owner dropdown
+$(document).ready(function () {
     $('.data-owner-select').select2({
         theme: "bootstrap-5",
         minimumInputLength: 2,
         allowClear: true,
+        placeholder: "Select Data Owner",
         ajax: {
-            url: "/UserList",
+            // URL is being set in the view using data attribute: data-ajax--url
+            // url: "/api/userlist?listLength=10",
             dataType: 'json',
             delay: 250,
             processResults: function (data) {
@@ -20,13 +22,13 @@ $(document).ready(function() {
             },
             data: function (params) {
                 var query = {
-                  search: params.term,
+                    name: params.term,
                 }
                 // Query parameters will be ?search=[term]
                 return query;
             }
 
-        } 
+        }
     });
 });
 

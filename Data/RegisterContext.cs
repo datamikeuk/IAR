@@ -16,60 +16,22 @@ namespace IAR.Data
         public DbSet<BackEndPlatform> BackEndPlatforms => Set<BackEndPlatform>();
         public DbSet<FrontEndPlatform> FrontEndPlatforms => Set<FrontEndPlatform>();
         public DbSet<ThirdParty> ThirdParties => Set<ThirdParty>();
-        public DbSet<Role> Roles => Set<Role>();
         public DbSet<User> Users => Set<User>();
+        public DbSet<Role> Roles => Set<Role>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // modelBuilder.Entity<Role>()
-            //     .HasNoKey();
-            // modelBuilder.Entity<User>()
-            //     .HasNoKey();
-            modelBuilder.Entity<ThirdParty>()
-                .ToTable("ThirdParty")
-                .HasOne(t => t.Asset)
-                .WithMany(a => a.ThirdParties)
-                .HasForeignKey(t => t.AssetID)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .IsRequired(false)
-                ;
+            modelBuilder.ApplyConfiguration(new AssetConfiguration());
+            modelBuilder.ApplyConfiguration(new ThirdPartyConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
 
             modelBuilder.Entity<BackEndPlatform>()
-                .ToTable("BackEndPlatform")
                 .HasMany(p => p.Assets)
-                .WithOne(a => a.BackEndPlatform)
-                ;
+                .WithOne(a => a.BackEndPlatform);
 
             modelBuilder.Entity<FrontEndPlatform>()
-                .ToTable("FrontEndPlatform")
                 .HasMany(p => p.Assets)
-                .WithOne(a => a.FrontEndPlatform)
-                ;
-
-            modelBuilder.Entity<Asset>()
-                .ToTable("Asset")
-                .HasMany(a => a.ThirdParties)
-                .WithOne(t => t.Asset)
-                .IsRequired(false)
-                ;
-
-            modelBuilder.Entity<Asset>()
-                .ToTable("Asset")
-                .HasOne(a => a.BackEndPlatform)
-                .WithMany(p => p.Assets)
-                .HasForeignKey(a => a.BackEndPlatformID)
-                .OnDelete(DeleteBehavior.SetNull)
-                .IsRequired(false)
-                ;
-                
-            modelBuilder.Entity<Asset>()
-                .ToTable("Asset")
-                .HasOne(a => a.FrontEndPlatform)
-                .WithMany(p => p.Assets)
-                .HasForeignKey(a => a.FrontEndPlatformID)
-                .OnDelete(DeleteBehavior.SetNull)
-                .IsRequired(false)
-                ;
+                .WithOne(a => a.FrontEndPlatform);           
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

@@ -1,8 +1,8 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Audit.EntityFramework;
 
 namespace IAR.Models
 {
+    [AuditIgnore]
     public class User
     {
         public string? AccountName { get; set; }

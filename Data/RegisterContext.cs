@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using IAR.Models;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Audit.EntityFramework;
+using Audit.Core;
 
 namespace IAR.Data
 {
-    public class RegisterContext : DbContext
+    public class RegisterContext : AuditDbContext
     {
         private readonly UserResolver _userResolver;
         public RegisterContext (DbContextOptions<RegisterContext> options, UserResolver userResolver) : base(options)
@@ -16,8 +18,11 @@ namespace IAR.Data
         public DbSet<BackEndPlatform> BackEndPlatforms => Set<BackEndPlatform>();
         public DbSet<FrontEndPlatform> FrontEndPlatforms => Set<FrontEndPlatform>();
         public DbSet<ThirdParty> ThirdParties => Set<ThirdParty>();
+        public DbSet<Note> Notes => Set<Note>();
+        public DbSet<RetentionPeriod> RetentionPeriods => Set<RetentionPeriod>();
         public DbSet<User> Users => Set<User>();
         public DbSet<Role> Roles => Set<Role>();
+        public DbSet<AuditLog> AuditLog => Set<AuditLog>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,8 +36,8 @@ namespace IAR.Data
 
             modelBuilder.Entity<FrontEndPlatform>()
                 .HasMany(p => p.Assets)
-                .WithOne(a => a.FrontEndPlatform);           
-        }
+                .WithOne(a => a.FrontEndPlatform);
+            }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

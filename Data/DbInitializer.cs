@@ -51,6 +51,7 @@ namespace IAR.Data
             {
                 new Asset {
                     Name="Test1",
+                    Description="Testing",
                     BackEndPlatformID=1,
                     FrontEndPlatformID=2, 
                     ExecutiveSponsorAccountName="m1kej",

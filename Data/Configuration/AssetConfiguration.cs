@@ -10,6 +10,14 @@ public class AssetConfiguration : IEntityTypeConfiguration<Asset>
                 .WithOne(t => t.Asset)
                 .IsRequired(false);
 
+            builder.HasMany(a => a.Notes)
+                .WithOne(t => t.Asset)
+                .IsRequired(false);
+
+            builder.HasMany(a => a.RetentionPeriods)
+                .WithOne(t => t.Asset)
+                .IsRequired(false);                                
+
             builder.HasOne(a => a.BackEndPlatform)
                 .WithMany(p => p.Assets)
                 .HasForeignKey(a => a.BackEndPlatformID)

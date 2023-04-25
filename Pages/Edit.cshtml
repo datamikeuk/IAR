@@ -10,6 +10,7 @@
 
 <body>
     <h1 style="text-align: center; margin-top: 10px;">@Model.Asset.Name</h1>
+    <p>Created: @Model.Asset.CreatedDate.ToShortDateString() Created By: @Model.Asset.CreatedBy Updated: @Model.Asset.UpdatedDate.ToShortDateString() Updated By: @Model.Asset.UpdatedBy Last Reviewed: @Model.Asset.LastReviewDate Reviewed By: @Model.Asset.ReviewedBy</p>
     <label for="editToggle">Lock Fields</label>
     <input id="editToggle" type="checkbox" onchange="toggleDisable(this);"/>
     </br>

@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using Audit.EntityFramework;
 
 namespace IAR.Models
 {
+    [AuditIgnore]
     public class FrontEndPlatform
     {
         public int ID { get; set; }

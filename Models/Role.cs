@@ -1,5 +1,8 @@
+using Audit.EntityFramework;
+
 namespace IAR.Models
 {
+    [AuditIgnore]
     public class Role
     {
         public int ID { get; set; }

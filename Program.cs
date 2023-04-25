@@ -6,7 +6,10 @@ using IAR.Data;
 using IAR.Services;
 using IAR.Apis;
 using IAR.Middleware;
+using IAR.Models;
 using System.Globalization;
+using Audit.Core;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +44,6 @@ builder.Services.AddDbContext<RegisterContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RegisterContext") ?? 
         throw new InvalidOperationException("Connection string 'RegisterContext' not found.")));
 
-
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddRazorPages();
@@ -60,6 +62,8 @@ else
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 }
+
+Audit.Core.Configuration.AuditDisabled = true;
 
 using (var scope = app.Services.CreateScope())
 {
@@ -81,5 +85,30 @@ app.UseValidateAuthentication();
 app.MapRazorPages();
 
 Apis.GetApis(app);
+
+Audit.Core.Configuration.AuditDisabled = false;
+
+var _userResolver = builder.Services.BuildServiceProvider().GetService<UserResolver>();
+
+Audit.Core.Configuration.AddCustomAction(ActionType.OnScopeCreated, scope =>
+{
+    scope.Event.Environment.UserName = _userResolver?.GetUserName();
+});
+
+Audit.Core.Configuration.Setup()
+    .UseEntityFramework(_ => _
+        .AuditTypeMapper(t => typeof(AuditLog))  
+        .AuditEntityAction<AuditLog>((ev, entry, entity) =>
+        {
+            // entity.EntityType = entry.EntityType.Name;
+            entity.Table = entry.Table;
+	        entity.TableID = entry.PrimaryKey.First().Value as int? ?? 0;
+            entity.Action = entry.Action;
+            entity.AuditData = entry.ToJson();
+            entity.Changes = JsonSerializer.Serialize(entry.Changes);
+            entity.Date = DateTime.Now;
+            entity.User = Environment.UserName;
+        })
+	.IgnoreMatchedProperties(true));
 
 app.Run();

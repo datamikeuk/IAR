@@ -55,7 +55,7 @@ namespace IAR.Pages
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("View");
         }
     }
 }

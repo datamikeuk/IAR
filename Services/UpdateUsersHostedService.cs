@@ -45,12 +45,12 @@ public class UpdateUsersHostedService : BackgroundService
             {
                 var accountName = sr.Properties["sAMAccountName"][0].ToString();
                 var displayName = sr.Properties["displayname"][0].ToString();
-                if (accountName != null && displayName != null)
+                if (accountName != null && displayName != null && !displayName.Contains("Voicemail"))
                 {
                     var existingUser = dbContext.Users.Find(accountName);
                     if (existingUser == null)
                     {
-                        var userEntry = new User { AccountName = accountName };
+                        var userEntry = new User { AccountName = accountName, DisplayName = displayName };
                         dbContext.Users.Add(userEntry);
                     }
                     else

@@ -1,95 +1,174 @@
 @page "{id?}"
+@using IAR.Models
 @model IAR.Pages.EditModel
 
 @{
     ViewData["Title"] = "Edit";
+    var helpIconURL = Url.Content("~/lib/bootstrap-icons/bootstrap-icons.svg#question-circle");
     var userListApiUrl = Url.Content("~/api/userlist?listLength=10");
 }
 
 <div id="modal-placeholder"></div>
 
 <body>
-    <h1 style="text-align: center; margin-top: 10px;">@Model.Asset.Name</h1>
-    <p>Created: @Model.Asset.CreatedDate.ToShortDateString() Created By: @Model.Asset.CreatedBy Updated: @Model.Asset.UpdatedDate.ToShortDateString() Updated By: @Model.Asset.UpdatedBy Last Reviewed: @Model.Asset.LastReviewDate Reviewed By: @Model.Asset.ReviewedBy</p>
-    <label for="editToggle">Lock Fields</label>
-    <input id="editToggle" type="checkbox" onchange="toggleDisable(this);"/>
-    </br>
-    <div class="row">
+    <form id="edit-form" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Asset.ID" />
+        <input type="hidden" id="review-date" asp-for="Asset.LastReviewDate" />
+        <input type="hidden" id="next-review-date" asp-for="Asset.NextReviewDate" />
+        @* Header Section *@
+        <section>
+            <button type="button" id="edit-mode-toggle" class="btn btn-secondary" data-bs-toggle="button" onclick="toggleEditMode();">Edit</button>
+            <button type="button" id="review-button" class="btn btn-secondary" onclick="setReviewDate();">Review</button>
+            <div class="form-group">
+                <h1 class="edit-hide">@Model.Asset.Name</h1>
+                <input asp-for="Asset.Name" class="form-control readonly edit-show" style="font-size: 30px; width: 100%; display: none" readonly/>
+                <span asp-validation-for="Asset.Name" class="text-danger"></span>
+            </div>
+            <p>Created: @Model.Asset.CreatedDate.ToShortDateString() Created By: @Model.Asset.CreatedBy Updated: @Model.Asset.UpdatedDate.ToShortDateString() Updated By: @Model.Asset.UpdatedBy Last Reviewed: @Model.Asset.LastReviewDate Reviewed By: @Model.Asset.ReviewedBy</p>
+            <div class="form-group">
+                <textarea asp-for="Asset.Description" class="form-control readonly" style="width: 100%;" placeholder="Description" readonly></textarea>
+                <span asp-validation-for="Asset.Description" class="text-danger"></span>
+            </div>
+            @* Responsibilities Row *@
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label asp-for="Asset.ExecutiveSponsor" class="control-label"></label>
+                        <select asp-for="Asset.ExecutiveSponsorAccountName" class="form-control disable executive-sponsor-select2" data-placeholder="Select Executive Sponsor" disabled></select>
+                        <span asp-validation-for="Asset.ExecutiveSponsorAccountName" class="text-danger"></span>
+                    </div>                    
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label asp-for="Asset.DataOwner" class="control-label"></label>
+                        <select asp-for="Asset.DataOwnerAccountName" class="form-control disable data-owner-select2" data-placeholder="Select Data Owner" disabled></select>
+                        <span asp-validation-for="Asset.DataOwnerAccountName" class="text-danger"></span>
+                    </div>                    
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label asp-for="Asset.DataSteward" class="control-label"></label>
+                        <select asp-for="Asset.DataStewardAccountName" class="form-control disable data-steward-select2" data-placeholder="Select Data Steward" disabled></select>
+                        <span asp-validation-for="Asset.DataStewardAccountName" class="text-danger"></span>
+                    </div>                    
+                </div>
+            </div>
+            <hr />
+        </section>
+
+        <section>
+            <h4>Heading</h4>
+            <p>Description placeholder</p>
+            <div class="row">
+                <div class="col">
+                    @* Physical Location *@
+                    <div class="form-group">
+                        <label asp-for="Asset.PhysicalLocation" class="control-label"></label>
+                        <div class="input-group">
+                            <select asp-for="Asset.PhysicalLocation" class="form-select disable" asp-items="Html.GetEnumSelectList<PhysicalLocationEnum>()" disabled></select>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("PhysicalLocation")">
+                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Asset.PhysicalLocation" class="text-danger"></span>
+                    </div>
+                    @* Volume *@
+                    <div class="form-group">
+                        <label asp-for="Asset.Volume" class="control-label"></label>
+                        <div class="input-group">
+                            <select asp-for="Asset.Volume" class="form-select disable" asp-items="Html.GetEnumSelectList<VolumeEnum>()" disabled></select>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("Volume")">
+                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Asset.Volume" class="text-danger"></span>
+                    </div>
+                    @* Back-End Platform *@
+                    <div class="form-group">
+                        <label asp-for="Asset.BackEndPlatform" class="control-label"></label>
+                        <div class="input-group">
+                            <select asp-for="Asset.BackEndPlatformID" class="form-select disable" asp-items="@Model.BackEndPlatformNameSL" disabled></select>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="Tooltip on right">
+                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Asset.BackEndPlatformID" class="text-danger"></span>
+                    </div>
+                    @* Front-End Platform *@
+                    <div class="form-group">
+                        <label asp-for="Asset.FrontEndPlatform" class="control-label"></label>
+                        <div class="input-group">
+                            <select asp-for="Asset.FrontEndPlatformID" class="form-select disable" asp-items="@Model.FrontEndPlatformNameSL" disabled></select>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="Tooltip on right">
+                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Asset.FrontEndPlatformID" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col">
+                    @* Accessed By *@
+                    <div class="form-group">
+                        <label asp-for="Asset.AccessedBy" class="control-label"></label>
+                        <div class="input-group">
+                            <input asp-for="Asset.AccessedBy" class="form-control disable" disabled/>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="Tooltip on right">
+                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Asset.AccessedBy" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <hr />
+        </section>
+
+        <section>
+            <h4>Third Parties</h4>
+            <p>Description placeholder</p>
+            <partial name="_ThirdPartyTable", model="Model.Asset.ThirdParties"/>
+            <button type="button" class="btn btn-secondary" data-toggle="ajax-modal"
+                data-url="@Url.Page("Edit","ThirdPartyModal")">
+                Add Third Party
+            </button>
+            <hr />
+        </section>
+
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-secondary edit-show" style="margin-top: 10px; display: none" />
+        </div>
         <div>
-            <form method="post">
-                <fieldset id="editFields">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Asset.ID" />
-                <div class="form-group">
-                    <label asp-for="Asset.Name" class="control-label"></label>
-                    <input asp-for="Asset.Name" class="form-control" />
-                    <span asp-validation-for="Asset.Name" class="text-danger"></span>
+            <a asp-page="View">Retun to View Assets</a>
+        </div>
+    </form>
+
+    <div class="modal fade" id="reviewModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <p>Are you sure you want to set the review date to today's date and time?</p>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Asset.DataOwner" class="control-label"></label>
-                    <select asp-for="Asset.DataOwner" class="form-control data-owner-select" data-ajax--url=@userListApiUrl></select>
-                    <span asp-validation-for="Asset.DataOwner" class="text-danger"></span>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnYes">OK</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Cancel">Cancel</button>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Asset.BackEndPlatform" class="control-label"></label>
-                    <select asp-for="Asset.BackEndPlatformID" class="form-control" 
-                            asp-items="@Model.BackEndPlatformNameSL">
-                            <option value="">-- Select Platform --</option>
-                    </select>
-                    <span asp-validation-for="Asset.BackEndPlatformID" class="text-danger"></span>
-                    <span data-bs-toggle="tooltip" data-bs-placement="right" title="This is where the data is stored.">
-                    <i class="bi bi-question-circle" style="font-size: 1.5rem;"></i>
-                    </span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Asset.FrontEndPlatform" class="control-label"></label>
-                    <select asp-for="Asset.FrontEndPlatformID" class="form-control" 
-                            asp-items="@Model.FrontEndPlatformNameSL">
-                        <option value="">-- Select Platform --</option>
-                    </select>
-                    <span asp-validation-for="Asset.FrontEndPlatformID" class="text-danger"></span>
-                </div>
-                <partial name="_ThirdPartyTable", model="Model.Asset.ThirdParties"/>
-                <button type="button" class="btn btn-secondary" data-toggle="ajax-modal"
-                    data-url="@Url.Page("Edit","ThirdPartyModal")">
-                    Add Third Party
-                </button>
-                <br />
-                <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-secondary" style="margin-top: 10px" />
-                </div>
-                <div>
-                    <a asp-page="View">Retun to View Assets</a>
-                </div>
-                </fieldset>
-            </form>
+            </div>
         </div>
     </div>
 </body>
 
+@* Javascript *@
 @section Scripts {
-    <script type="module">
-        import Autocomplete from "@Url.Content("~/lib/bootstrap5-autocomplete/autocomplete.js")";
-        Autocomplete.init("input.autocomplete", {
-            highlightTyped: true,
-            server: "@Url.Content("~/UserList")",
-            valueField: "accountName",
-            labelField: "displayName",
-            fullWidth: true,
-            fixed: true,
-            maximumItems: 10,
-        });
-    </script>
-
     <script>
         $(document).ready(function() {
-            $('.data-owner-select').select2({
+            $('[class$="-select2"]').select2({
                 theme: "bootstrap-5",
                 minimumInputLength: 2,
                 allowClear: true,
-                placeholder: "Select Data Owner",
                 ajax: {
-                    url: "~/api/userlist?listLength=10",
+                    url: "@userListApiUrl",
                     dataType: 'json',
                     delay: 250,
                     processResults: function (data) {
@@ -114,18 +193,118 @@
             });
         });
 
-        var option = new Option("@Model.Asset.DataOwner", "@Model.Asset.DataOwner", true, true);
-        $(".data-owner-select").append(option).trigger('change');
+        // Set default value for select2 lists
+        var executiveSponsorOption = new Option("@Model.Asset.ExecutiveSponsor?.DisplayName", "@Model.Asset.ExecutiveSponsorAccountName", true, true);
+        var dateOwnerOption = new Option("@Model.Asset.DataOwner?.DisplayName", "@Model.Asset.DataOwnerAccountName", true, true);
+        var dateStewardOption = new Option("@Model.Asset.DataSteward?.DisplayName", "@Model.Asset.DataStewardAccountName", true, true);
         
-        $('.data-owner-select').on('select2:clear', function (e) {
-            console.log("clear");
-            $(".data-owner-select").empty();
+        $(".executive-sponsor-select2").append(executiveSponsorOption).trigger('change');
+        $(".data-owner-select2").append(dateOwnerOption).trigger('change');
+        $(".data-steward-select2").append(dateStewardOption).trigger('change');
+        
+        // Reset select2 lists when cleared
+        $('.executive-sponsor-select2').on('select2:clear', function () {
+            @* console.log("clear"); *@
+            $(".executive-sponsor-select2").empty();
             var option = new Option("", "", true, true);
-            $(".data-owner-select").append(option).trigger('change');
+            $(".executive-sponsor-select2").append(option).trigger('change');
+        });
+        // Reset select2 lists when cleared
+        $('.data-owner-select2').on('select2:clear', function () {
+            @* console.log("clear"); *@
+            $(".data-owner-select2").empty();
+            var option = new Option("", "", true, true);
+            $(".data-owner-select2").append(option).trigger('change');
+        });
+        // Reset select2 lists when cleared
+        $('.data-steward-select2').on('select2:clear', function () {
+            @* console.log("clear"); *@
+            $(".data-steward-select2").empty();
+            var option = new Option("", "", true, true);
+            $(".data-steward-select2").append(option).trigger('change');
 
         });
+
+        // If edit-mode-toggle is checked, enable edit mode
+        function toggleEditMode() {
+            if ($("#edit-mode-toggle").hasClass("active")) {
+                //console.log("editMode");
+                $('.edit-show').show();
+                $('.edit-hide').hide();
+                $('.disable').prop('disabled', false);
+                $('.readonly').prop('readonly', false);
+            } else {
+                // Prompt that any unsaved changes will be lost
+                var r = confirm("Any unsaved changes will be lost. Are you sure you want to exit edit mode?");
+                if (r == false) {
+                    return;
+                }
+                // Clear validation errors
+                $('.field-validation-error').empty();
+                //console.log("viewMode");
+                $('.edit-show').hide();
+                $('.edit-hide').show();
+                $('.disable').prop('disabled', true);
+                $('.readonly').prop('readonly', true);
+            }
+        }
+
+        // Set review date to today's date and time
+        function setReviewDate() {
+            // ask for confirmation
+            $('#reviewModal').modal('show');
+
+            // When the modal is hidden (due to the user clicking "Cancel")
+            $('#reviewModal').on('hidden.bs.modal', function() {
+                // End the execution of the function without doing anything else
+                return;
+            });
+
+              // When the user clicks the "OK" button in the modal
+            $('#btnYes').click(function() {
+                $('#reviewModal').modal('hide');
+
+                //set review date to today's date and time
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                var yyyy = today.getFullYear();
+
+                var hh = String(today.getHours()).padStart(2, '0');
+                var min = String(today.getMinutes()).padStart(2, '0');
+                var ss = String(today.getSeconds()).padStart(2, '0');
+
+                today = yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + min + ':' + ss;
+                $("#review-date").val(today);
+                @* console.log(today); *@
+
+                //set next review date to 12 months from today
+                yyyy = yyyy + 1;
+                var nextReviewDate = yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + min + ':' + ss;
+                $("#next-review-date").val(nextReviewDate);
+                @* console.log(nextReviewDate); *@
+
+                $("#edit-form").submit();
+            });
+
+            // When the modal is hidden (due to the user clicking "Cancel")
+            $('#reviewModal').on('hidden.bs.modal', function() {
+                // End the execution of the function without doing anything else
+                return;
+            });
+
+            $('#reviewModal').modal('hide');
+        }
+
+        // Initialize tooltips with default options
+        $(function () {
+            $('[data-bs-toggle="tooltip"]').tooltip({ 
+                trigger: 'focus',
+                placement: 'right'
+            });
+        });
+
     </script>
     
-
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

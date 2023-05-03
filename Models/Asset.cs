@@ -7,20 +7,18 @@ namespace IAR.Models
     {
         public int ID { get; set; }
 
-        public bool Active { get; set; }
+        public bool Active { get; set; } = true;
 
+        [Required(ErrorMessage = "Asset Test!")]
         [Display(Name = "Asset Name")]
         public required string Name { get; set; }
 
         public string? Description { get; set; }
 
-        [Display(Name = "Executive Sponsor")]
         public string? ExecutiveSponsorAccountName { get; set; }
 
-        [Display(Name = "Data Owner")]
         public string? DataOwnerAccountName { get; set; }
-
-        [Display(Name = "Data Steward")]
+        
         public string? DataStewardAccountName { get; set; }
 
         // ----- Review fields -----
@@ -32,22 +30,25 @@ namespace IAR.Models
         public string? ReviewedBy { get; set; }
 
         [Display(Name = "Review Cycle Months")]
-        public byte? ReviewCycleMonths { get; set; }
+        public byte ReviewCycleMonths { get; set; } = 12;
 
         [Display(Name = "Next Review Date")]
         public DateTime? NextReviewDate { get; set; }
-
 
         // ----- Asset detail fields -----
 
         public int? BackEndPlatformID { get; set; }
 
+        public string? BackEndPlatformLocation { get; set; }
+
         public int? FrontEndPlatformID { get; set; }
 
-        [Display(Name = "Physical Location")]
-        public string? PhysicalLocation { get; set; }
+        public string? FrontEndPlatformLocation { get; set; }
 
-        public string? Volume { get; set; }
+        [Display(Name = "Physical Location")]
+        public PhysicalLocationEnum? PhysicalLocation { get; set; }
+
+        public VolumeEnum? Volume { get; set; }
 
         [Display(Name = "Personal Data")]
         public string? PersonalData { get; set; }
@@ -88,25 +89,25 @@ namespace IAR.Models
         public string? LawfulBasisConsentDetail { get; set; }
 
         [Display(Name = "Lawful Basis Constract")]
-        public bool? LawfulBasisContract { get; set; }
+        public bool LawfulBasisContract { get; set; }
 
         [Display(Name = "Lawful Basis Contract Detail")]
         public string? LawfulBasisContractDetail { get; set; }
 
         [Display(Name = "Lawful Basis Legal Obligation")]
-        public bool? LawfulBasisLegalObligation { get; set; }
+        public bool LawfulBasisLegalObligation { get; set; }
 
         [Display(Name = "Lawful Basis Legal Obligation Detail")]
         public string? LawfulBasisLegalObligationDetail { get; set; }
 
         [Display(Name = "Lawful Basis Vital Interest")]
-        public bool? LawfulBasisVitalInterest { get; set; }
+        public bool LawfulBasisVitalInterest { get; set; }
 
         [Display(Name = "Lawful Basis Vital Interest Detail")]
         public string? LawfulBasisVitalInterestDetail { get; set; }
 
         [Display(Name = "Lawful Basis Legitimate Interest")]
-        public bool? LawfulBasisLegitimateInterest { get; set; }
+        public bool LawfulBasisLegitimateInterest { get; set; }
 
         [Display(Name = "Lawful Basis Legitimate Interest Detail")]
         public string? LawfulBasisLegitimateInterestDetail { get; set; }
@@ -185,10 +186,13 @@ namespace IAR.Models
         public bool visualImages { get; set; }
 
         // ----- Navigation properties -----
+        [Display(Name = "Executive Sponsor")]
         public User? ExecutiveSponsor { get; set; }
 
+        [Display(Name = "Data Owner")]
         public User? DataOwner { get; set; }
 
+        [Display(Name = "Data Steward")]
         public User? DataSteward { get; set; }
 
         [Display(Name = "Back-End Platform")]
@@ -203,5 +207,30 @@ namespace IAR.Models
         public ICollection<Note>? Notes { get; set; }
 
         public ICollection<RetentionPeriod>? RetentionPeriods { get; set; }
-		}
+	}
+
+    // ----- Enums -----
+    public enum VolumeEnum
+    {
+        [Display(Name = "Very Small < 1,000 Records")]
+        VerySmall,
+        [Display(Name = "Small < 10,000 Records")]
+        Small,
+        [Display(Name = "Medium < 50,000 Records")]     
+        Medium,
+        [Display(Name = "Large < 100,000 Records")]
+        Large,
+        [Display(Name = "Very Large 100,000+ Records")]
+        VeryLarge
+    }
+
+    public enum PhysicalLocationEnum
+    {
+        [Display(Name = "On-Site")]
+        OnSite,
+        [Display(Name = "Off-Site")]
+        OffSite,
+        [Display(Name = "Physical Location")]
+        PhysicalLocation
+    }
 }

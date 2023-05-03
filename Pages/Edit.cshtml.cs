@@ -18,30 +18,9 @@ namespace IAR.Pages
 
         [BindProperty]
         public Asset Asset { get; set; } = default!;
+        public Tooltip Tooltip { get; set; } = default!;
         public SelectList BackEndPlatformNameSL { get; set; } = null!;
         public SelectList FrontEndPlatformNameSL { get; set; } = null!;
-        public void PopulateBackEndPlatformsDropDownList(RegisterContext _context, 
-            object? selectedBackEndPlatform = null)
-        {
-            var BackEndPlatformsQuery = from p in _context.BackEndPlatforms
-                                   orderby p.Name
-                                   select p;
-                BackEndPlatformNameSL = new SelectList(BackEndPlatformsQuery.AsNoTracking(),
-                    nameof(BackEndPlatform.ID),
-                    nameof(BackEndPlatform.Name),
-                    selectedBackEndPlatform);
-        }
-        public void PopulateFrontEndPlatformsDropDownList(RegisterContext _context, 
-            object? selectedFrontEndPlatform = null)
-        {
-            var FrontEndPlatformsQuery = from p in _context.FrontEndPlatforms
-                                   orderby p.Name
-                                   select p;
-            FrontEndPlatformNameSL = new SelectList(FrontEndPlatformsQuery.AsNoTracking(),
-                nameof(FrontEndPlatform.ID),
-                nameof(FrontEndPlatform.Name),
-                selectedFrontEndPlatform);
-        }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -54,6 +33,9 @@ namespace IAR.Pages
                 .Include(a => a.BackEndPlatform)
                 .Include(a => a.FrontEndPlatform)
                 .Include(a => a.ThirdParties)
+                .Include(a => a.ExecutiveSponsor)
+                .Include(a => a.DataOwner)
+                .Include(a => a.DataSteward)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
             if (assetToEdit == null) { return NotFound(); }
@@ -99,7 +81,19 @@ namespace IAR.Pages
             if (await TryUpdateModelAsync<Asset>(
                  assetToUpdate,
                  "asset",
-                a => a.ID, a => a.DataOwner, a => a.BackEndPlatformID, a => a.FrontEndPlatformID, a => a.Name))
+                a => a.ID, 
+                a => a.Name,
+                a => a.Description,
+                a => a.LastReviewDate,
+                a => a.NextReviewDate,
+                a => a.ExecutiveSponsorAccountName,
+                a => a.DataOwnerAccountName,
+                a => a.DataStewardAccountName,
+                a => a.PhysicalLocation,
+                a => a.Volume,
+                a => a.BackEndPlatformID, 
+                a => a.FrontEndPlatformID
+            ))
             {
                 await _context.SaveChangesAsync();
                 return RedirectToPage("./View");
@@ -110,23 +104,61 @@ namespace IAR.Pages
             return Page();
         }
 
+        public void PopulateBackEndPlatformsDropDownList(RegisterContext _context, 
+            object? selectedBackEndPlatform = null)
+        {
+            var BackEndPlatformsQuery = from p in _context.BackEndPlatforms
+                                   orderby p.Name
+                                   select p;
+                BackEndPlatformNameSL = new SelectList(BackEndPlatformsQuery.AsNoTracking(),
+                    nameof(BackEndPlatform.ID),
+                    nameof(BackEndPlatform.Name),
+                    selectedBackEndPlatform);
+        }
+
+        public void PopulateFrontEndPlatformsDropDownList(RegisterContext _context, 
+            object? selectedFrontEndPlatform = null)
+        {
+            var FrontEndPlatformsQuery = from p in _context.FrontEndPlatforms
+                                   orderby p.Name
+                                   select p;
+            FrontEndPlatformNameSL = new SelectList(FrontEndPlatformsQuery.AsNoTracking(),
+                nameof(FrontEndPlatform.ID),
+                nameof(FrontEndPlatform.Name),
+                selectedFrontEndPlatform);
+        }
+
+        //Lookup tooltip text for a given field name
+        public string GetTooltipText(string fieldName)
+        {
+            var tooltipText = "";
+            Tooltip = _context.Tooltips.FirstOrDefault(t => t.FieldName == fieldName) ?? new Tooltip();
+            if (Tooltip != null) {
+                tooltipText = Tooltip.TooltipText;
+            }
+            return tooltipText;
+        }
+
         public PartialViewResult OnGetThirdPartyModal(int id)
         {   
-                var emptyThirdParty = new ThirdParty{Name="", AssetID=id};
+                var emptyThirdParty = new ThirdParty{ThirdPartyName="", AssetID=id};
                 return Partial("_ThirdPartyModal", emptyThirdParty);
         }
+        
         public async Task<IActionResult> OnPostThirdPartyModal(ThirdParty thirdPartyData)
         {
             var newThirdParty = new ThirdParty {
-                Name = thirdPartyData.Name,
+                ThirdPartyName = thirdPartyData.ThirdPartyName,
                 Use = thirdPartyData.Use,
                 AssetID = thirdPartyData.AssetID
             };
 
+            // ModelState.Remove("Name");
+
             if (await TryUpdateModelAsync<ThirdParty>(
                     newThirdParty,
-                    "thirdparty",
-                    t => t.ID, t => t.Name, t => t.Use, t => t.AssetID))
+                    "tp",
+                    t => t.ID, t => t.ThirdPartyName, t => t.Use, t => t.AssetID))
                 {
                     _context.ThirdParties.Add(newThirdParty);
                     await _context.SaveChangesAsync();

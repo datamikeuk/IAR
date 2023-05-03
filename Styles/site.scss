@@ -13,6 +13,10 @@ $navbar-light-active-color: $hg-bumblebee;
 
 @import '../wwwroot/lib/bootstrap/scss/bootstrap.scss';
 
+.form-select {
+  background-image: var(--bs-form-select-bg-img),var(--bs-form-select-bg-icon,none);
+}
+
 // Fonts
 
 *{

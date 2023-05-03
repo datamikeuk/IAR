@@ -31,7 +31,7 @@ builder.Services.AddTransient<IClaimsTransformation, MyClaimsTransformation>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<UserResolver>();
 // Background service to update users from AD
-builder.Services.AddHostedService<UpdateUsersHostedService>();
+// builder.Services.AddHostedService<UpdateUsersHostedService>();
 
 // Authorization handlers
 // builder.Services.AddScoped<IAuthorizationHandler,

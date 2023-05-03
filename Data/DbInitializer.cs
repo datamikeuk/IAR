@@ -13,6 +13,22 @@ namespace IAR.Data
                 return;
             }
 
+            var tooltips = new Tooltip[]
+            {
+                new Tooltip{FieldName="PhysicalLocation", TooltipText="The physical location of the asset"},
+                new Tooltip{FieldName="Description", TooltipText="A description of the asset"},
+                new Tooltip{FieldName="BackEndPlatform", TooltipText="The back end platform the asset is hosted on"},
+                new Tooltip{FieldName="FrontEndPlatform", TooltipText="The front end platform the asset is hosted on"},
+                new Tooltip{FieldName="ExecutiveSponsor", TooltipText="The executive sponsor of the asset"},
+                new Tooltip{FieldName="DataOwner", TooltipText="The data owner of the asset"},
+                new Tooltip{FieldName="DataSteward", TooltipText="The data steward of the asset"},
+                new Tooltip{FieldName="ThirdParties", TooltipText="The third parties that use the asset"},
+                new Tooltip{FieldName="Volume", TooltipText="The volume of the asset"},
+                new Tooltip{FieldName="AccesedBy", TooltipText="The users that access the asset"}
+            };
+
+            context.Tooltips.AddRange(tooltips);
+
             var users = new User[]
             {
                 new User{AccountName="michaelj", DisplayName="Michael Jones"},
@@ -51,6 +67,7 @@ namespace IAR.Data
             {
                 new Asset {
                     Name="Test1",
+                    Active=true,
                     Description="Testing",
                     BackEndPlatformID=1,
                     FrontEndPlatformID=2, 
@@ -63,6 +80,7 @@ namespace IAR.Data
                     UpdatedBy="michaelj" },
                 new Asset {
                     Name="Test2",
+                    Active=true,
                     BackEndPlatformID=2,
                     FrontEndPlatformID=1, 
                     ExecutiveSponsorAccountName="michaelj",
@@ -80,7 +98,7 @@ namespace IAR.Data
             var thirdparties = new ThirdParty[]
             {
                 new ThirdParty{
-                    Name="ThirdParty1",
+                    ThirdPartyName="ThirdParty1",
                     Use="Test1",
                     AssetID=1,
                     CreatedDate=currentDateTime,
@@ -88,7 +106,7 @@ namespace IAR.Data
                     UpdatedDate=currentDateTime,
                     UpdatedBy="m1kej" },
                 new ThirdParty{
-                    Name="ThirdParty2",
+                    ThirdPartyName="ThirdParty2",
                     Use="Test2",
                     AssetID=1,
                     CreatedDate=currentDateTime,
@@ -96,7 +114,7 @@ namespace IAR.Data
                     UpdatedDate=currentDateTime,
                     UpdatedBy="michaelj" },
                 new ThirdParty{
-                    Name="ThirdParty3",
+                    ThirdPartyName="ThirdParty3",
                     Use="Test3",
                     AssetID=2,
                     CreatedDate=currentDateTime,

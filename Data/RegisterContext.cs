@@ -23,6 +23,7 @@ namespace IAR.Data
         public DbSet<User> Users => Set<User>();
         public DbSet<Role> Roles => Set<Role>();
         public DbSet<AuditLog> AuditLog => Set<AuditLog>();
+        public DbSet<Tooltip> Tooltips => Set<Tooltip>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,7 +47,7 @@ namespace IAR.Data
             var entries = ChangeTracker
                 .Entries()
                 .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
-                .Where(e => e.Entity is Asset)
+                // .Where(e => e.Entity is Asset)
                 ;
 
             foreach (var entityEntry in entries)

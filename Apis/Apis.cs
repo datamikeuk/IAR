@@ -24,23 +24,36 @@ namespace IAR.Apis
 
             app.MapGet("/api/tabledata", async (
                 RegisterContext db,
-                string? accountname
+                string? accountname,
+                bool? review
                 ) => await db.Assets
-                .Include(a => a.BackEndPlatform)
-                .Include(a => a.FrontEndPlatform)
-                .Include(a => a.ThirdParties)
+                // .Include(a => a.BackEndPlatform)
+                // .Include(a => a.FrontEndPlatform)
+                // .Include(a => a.ThirdParties)
+                .Where(a => a.Active)
+                // if review is null show all assets, if true show assets that need review, if false show assets that don't need review
+                .Where(a => review == null || (review == true && (a.NextReviewDate < DateTime.Now || a.NextReviewDate == null)) || (review == false && a.NextReviewDate > DateTime.Now))
+
                 .Where(a => accountname == null 
                     || (accountname == "missing" && a.DataOwnerAccountName == null) 
-                    || (a.DataOwnerAccountName != null ? a.DataOwnerAccountName : "") == accountname)
+                    || (a.ExecutiveSponsorAccountName != null ? a.ExecutiveSponsorAccountName : "") == accountname
+                    || (a.DataOwnerAccountName != null ? a.DataOwnerAccountName : "") == accountname
+                    || (a.DataStewardAccountName != null ? a.DataStewardAccountName : "") == accountname
+                )
                 .Select(a => new { 
                     a.ID,
                     a.Name,
+                    a.ExecutiveSponsorAccountName,
+                    a.DataOwnerAccountName,
+                    a.DataStewardAccountName,
                     ExecutiveSponsorName = a.ExecutiveSponsor != null ? a.ExecutiveSponsor.DisplayName : "",
                     DataOwnerName = a.DataOwner != null ? a.DataOwner.DisplayName : "",
                     DataStewardName = a.DataSteward != null ? a.DataSteward.DisplayName : "",
-                    BackEndPlatformName = a.BackEndPlatform != null ? a.BackEndPlatform.Name : "",
-                    FrontEndPlatformName  = a.FrontEndPlatform != null ? a.FrontEndPlatform.Name : "",
-                    a.ThirdParties,
+                    LastReviewDate = a.LastReviewDate,
+                    NextReviewDate = a.NextReviewDate,
+                    // BackEndPlatformName = a.BackEndPlatform != null ? a.BackEndPlatform.Name : "",
+                    // FrontEndPlatformName  = a.FrontEndPlatform != null ? a.FrontEndPlatform.Name : "",
+                    // a.ThirdParties,
                     a.CreatedDate,
                     a.CreatedBy,
                     a.UpdatedDate,

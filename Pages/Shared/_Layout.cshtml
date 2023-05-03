@@ -15,9 +15,10 @@
     <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" />
     <link rel="stylesheet" href="~/lib/select2-bootstrap-5-theme/select2-bootstrap-5-theme.min.css">
 </head>
-<body font>
+<body font style="padding-top: 4.5em;">
+@* <body font> *@
     <header>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" asp-page="/Home">
                 <img src="~/img/navbar colour.png" alt="Logo" class="navbar-logo d-inline-block align-text-center">
@@ -78,15 +79,15 @@
     </header>
     <div class="container-fluid">
         <div class="row" style="height: 100vh;">
-            <div class="col-1" style="background: url('@Url.Content("~/img/left.png")'); repeat-y; background-size: contain;"></div>
+            <div class="col-1" style="background: url('@Url.Content("~/img/left.png")'); repeat-y; background-size: contain; position: fixed; height: 100%;"></div>
             <div class="col">
-                <div class="container">
+                <div class="container" style="padding-top: 1em">
                     <main role="main" class="pb-3">
                         @RenderBody()
                     </main>
                 </div>
             </div>
-            <div class="col-1" style="background: url('@Url.Content("~/img/right.png")'); repeat-y; background-size: contain;"></div>
+            <div class="col-1" style="background: url('@Url.Content("~/img/right.png")'); repeat-y; background-size: contain; position: fixed; height: 100%; right: 0;"></div>
         </div>
     </div>
 

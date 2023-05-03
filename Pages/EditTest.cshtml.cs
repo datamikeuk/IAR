@@ -22,6 +22,7 @@ namespace IAR.Pages
 
         [BindProperty]
         public Asset Asset { get; set; } = default!;
+        // public VolumeEnum VolumeEnum { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -41,6 +42,7 @@ namespace IAR.Pages
            ViewData["DataStewardAccountName"] = new SelectList(_context.Users, "AccountName", "AccountName");
            ViewData["ExecutiveSponsorAccountName"] = new SelectList(_context.Users, "AccountName", "AccountName");
            ViewData["FrontEndPlatformID"] = new SelectList(_context.FrontEndPlatforms, "ID", "ID");
+        //    VolumeEnum = new VolumeEnum();
             return Page();
         }
 

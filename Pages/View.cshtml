@@ -3,7 +3,8 @@
 
 @{
     ViewData["Title"] = "View";
-    var IsAdmin = User.FindFirst("Role")?.Value == "Admin";
+    var isAdmin = User.FindFirst("Role")?.Value == "Admin";
+    var accountName = User.Identity?.Name?.Split('\\')[1];
 }
 
 <div id="modal-placeholder"></div>
@@ -11,12 +12,11 @@
 <body>
     </br>
     <div class="form-group">
-        <button type="button" class="btn btn-secondary" data-toggle="ajax-modal" 
-            data-url="@Url.Page("View","AssetModal")">
-            +
+        <button type="button" class="btn btn-secondary" data-toggle="ajax-modal" data-url="@Url.Page("View","AssetModal")">
+            New Asset
         </button>
-        <label for="ownerFilter">My Assets</label>
-        <input id="ownerFilter" type="checkbox" onclick="$('#asset-table').DataTable().ajax.reload();"/>
+        <button type="button" id="review" class="btn btn-secondary" data-bs-toggle="button" onclick="$('#asset-table').DataTable().ajax.reload();">Needs Review</button>
+        <button type="button" id="responsible" class="btn btn-secondary" data-bs-toggle="button" onclick="$('#asset-table').DataTable().ajax.reload();">My Assets</button>
     </div>
     </br>
     <table id="asset-table" class="table table-striped table-hover table-bordered" style="width:100%">
@@ -25,10 +25,12 @@
                 @* Created table headers using asp labels *@
                 <th>@Html.DisplayNameFor(model => model.Asset.ID)</th>
                 <th>@Html.DisplayNameFor(model => model.Asset.Name)</th>
-                <th>Responisibilites</th>
+                <th>Responsibilites</th>
                 @* <th>@Html.DisplayNameFor(model => model.Asset.BackEndPlatform)</th>
                 <th>@Html.DisplayNameFor(model => model.Asset.FrontEndPlatform)</th> *@
                 @* <th>Third Parties</th> *@
+                <th>@Html.DisplayNameFor(model => model.Asset.LastReviewDate)</th>
+                <th>@Html.DisplayNameFor(model => model.Asset.NextReviewDate)</th>
                 <th>@Html.DisplayNameFor(model => model.Asset.CreatedDate)</th>
                 <th>@Html.DisplayNameFor(model => model.Asset.CreatedBy)</th>
                 <th>@Html.DisplayNameFor(model => model.Asset.UpdatedDate)</th>
@@ -48,10 +50,12 @@
             $('#asset-table').DataTable({
                 ajax: {
                     url: "@Url.Content("~/api/tabledata")",
-                    //if owner filter is checked, run function to compare owner to current user
                     data: function(d){
-                        if ($('#ownerFilter').is(':checked')) {
-                            d.owner = "@User.Identity?.Name?.Split('\\')[1]";
+                        if ($('#responsible').hasClass('active')) {
+                            d.accountname = "@accountName";
+                        }
+                        if ($('#review').hasClass('active')) {
+                            d.review = true;
                         }
                     },
                     // Tell datatables to expect an array
@@ -64,15 +68,26 @@
                     { data: null,
                         render: function(data, type, row){
                             var list = [];
-                            if (data.executiveSponsorName != null) {
-                                list.push('Executive Sponsor: ' + data.executiveSponsorName);
-                            }
-                            if (data.dataOwnerName != null) {
-                                list.push('Data Owner: ' + data.dataOwnerName);
-                            }
-                            if (data.dataStewardName != null) {
-                                list.push('Data Steward: ' + data.dataStewardName);
-                            }
+                            if (data.executiveSponsorAccountName == "@accountName") {
+                                executiveSponsorName = ('<span class="text-danger">Executive Sponsor: ' + data.executiveSponsorName + '</span>');
+                            } else {
+                                executiveSponsorName = ('Executive Sponsor: ' + data.executiveSponsorName);
+                            }                        
+                            if (data.dataStewardAccountName == "@accountName") {
+                                dataOwnerName = ('<span class="text-danger">Executive Sponsor: ' + data.dataStewardName + '</span>');
+                            } else {
+                                dataOwnerName = ('Executive Sponsor: ' + data.dataStewardName);
+                            }                        
+                            if (data.dataStewardAccountName == "@accountName") {
+                                dataStewardName = ('<span class="text-danger">Executive Sponsor: ' + data.dataStewardName + '</span>');
+                            } else {
+                                dataStewardName = ('Executive Sponsor: ' + data.dataStewardName);
+                            }                        
+
+                            list.push(executiveSponsorName);
+                            list.push(dataOwnerName);
+                            list.push(dataStewardName);
+  
                             // list join with line breaks
                             return list.join("<br/>");
                         }
@@ -84,6 +99,16 @@
                             return data.split(",").join("<br/>");
                         }
                     }, *@
+                    // render as date
+                    { data: 'lastReviewDate',
+                      render: function(data, type, row){
+                          return new Date(data).toLocaleDateString() + ' ' + new Date(data).toLocaleTimeString();
+                      } },
+                    // render as date
+                    { data: 'nextReviewDate',
+                      render: function(data, type, row){
+                          return new Date(data).toLocaleDateString() + ' ' + new Date(data).toLocaleTimeString();
+                      } },
                     // render as date
                     { data: 'createdDate',
                       render: function(data, type, row){
@@ -105,7 +130,7 @@
                         },
                         searchable: false,
                         orderable: false,
-                        visible: "@IsAdmin" == "True"
+                        visible: "@isAdmin" == "True"
                     },
                 ],
                 paging: true, 

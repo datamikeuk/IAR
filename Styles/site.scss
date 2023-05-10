@@ -11,7 +11,7 @@ $navbar-light-brand-hover-color: white;
 $navbar-light-hover-color: $hg-bumblebee;
 $navbar-light-active-color: $hg-bumblebee;
 
-@import '../wwwroot/lib/bootstrap/scss/bootstrap.scss';
+// @import '../wwwroot/lib/bootstrap/scss/bootstrap.scss';
 
 .form-select {
   background-image: var(--bs-form-select-bg-img),var(--bs-form-select-bg-icon,none);

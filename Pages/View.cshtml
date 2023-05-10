@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "View";
     var isAdmin = User.FindFirst("Role")?.Value == "Admin";
-    var accountName = User.Identity?.Name?.Split('\\')[1];
+    var accountName = User.Identity?.Name?.Split('\\')[1].ToLower();
 }
 
 <div id="modal-placeholder"></div>
@@ -22,7 +22,6 @@
     <table id="asset-table" class="table table-striped table-hover table-bordered" style="width:100%">
         <thead>
             <tr>
-                @* Created table headers using asp labels *@
                 <th>@Html.DisplayNameFor(model => model.Asset.ID)</th>
                 <th>@Html.DisplayNameFor(model => model.Asset.Name)</th>
                 <th>Responsibilites</th>
@@ -73,15 +72,15 @@
                             } else {
                                 executiveSponsorName = ('Executive Sponsor: ' + data.executiveSponsorName);
                             }                        
-                            if (data.dataStewardAccountName == "@accountName") {
-                                dataOwnerName = ('<span class="text-danger">Executive Sponsor: ' + data.dataStewardName + '</span>');
+                            if (data.dataOwnerAccountName == "@accountName") {
+                                dataOwnerName = ('<span class="text-danger">Data Owner: ' + data.dataOwnerName + '</span>');
                             } else {
-                                dataOwnerName = ('Executive Sponsor: ' + data.dataStewardName);
+                                dataOwnerName = ('Data Owner: ' + data.dataOwnerName);
                             }                        
                             if (data.dataStewardAccountName == "@accountName") {
-                                dataStewardName = ('<span class="text-danger">Executive Sponsor: ' + data.dataStewardName + '</span>');
+                                dataStewardName = ('<span class="text-danger">Data Steward: ' + data.dataStewardName + '</span>');
                             } else {
-                                dataStewardName = ('Executive Sponsor: ' + data.dataStewardName);
+                                dataStewardName = ('Data Steward: ' + data.dataStewardName);
                             }                        
 
                             list.push(executiveSponsorName);

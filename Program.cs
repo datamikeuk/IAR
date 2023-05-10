@@ -31,7 +31,11 @@ builder.Services.AddTransient<IClaimsTransformation, MyClaimsTransformation>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<UserResolver>();
 // Background service to update users from AD
-// builder.Services.AddHostedService<UpdateUsersHostedService>();
+// Only load in production
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddHostedService<UpdateUsersHostedService>();
+}
 
 // Authorization handlers
 // builder.Services.AddScoped<IAuthorizationHandler,
@@ -80,7 +84,12 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseValidateAuthentication();
+// Run the custom middleware to validate authentication only when in development
+// This is for Kestrel only
+if (app.Environment.IsDevelopment())
+{
+    app.UseMiddleware<ValidateAuthentication>();
+}
 
 app.MapRazorPages();
 

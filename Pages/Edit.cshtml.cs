@@ -4,16 +4,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using IAR.Data;
 using IAR.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IAR.Pages
 {
     public class EditModel : PageModel
     {
         private readonly RegisterContext _context;
+        private readonly IAuthorizationService _authorizationService;
+        private readonly UserResolver _userResolver;
 
-        public EditModel(RegisterContext context)
+        public EditModel(RegisterContext context, IAuthorizationService authorizationService, UserResolver userResolver)
         {
             _context = context;
+            _authorizationService = authorizationService;
+            _userResolver = userResolver;
         }
 
         [BindProperty]
@@ -21,8 +26,9 @@ namespace IAR.Pages
         public Tooltip Tooltip { get; set; } = default!;
         public SelectList BackEndPlatformNameSL { get; set; } = null!;
         public SelectList FrontEndPlatformNameSL { get; set; } = null!;
+        public bool CanEdit { get; set; } = false;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id, string? partialName)
         {
             if (id == null || _context.Assets == null)
             {
@@ -33,30 +39,34 @@ namespace IAR.Pages
                 .Include(a => a.BackEndPlatform)
                 .Include(a => a.FrontEndPlatform)
                 .Include(a => a.ThirdParties)
+                .Include(a => a.RetentionPeriods)
+                .Include(a => a.Notes)
                 .Include(a => a.ExecutiveSponsor)
                 .Include(a => a.DataOwner)
                 .Include(a => a.DataSteward)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(a => a.ID == id);
 
             if (assetToEdit == null) { return NotFound(); }
 
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" && assetToEdit.ThirdParties != null)
-            {
-                // Pass IEnumerable<ThirdParty> to PartialView
-                return Partial("_ThirdPartyTable", assetToEdit.ThirdParties);
-            }
-
             Asset = assetToEdit;
 
-            // var isAuthorized = User.IsInRole(Constants.AssetOwnersRole) ||
-            //             User.IsInRole(Constants.AssetAdministratorsRole);
+            var authResult = await _authorizationService.AuthorizeAsync(User, Asset, "Responsible");
+            CanEdit = authResult.Succeeded;
 
-            // var currentUserId = UserManager.GetUserId(User);
+            if (partialName == "ThirdParty" && Asset.ThirdParties != null)
+            {
+                return Partial("_ThirdPartyTable", Asset.ThirdParties);
+            }
 
-            // if (!isAuthorized && currentUserId != Asset.OwnerID)
-            // {
-            //     return Forbid();
-            // }
+            if (partialName == "Retention" && Asset.RetentionPeriods != null)
+            {
+                return Partial("_RetentionPeriodTable", Asset.RetentionPeriods);
+            }
+
+            if (partialName == "Note" && Asset.RetentionPeriods != null)
+            {
+                return Partial("_NoteTable", Asset.Notes);
+            }
 
             PopulateBackEndPlatformsDropDownList(_context, Asset.BackEndPlatformID);
             PopulateFrontEndPlatformsDropDownList(_context, Asset.FrontEndPlatformID);
@@ -71,11 +81,17 @@ namespace IAR.Pages
 
             var assetToUpdate = await _context.Assets
                 .Include(a => a.ThirdParties)
-                .FirstOrDefaultAsync(s => s.ID == id);
+                .FirstOrDefaultAsync(a => a.ID == id);
 
             if (assetToUpdate == null)
             {
                 return NotFound();
+            }
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, assetToUpdate, "Responsible");
+            if (!authResult.Succeeded)
+            {
+                return Forbid();
             }
 
             if (await TryUpdateModelAsync<Asset>(
@@ -92,7 +108,42 @@ namespace IAR.Pages
                 a => a.PhysicalLocation,
                 a => a.Volume,
                 a => a.BackEndPlatformID, 
-                a => a.FrontEndPlatformID
+                a => a.FrontEndPlatformID,
+                a => a.AccessedBy,
+                a => a.Restricted,
+                a => a.Provider,
+                a => a.MaintainedBy,
+                a => a.SecondaryPurpose,
+                a => a.SecondaryPurposeDetails,
+                a => a.SubjectToDPA,
+                a => a.PersonalDetails,
+                a => a.GoodsServices,
+                a => a.SupplierDetails,
+                a => a.FinancialDetails,
+                a => a.LifestyleSocial,
+                a => a.Complaints,
+                a => a.EducationEmployment,
+                a => a.HealthSafetySecurity,
+                a => a.VisualImages,
+                a => a.DataSubjects,
+                a => a.LawfulBasisConsent,
+                a => a.LawfulBasisConsentDetail,
+                a => a.LawfulBasisContract,
+                a => a.LawfulBasisContractDetail,
+                a => a.LawfulBasisLegalObligation,
+                a => a.LawfulBasisLegalObligationDetail,
+                a => a.LawfulBasisVitalInterest,
+                a => a.LawfulBasisVitalInterestDetail,
+                a => a.SpecialRacialEthnic,
+                a => a.SpecialPoliticalOpinion,
+                a => a.SpecialReligiousPhilosophical,
+                a => a.SpecialTradeUnion,
+                a => a.SpecialGenetic,
+                a => a.SpecialBiometric,
+                a => a.SpecialHealth,
+                a => a.SpecialSexual,
+                a => a.CriminalConviction,
+                a => a.Children
             ))
             {
                 await _context.SaveChangesAsync();
@@ -128,12 +179,12 @@ namespace IAR.Pages
                 selectedFrontEndPlatform);
         }
 
-        //Lookup tooltip text for a given field name
+        // Lookup tooltip text for a given field name
         public string GetTooltipText(string fieldName)
         {
-            var tooltipText = "";
+            var tooltipText = "No entry in Tooltips table for this field: " + fieldName;
             Tooltip = _context.Tooltips.FirstOrDefault(t => t.FieldName == fieldName) ?? new Tooltip();
-            if (Tooltip != null) {
+            if (Tooltip != null && Tooltip.TooltipText != null) {
                 tooltipText = Tooltip.TooltipText;
             }
             return tooltipText;
@@ -153,18 +204,102 @@ namespace IAR.Pages
                 AssetID = thirdPartyData.AssetID
             };
 
-            // ModelState.Remove("Name");
+            ModelState.Remove("Name");
 
             if (await TryUpdateModelAsync<ThirdParty>(
                     newThirdParty,
                     "tp",
-                    t => t.ID, t => t.ThirdPartyName, t => t.Use, t => t.AssetID))
+                    t => t.ThirdPartyName, t => t.Use, t => t.AssetID))
                 {
                     _context.ThirdParties.Add(newThirdParty);
                     await _context.SaveChangesAsync();
                     return new JsonResult(new { success = true });
                 }
                 return Partial("_ThirdPartyModal", thirdPartyData);
+        }
+
+        public PartialViewResult OnGetRetentionPeriodModal(int id)
+        {   
+                var emptyRetentionPeriod = new RetentionPeriod{RetainedData="", RetentionPeriodMonths=12, AssetID=id};
+                return Partial("_RetentionPeriodModal", emptyRetentionPeriod);
+        }
+
+        public async Task<IActionResult> OnPostRetentionPeriodModal(RetentionPeriod retentionPeriodData)
+        {
+            var newRetentionPeriod = new RetentionPeriod {
+                RetainedData = retentionPeriodData.RetainedData,
+                RetentionPeriodMonths = retentionPeriodData.RetentionPeriodMonths,
+                AssetID = retentionPeriodData.AssetID
+            };
+
+            ModelState.Remove("Name");
+
+            if (await TryUpdateModelAsync<RetentionPeriod>(
+                    newRetentionPeriod,
+                    "rp",
+                    r => r.RetainedData, r => r.RetentionPeriodMonths, r => r.AssetID))
+                {
+                    _context.RetentionPeriods.Add(newRetentionPeriod);
+                    await _context.SaveChangesAsync();
+                    return new JsonResult(new { success = true });
+                }
+                return Partial("_RetentionPeriodModal", retentionPeriodData);
+        }
+
+        public PartialViewResult OnGetNoteModal(int id)
+        {   
+                var emptyNote = new Note{NoteText="", AssetID=id};
+                return Partial("_NoteModal", emptyNote);
+        }
+
+        public async Task<IActionResult> OnPostNoteModal(Note noteData)
+        {
+            var newNote = new Note {
+                NoteText = noteData.NoteText,
+                AssetID = noteData.AssetID
+            };
+
+            ModelState.Remove("Name");
+
+            if (await TryUpdateModelAsync<Note>(
+                    newNote,
+                    "n",
+                    n => n.NoteText, n => n.AssetID))
+                {
+                    _context.Notes.Add(newNote);
+                    await _context.SaveChangesAsync();
+                    return new JsonResult(new { success = true });
+                }
+                return Partial("_NoteModal", noteData);
+        }
+
+        public async Task<IActionResult> OnPostReviewAsync(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var assetToUpdate = await _context.Assets
+                .FirstOrDefaultAsync(a => a.ID == id);
+
+            if (assetToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            var authResult = await _authorizationService.AuthorizeAsync(User, assetToUpdate, "Responsible");
+            if (!authResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            assetToUpdate.LastReviewDate = DateTime.Now;
+            assetToUpdate.NextReviewDate = DateTime.Now.AddMonths(assetToUpdate.ReviewCycleMonths);
+            assetToUpdate.ReviewedBy = _userResolver.GetAccountName();
+
+            await _context.SaveChangesAsync();
+            return RedirectToPage("./View");
         }
     }
 }

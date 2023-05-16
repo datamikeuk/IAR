@@ -15,7 +15,7 @@ namespace IAR.Models
 
         public string AuditData { get; set; } = default!;
 
-        public string Changes { get; set; } = default!;
+        // public string Changes { get; set; } = default!;
 
         public DateTime Date { get; set; } = default!;
 

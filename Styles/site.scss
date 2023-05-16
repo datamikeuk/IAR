@@ -1,23 +1,64 @@
-@import '../wwwroot/lib/bootstrap/scss/bootstrap.scss';
-// @import '_buttons.scss';
-// @import '_autocomplete.scss';
+@import "../wwwroot/lib/bootstrap/scss/functions";
 
 // Variables
+// @import '_buttons.scss';
+// @import '_autocomplete.scss';
 $hg-poppy: #E03C31;
 $hg-bumblebee: #FFDC20;
+
 $navbar-light-color: white;
 $navbar-light-brand-color: white;
 $navbar-light-brand-hover-color: white;
 $navbar-light-hover-color: $hg-bumblebee;
 $navbar-light-active-color: $hg-bumblebee;
 
-// @import '../wwwroot/lib/bootstrap/scss/bootstrap.scss';
+// Bootstrap Imports
+// 3. Include required Bootstrap stylesheets (including any separate color mode stylesheets)
+@import "../wwwroot/lib/bootstrap/scss/variables";
+@import "../wwwroot/lib/bootstrap/scss/variables-dark";
 
-.form-select {
-  background-image: var(--bs-form-select-bg-img),var(--bs-form-select-bg-icon,none);
-}
+// 4. Include any default map overrides here
 
-// Fonts
+// 5. Include remainder of required parts
+@import "../wwwroot/lib/bootstrap/scss/maps";
+@import "../wwwroot/lib/bootstrap/scss/mixins";
+@import "../wwwroot/lib/bootstrap/scss/root";
+
+
+@import "../wwwroot/lib/bootstrap/scss/utilities";
+@import "../wwwroot/lib/bootstrap/scss/reboot";
+@import "../wwwroot/lib/bootstrap/scss/type";
+@import "../wwwroot/lib/bootstrap/scss/images";
+@import "../wwwroot/lib/bootstrap/scss/containers";
+@import "../wwwroot/lib/bootstrap/scss/grid";
+@import "../wwwroot/lib/bootstrap/scss/tables";
+@import "../wwwroot/lib/bootstrap/scss/forms";
+@import "../wwwroot/lib/bootstrap/scss/buttons";
+@import "../wwwroot/lib/bootstrap/scss/transitions";
+@import "../wwwroot/lib/bootstrap/scss/dropdown";
+@import "../wwwroot/lib/bootstrap/scss/button-group";
+@import "../wwwroot/lib/bootstrap/scss/nav";
+@import "../wwwroot/lib/bootstrap/scss/navbar";
+@import "../wwwroot/lib/bootstrap/scss/card";
+// @import "../wwwroot/lib/bootstrap/scss/accordion";
+// @import "../wwwroot/lib/bootstrap/scss/breadcrumb";
+@import "../wwwroot/lib/bootstrap/scss/pagination";
+// @import "../wwwroot/lib/bootstrap/scss/badge";
+// @import "../wwwroot/lib/bootstrap/scss/alert";
+// @import "../wwwroot/lib/bootstrap/scss/progress";
+@import "../wwwroot/lib/bootstrap/scss/list-group";
+@import "../wwwroot/lib/bootstrap/scss/close";
+// @import "../wwwroot/lib/bootstrap/scss/toasts";
+@import "../wwwroot/lib/bootstrap/scss/modal";
+@import "../wwwroot/lib/bootstrap/scss/tooltip";
+// @import "../wwwroot/lib/bootstrap/scss/popover";
+// @import "../wwwroot/lib/bootstrap/scss/carousel";
+// @import "../wwwroot/lib/bootstrap/scss/spinners";
+// @import "../wwwroot/lib/bootstrap/scss/offcanvas";
+// @import "../wwwroot/lib/bootstrap/scss/placeholders";
+@import "../wwwroot/lib/bootstrap/scss/helpers";
+
+@import "../wwwroot/lib/bootstrap/scss/utilities/api";
 
 *{
   font-family: Monstserrat, sans-serif ;
@@ -27,6 +68,39 @@ $navbar-light-active-color: $hg-bumblebee;
   font-family: Monstserrat, sans-serif;
 }
 
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  font-size: 14px;
+  position: relative;
+  min-height: 100%;
+}
+
+#background-col-left { 
+  background: url("../img/left.png");
+  background-size: contain;
+  position: fixed;
+  height: 100%;
+  left: 0;
+}
+
+#background-col-right { 
+  background: url("../img/right.png");
+  background-size: contain;
+  position: fixed;
+  height: 100%;
+  right: 0;
+}
+
+body {
+  padding-top: 4.5em;
+  margin-bottom: 60px;
+}
+
 // Bootstrap Icons
 .bi {
     width: 1em;
@@ -34,52 +108,42 @@ $navbar-light-active-color: $hg-bumblebee;
     vertical-align: -0.125em;
     fill: currentcolor;
 }
-.navbar-logo {
+
+.help-icon {
+  outline: none;
+  cursor: pointer;
+}
+
+// Navbar
+#navbar-logo {
     width: 40px;
     height: 40px;
     margin-right: 5px;
 }
-.navbar-text {
+#user-name {
   padding-right: 0.5rem;
 }
-
-.user-icon {
+#user-icon {
   margin-right: 3px;
   color: white;
 }
-// .nav-item :active {
-//   color: $hg-bumblebee;
-// }
 
 #asset-table tbody tr {
   cursor: pointer;
 }
 
-.select2-container--bootstrap-5 .select2-selection {
-  width: 100%;
-  min-height: calc(1.5em + 0.75rem + 2px);
-  padding: 0.375rem 0.75rem;
-  font-family: inherit;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #212529;
-  background-color: #fff;
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
-  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+// .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+//   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+// }
+
+.form-input:focus, .form-control:focus, .form-select:focus {
+  box-shadow: none;
+  border: var(--bs-border-width) solid var(--bs-border-color);
 }
 
 button:focus:not(:focus-visible) {
   outline: 0;
 }
-
-// .nav-link {
-//   color: white;
-// }
-// .nav-link :hover {
-//   color: $hg-bumblebee;
-// }
 
 // Customise light mode
 @include color-mode(light) {
@@ -98,10 +162,15 @@ button:focus:not(:focus-visible) {
   .btn-check:checked + .btn, :not(.btn-check) + .btn:active, .btn:first-child:active, .btn.active, .btn.show {
     color: white;
   }
-  // .navbar-logo {
-  //   filter: invert(100%);
-  //   -webkit-filter: invert(100%);
-  // }
+
+  .navbar-toggler {
+    border: var(--bs-border-width) solid #fffc;
+  }
+
+  .navbar-toggler-icon {
+    filter: invert(100%);
+    -webkit-filter: invert(100%);
+  }
 }
 
 // Customise dark mode
@@ -109,30 +178,71 @@ button:focus:not(:focus-visible) {
   .btn-check:checked + .btn, :not(.btn-check) + .btn:active, .btn:first-child:active, .btn.active, .btn.show {
     color: currentColor;
   }
-
 }
 
-// From default site.css
-html {
-    font-size: 14px;
-  }
-  
-  @media (min-width: 768px) {
-    html {
-      font-size: 16px;
-    }
-  }
-  
-  // .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  //   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-  // }
-  
-  html {
-    position: relative;
-    min-height: 100%;
-  }
-  
-  body {
-    margin-bottom: 60px;
-  }
+// Select 2
+.select2-container--bootstrap-5 .select2-selection {
+  // width: 100%;
+  min-height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bs-body-color);
+  background-color: var(--bs-body-bg);
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  background-image: none;
+  box-shadow: none;
+  // border: 1px solid #ced4da;
+  // border-radius: 0.25rem;
+  // transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
 
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__clear, .select2-container--bootstrap-5 .select2-selection--single .select2-selection__clear {
+  right: .75rem;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+  color: var(--bs-body-color);
+}
+
+.select2-container--bootstrap-5.select2-container--disabled .select2-selection {
+  color: var(--bs-body-color);
+  cursor: not-allowed;
+  background-color: var(--bs-secondary-bg);
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  box-shadow: none;
+}
+
+.select2-container--bootstrap-5.select2-container--disabled .select2-selection--single .select2-selection__clear {
+  background: none;
+}
+
+.select2-container--bootstrap-5.select2-container--focus .select2-selection, .select2-container--bootstrap-5.select2-container--open .select2-selection {
+  border-color: #86b7fe;
+  box-shadow: none;
+}
+
+.select2-container--bootstrap-5 .select2-dropdown.select2-dropdown--below {
+  background-color: var(--bs-body-bg);
+}
+
+.select2-container--bootstrap-5 .select2-dropdown .select2-search .select2-search__field {
+  display: block;
+  width: 100%;
+  padding: .375rem .75rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bs-body-color);
+  background-color: var(--bs-body-bg);;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: .25rem;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}

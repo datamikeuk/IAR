@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Audit.EntityFramework;
 
 namespace IAR.Models
 {
@@ -13,16 +14,20 @@ namespace IAR.Models
         // Audit fields
 
         [JsonIgnore]
+        [AuditIgnore]
         public DateTime CreatedDate { get; set; }
 
         [JsonIgnore]
-        public string CreatedBy { get; set; } = default!;
+        [AuditIgnore]
+        public string? CreatedBy { get; set; }
 
         [JsonIgnore]
+        [AuditIgnore]
         public DateTime UpdatedDate { get; set; }
 
         [JsonIgnore]
-        public string UpdatedBy { get; set; } = default!;
+        [AuditIgnore]
+        public string? UpdatedBy { get; set; }
 
         // Navigation property
         [JsonIgnore]

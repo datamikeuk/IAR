@@ -1,9 +1,9 @@
-@model IEnumerable<IAR.Models.ThirdParty>;
+@model IEnumerable<IAR.Models.Note>;
 
-<table id="third-party-table" class="table" data-url="@Url.Page("Edit")">
+<table id="note-table" class="table" data-url="@Url.Page("Edit")">
     <thead>
         <th> ID </th>
-        <th> Name </th>
+        <th> Note </th>
     </thead>
     <tbody>
         @{
@@ -12,7 +12,7 @@
                 foreach (var item in Model) {
                     <tr>
                         <td> @item.ID </td>
-                        <td> @item.ThirdPartyName </td>
+                        <td> @item.NoteText </td>
                     </tr>
                 }   
             }

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Audit.EntityFramework;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace IAR.Models
@@ -22,13 +23,21 @@ namespace IAR.Models
 
 
         // Audit fields
+        [JsonIgnore]
+        [AuditIgnore]
         public DateTime CreatedDate { get; set; }
 
-        public string? CreatedBy { get; set; } = default!;
+        [JsonIgnore]
+        [AuditIgnore]
+        public string? CreatedBy { get; set; }
 
+        [JsonIgnore]
+        [AuditIgnore]
         public DateTime UpdatedDate { get; set; }
-        
-        public string? UpdatedBy { get; set; } = default!;
+
+        [JsonIgnore]
+        [AuditIgnore]        
+        public string? UpdatedBy { get; set; }
 
         // Navigation property
         [JsonIgnore]

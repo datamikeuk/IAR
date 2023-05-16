@@ -37,16 +37,32 @@ $(function () {
                 // window.location.href = "/Edit/" + data.id;
                 $('#asset-table').DataTable().ajax.reload();
                 }
-
-                // if the form is the third party form, reload the table
+                
                 if (formId == "thirdPartyModal") {
                     var tableElement = $('#third-party-table');
 
-                    var tableUrl = tableElement.data('url');
+                    var tableUrl = tableElement.data('url') + "?partialName=ThirdParty";;
                     $.get(tableUrl).done(function (table) {
                         tableElement.replaceWith(table);
                     });
                 }
+
+                if (formId == "retention-period-modal-form") {
+                    var tableElement = $('#retention-period-table');
+                    var tableUrl = tableElement.data('url') + "?partialName=Retention";
+                    $.get(tableUrl).done(function (table) {
+                        tableElement.replaceWith(table);
+                    });
+                }
+
+                if (formId == "note-modal-form") {
+                    var tableElement = $('#note-table');
+                    var tableUrl = tableElement.data('url') + "?partialName=Note";
+                    $.get(tableUrl).done(function (table) {
+                        tableElement.replaceWith(table);
+                    });
+                }
+
                 placeholderElement.find('.modal').modal('hide');
             }
         });

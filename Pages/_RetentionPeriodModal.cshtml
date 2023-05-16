@@ -1,0 +1,62 @@
+@using IAR.Models;
+@model RetentionPeriod;
+
+@{
+    var icons = @Url.Content("~/bootstrap-icons.svg");
+    var tooltipIcon = @icons+"#question-circle";
+}
+
+<script src="~/lib/popper.js/umd/popper.min.js"></script>
+<script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+
+<script>
+    // Initialize tooltips with default options
+    $(function () {
+        $('[data-bs-toggle="tooltip"]').tooltip({ 
+            trigger: 'focus',
+            placement: 'right'
+        });
+    });
+</script>
+
+<div class="modal fade" id="retention-period-modal" tabindex="-1" role="dialog" aria-labelledby="retention-period-title" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="retention-period-title">Add Retention Period</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-page-handler="RetentionPeriodModal" method="post" id="retention-period-modal-form">
+                    <input type="hidden" asp-for="AssetID"/>
+                    <div class="form-group">
+                        <label asp-for="RetainedData" class="control-label"></label>
+                        <div class="input-group">
+                            <input asp-for="RetainedData" class="form-control"/>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="Tooltip Placholder">
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
+                            </button>
+                        </div>
+                        <span asp-validation-for="RetainedData" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="RetentionPeriodMonths" class="control-label"></label>
+                        <div class="input-group">
+                            <input asp-for="RetentionPeriodMonths" class="form-control"/>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="Tooltip Placholder">
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
+                            </button>
+                        </div>
+                        <span asp-validation-for="RetentionPeriodMonths" class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-save="modal">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

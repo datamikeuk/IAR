@@ -1,0 +1,25 @@
+@model IEnumerable<IAR.Models.RetentionPeriod>;
+
+<table id="retention-period-table" class="table" data-url="@Url.Page("Edit")">
+    <thead>
+        <th> ID </th>
+        <th> Asset ID </th>
+        <th> Retained Data </th>
+        <th> Retention Period (Months) </th>
+    </thead>
+    <tbody>
+        @{
+            if (Model != null)
+            {
+                foreach (var item in Model) {
+                    <tr>
+                        <td> @item.ID </td>
+                        <td> @item.AssetID </td>
+                        <td> @item.RetainedData </td>
+                        <td> @item.RetentionPeriodMonths </td>
+                    </tr>
+                }   
+            }
+        }
+    </tbody>
+</table>

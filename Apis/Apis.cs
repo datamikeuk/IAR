@@ -26,7 +26,7 @@ namespace IAR.Apis
                 RegisterContext db,
                 string? accountname,
                 bool? review
-                ) => await db.Assets
+            ) => await db.Assets
                 // .Include(a => a.BackEndPlatform)
                 // .Include(a => a.FrontEndPlatform)
                 // .Include(a => a.ThirdParties)
@@ -61,7 +61,17 @@ namespace IAR.Apis
                 })
                 .ToListAsync()
             );
+
+            // app.MapPut("/api/review/{id}", async (RegisterContext db, int id) =>
+            // {                
+            //     var asset = await db.Assets.FindAsync(id);
+            //     if (asset != null)
+            //     {
+            //         asset.LastReviewDate = DateTime.Now;
+            //         asset.NextReviewDate = DateTime.Now.AddMonths(asset.ReviewCycleMonths);
+            //         await db.SaveChangesAsync();
+            //     }
+            // });
         }
     }
 }
-

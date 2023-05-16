@@ -42,7 +42,7 @@ namespace IAR.Data
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            var userID = _userResolver.GetUserName();
+            var accountName = _userResolver.GetAccountName();
 
             var entries = ChangeTracker
                 .Entries()
@@ -53,12 +53,12 @@ namespace IAR.Data
             foreach (var entityEntry in entries)
             {
                 entityEntry.Property("UpdatedDate").CurrentValue = DateTime.Now;
-                entityEntry.Property("UpdatedBy").CurrentValue = userID;
+                entityEntry.Property("UpdatedBy").CurrentValue = accountName;
 
                 if (entityEntry.State == EntityState.Added)
                 {
                     entityEntry.Property("CreatedDate").CurrentValue = DateTime.Now;
-                    entityEntry.Property("CreatedBy").CurrentValue = userID;
+                    entityEntry.Property("CreatedBy").CurrentValue = accountName;
                 }
             }
 

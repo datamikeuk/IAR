@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 
-namespace IAR.Authorization
+namespace IAR.Services
 {
     public static class AssetOperations
     {
@@ -25,7 +25,7 @@ namespace IAR.Authorization
         public static readonly string DeleteOperationName = "Delete";
         public static readonly string ApproveOperationName = "Review";
         // Roles
-        public static readonly string AssetAdministratorsRole = "Hive Users";
-        public static readonly string AssetOwnersRole = "AssetOwners";
+        public static readonly string AssetAdminRole = "Admin";
+        public static readonly string AssetResponsibleRole = "Responsible";
     }
 }

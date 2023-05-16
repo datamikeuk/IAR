@@ -120,8 +120,8 @@ namespace IAR.Models
         [Display(Name = "Special Political Opinion")]
         public bool SpecialPoliticalOpinion { get; set; }
 
-        [Display(Name = "Special Religous/Philosophical")]
-        public bool SpecialReligousPhilosphical { get; set; }
+        [Display(Name = "Special Religious/Philosophical")]
+        public bool SpecialReligiousPhilosophical { get; set; }
 
         [Display(Name = "Special Trade Union")]
         public bool SpecialTradeUnion { get; set; }
@@ -162,28 +162,28 @@ namespace IAR.Models
         public bool PersonalDetails { get; set; }
 
         [Display(Name = "Goods and/or Services")]
-        public bool goodsServices { get; set; }
+        public bool GoodsServices { get; set; }
 
         [Display(Name = "Supplier Details")]
-        public bool supplierDetails { get; set; }
+        public bool SupplierDetails { get; set; }
 
         [Display(Name = "Financial Details")]
-        public bool financialDetails { get; set; }
+        public bool FinancialDetails { get; set; }
 
         [Display(Name = "Lifestyle and/or Social")]
-        public bool lifestyleSocial { get; set; }
+        public bool LifestyleSocial { get; set; }
 
         [Display(Name = "Complaints")]
-        public bool complaints { get; set; }
+        public bool Complaints { get; set; }
 
         [Display(Name = "Education and/or Employment")]
-        public bool educationEmployment { get; set; }
+        public bool EducationEmployment { get; set; }
 
         [Display(Name = "Health and Safety and/or Security")]
-        public bool healthSafetySecurity { get; set; }
+        public bool HealthSafetySecurity { get; set; }
 
         [Display(Name = "Visual Images")]
-        public bool visualImages { get; set; }
+        public bool VisualImages { get; set; }
 
         // ----- Navigation properties -----
         [Display(Name = "Executive Sponsor")]

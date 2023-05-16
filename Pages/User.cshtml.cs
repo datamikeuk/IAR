@@ -23,7 +23,7 @@ namespace IAR.Pages
         {
             // if (User.Identity != null) { GetADRoles(User.Identity); }
             // _userResolver.GetCurrentDomainPath();
-            _userResolver.GetDisplayName();
+            // _userResolver.GetDisplayName();
         }
 
         [SupportedOSPlatform("windows")]

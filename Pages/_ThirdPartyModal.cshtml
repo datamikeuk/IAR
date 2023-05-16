@@ -2,7 +2,8 @@
 @model ThirdParty;
 
 @{
-    var helpIconURL = Url.Content("~/lib/bootstrap-icons/bootstrap-icons.svg#question-circle");
+    var icons = @Url.Content("~/bootstrap-icons.svg");
+    var tooltipIcon = @icons+"#question-circle";
 }
 
 <script src="~/lib/popper.js/umd/popper.min.js"></script>
@@ -23,9 +24,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addThirdPartyLabel">Add Third Party</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form asp-page-handler="ThirdPartyModal" method="post" id="thirdPartyModal">
@@ -35,7 +34,7 @@
                         <div class="input-group">
                             <input asp-for="ThirdPartyName" class="form-control"/>
                             <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="Tooltip Placholder">
-                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
                             </button>
                         </div>
                         <span asp-validation-for="ThirdPartyName" class="text-danger"></span>
@@ -45,25 +44,27 @@
                         <div class="input-group">
                             <input asp-for="Use" class="form-control"/>
                             <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="Tooltip Placholder">
-                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
                             </button>
                         </div>
                         <span asp-validation-for="Use" class="text-danger"></span>
                     </div>
+                    <div class="form-group">
                         <label asp-for="Location" class="control-label"></label>
                         <div class="input-group">
                             <select asp-for="Location" class="form-select" asp-items="Html.GetEnumSelectList<LocationEnum>()"></select>
                             <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="Tooltip Placholder">
-                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
                             </button>
                         </div>
-                        <span asp-validation-for="Asset.PhysicalLocation" class="text-danger"></span>                    
+                        <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>                  
                     <div class="form-group">
                         <label asp-for="LocationDetail" class="control-label"></label>
                         <div class="input-group">
                             <input asp-for="LocationDetail" class="form-control"/>
                             <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="Tooltip Placholder">
-                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
                             </button>
                         </div>
                         <span asp-validation-for="LocationDetail" class="text-danger"></span>

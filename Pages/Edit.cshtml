@@ -4,8 +4,10 @@
 
 @{
     ViewData["Title"] = "Edit";
-    var helpIconURL = Url.Content("~/lib/bootstrap-icons/bootstrap-icons.svg#question-circle");
+    var icons = @Url.Content("~/bootstrap-icons.svg");
+    var tooltipIcon = @icons+"#question-circle";
     var userListApiUrl = Url.Content("~/api/userlist?listLength=10");
+    var hidden = @Model.CanEdit ? "" : "hidden";
 }
 
 <div id="modal-placeholder"></div>
@@ -18,8 +20,8 @@
         <input type="hidden" id="next-review-date" asp-for="Asset.NextReviewDate" />
         @* Header Section *@
         <section>
-            <button type="button" id="edit-mode-toggle" class="btn btn-secondary" data-bs-toggle="button" onclick="toggleEditMode();">Edit</button>
-            <button type="button" id="review-button" class="btn btn-secondary" onclick="setReviewDate();">Review</button>
+            <button type="button" id="edit-mode-toggle" class="btn btn-secondary" data-bs-toggle="button" onclick="toggleEditMode();" @hidden>Edit</button>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#review-modal" @hidden>Review</button>
             <div class="form-group">
                 <h1 class="edit-hide">@Model.Asset.Name</h1>
                 <input asp-for="Asset.Name" class="form-control readonly edit-show" style="font-size: 30px; width: 100%; display: none" readonly/>
@@ -35,6 +37,7 @@
                 <div class="col">
                     <div class="form-group">
                         <label asp-for="Asset.ExecutiveSponsor" class="control-label"></label>
+                        <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("ExecutiveSponsor")"><use href=@tooltipIcon></use></svg>
                         <select asp-for="Asset.ExecutiveSponsorAccountName" class="form-control disable executive-sponsor-select2" data-placeholder="Select Executive Sponsor" disabled></select>
                         <span asp-validation-for="Asset.ExecutiveSponsorAccountName" class="text-danger"></span>
                     </div>                    
@@ -42,6 +45,7 @@
                 <div class="col">
                     <div class="form-group">
                         <label asp-for="Asset.DataOwner" class="control-label"></label>
+                        <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("DataOwner")"><use href=@tooltipIcon></use></svg>
                         <select asp-for="Asset.DataOwnerAccountName" class="form-control disable data-owner-select2" data-placeholder="Select Data Owner" disabled></select>
                         <span asp-validation-for="Asset.DataOwnerAccountName" class="text-danger"></span>
                     </div>                    
@@ -49,6 +53,7 @@
                 <div class="col">
                     <div class="form-group">
                         <label asp-for="Asset.DataSteward" class="control-label"></label>
+                        <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("DataSteward")"><use href=@tooltipIcon></use></svg>
                         <select asp-for="Asset.DataStewardAccountName" class="form-control disable data-steward-select2" data-placeholder="Select Data Steward" disabled></select>
                         <span asp-validation-for="Asset.DataStewardAccountName" class="text-danger"></span>
                     </div>                    
@@ -56,7 +61,7 @@
             </div>
             <hr />
         </section>
-
+        @* Edit Section *@
         <section>
             <h4>Heading</h4>
             <p>Description placeholder</p>
@@ -68,7 +73,7 @@
                         <div class="input-group">
                             <select asp-for="Asset.PhysicalLocation" class="form-select disable" asp-items="Html.GetEnumSelectList<PhysicalLocationEnum>()" disabled></select>
                             <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("PhysicalLocation")">
-                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
                             </button>
                         </div>
                         <span asp-validation-for="Asset.PhysicalLocation" class="text-danger"></span>
@@ -79,7 +84,7 @@
                         <div class="input-group">
                             <select asp-for="Asset.Volume" class="form-select disable" asp-items="Html.GetEnumSelectList<VolumeEnum>()" disabled></select>
                             <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("Volume")">
-                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
                             </button>
                         </div>
                         <span asp-validation-for="Asset.Volume" class="text-danger"></span>
@@ -89,8 +94,8 @@
                         <label asp-for="Asset.BackEndPlatform" class="control-label"></label>
                         <div class="input-group">
                             <select asp-for="Asset.BackEndPlatformID" class="form-select disable" asp-items="@Model.BackEndPlatformNameSL" disabled></select>
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="Tooltip on right">
-                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("BackEndPlatform")">
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
                             </button>
                         </div>
                         <span asp-validation-for="Asset.BackEndPlatformID" class="text-danger"></span>
@@ -100,8 +105,8 @@
                         <label asp-for="Asset.FrontEndPlatform" class="control-label"></label>
                         <div class="input-group">
                             <select asp-for="Asset.FrontEndPlatformID" class="form-select disable" asp-items="@Model.FrontEndPlatformNameSL" disabled></select>
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="Tooltip on right">
-                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("FrontEndPlatform")">
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
                             </button>
                         </div>
                         <span asp-validation-for="Asset.FrontEndPlatformID" class="text-danger"></span>
@@ -113,28 +118,366 @@
                         <label asp-for="Asset.AccessedBy" class="control-label"></label>
                         <div class="input-group">
                             <input asp-for="Asset.AccessedBy" class="form-control disable" disabled/>
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="Tooltip on right">
-                                <svg class="bi"><use href=@helpIconURL></use></svg>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("AccessedBy")">
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
                             </button>
                         </div>
                         <span asp-validation-for="Asset.AccessedBy" class="text-danger"></span>
                     </div>
+                    @* Restricted *@
+                    <div class="form-group">
+                        <label asp-for="Asset.Restricted" class="control-label"></label>
+                        <div class="input-group">
+                            <input asp-for="Asset.Restricted" class="form-control disable" disabled/>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("Restricted")">
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Asset.Restricted" class="text-danger"></span>
+                    </div>
+                    @* Provider *@
+                    <div class="form-group">
+                        <label asp-for="Asset.Provider" class="control-label"></label>
+                        <div class="input-group">
+                            <input asp-for="Asset.Provider" class="form-control disable" disabled/>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("Provider")">
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Asset.Provider" class="text-danger"></span>
+                    </div>
+                    @* Maintained By *@
+                    <div class="form-group">
+                        <label asp-for="Asset.MaintainedBy" class="control-label"></label>
+                        <div class="input-group">
+                            <input asp-for="Asset.MaintainedBy" class="form-control disable" disabled/>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("MaintainedBy")">
+                                <svg class="bi"><use href=@tooltipIcon></use></svg>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Asset.MaintainedBy" class="text-danger"></span>
+                    </div>
+                </div>
+                @* Secondary Purpose *@
+                <div class="form-group">
+                    <label class="form-check-label">
+                        <input class="form-check-input disable" type="checkbox" asp-for="Asset.SecondaryPurpose" id="secondary-purpose"
+                            onclick="if (this.checked) { $('#secondary-purpose-details').show(); } else { $('#secondary-purpose-details').hide(); }" disabled>
+                        @Html.DisplayNameFor(model => model.Asset.SecondaryPurpose)
+                    </label>
+                    <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SecondaryPurpose")"><use href=@tooltipIcon></use></svg>
+                </div>               
+                @* Secondary Purpose Details *@
+                <div class="form-group" id="secondary-purpose-details" style="display: none;">
+                    <label asp-for="Asset.SecondaryPurposeDetails" class="control-label"></label>
+                    <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SecondaryPurposeDetails")"><use href=@tooltipIcon></use></svg>
+                    <textarea asp-for="Asset.SecondaryPurposeDetails" class="form-control disable" disabled></textarea>
+                    <span asp-validation-for="Asset.SecondaryPurposeDetails" class="text-danger"></span>
                 </div>
             </div>
             <hr />
         </section>
-
+        @* Subject to DPA *@
+        <div class="form-group">
+            <label class="form-check-label">
+                <input class="form-check-input disable" type="checkbox" asp-for="Asset.SubjectToDPA" id="subject-to-dpa"
+                    onclick="if (this.checked) { $('#dpa-section').show(); } else { $('#dpa-section').hide(); }" disabled>
+                @Html.DisplayNameFor(model => model.Asset.SubjectToDPA)
+            </label>
+            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SubjectToDPA")"><use href=@tooltipIcon></use></svg>
+            <hr />
+        </div>
+        <section id="dpa-section" style="display: none;">
+            <div class="row">
+                @* DPA *@
+                <div class="col">
+                    <h4>DPA</h2>
+                    <p>Description placeholder</p>
+                    <ul class="list-group">
+                        @* Personal Details *@
+                        <li class="list-group-item flex-fill">
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.PersonalDetails" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.PersonalDetails)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("PersonalDetails")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        @* Goods and Services *@
+                        <li class="list-group-item flex-fill">
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.GoodsServices" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.GoodsServices)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("GoodsServices")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        @* Supplier Details *@
+                        <li class="list-group-item flex-fill">
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.SupplierDetails" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.SupplierDetails)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SupplierDetails")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        @* Financial Details *@
+                        <li class="list-group-item flex-fill">
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.FinancialDetails" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.FinancialDetails)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("FinancialDetails")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        @* Lifestyle and Social *@
+                        <li class="list-group-item flex-fill">
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.LifestyleSocial" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.LifestyleSocial)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LifestyleSocial")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        @* Complaints *@
+                        <li class="list-group-item flex-fill">
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.Complaints" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.Complaints)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("Complaints")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        @* Education and Employement *@
+                        <li class="list-group-item flex-fill">
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.EducationEmployment" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.EducationEmployment)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("EducationEmployment")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        @* Health, Safety and Security *@
+                        <li class="list-group-item flex-fill">
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.HealthSafetySecurity" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.HealthSafetySecurity)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("HealthSafetySecurity")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        @* Visual Images, Personal Appearance and Behaviour *@
+                        <li class="list-group-item flex-fill">
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.VisualImages" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.VisualImages)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("VisualImages")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                    </ul>
+                </div> 
+                @* Lawful Basis *@
+                <div class="col">
+                    <h4>Lawful Basis</h2>
+                    <p>Description placeholder</p>
+                    <ul class="list-group">
+                        @* Lawful Basis Consent *@
+                        <li class="list-group-item flex-fill">
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.LawfulBasisConsent" id="lawful-basis-consent"
+                                onclick="if (this.checked) { $('#lawful-basis-consent-detail').show(); } else { $('#lawful-basis-consent-detail').hide(); }" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.LawfulBasisConsent)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisConsent")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                            @* Lawful Basis Consent Detail *@
+                        <li class="list-group-item flex-fill" id="lawful-basis-consent-detail" style="display: none">
+                            <div class="form-group">
+                                <textarea asp-for="Asset.LawfulBasisConsentDetail" class="form-control disable" placeholder="Lawful Basis Consent Detail" style="resize:none; overflow:hidden;" disabled></textarea>
+                                <span asp-validation-for="Asset.LawfulBasisConsentDetail" class="text-danger"></span>
+                            </div>
+                        </li>
+                            @* Lawful Basis Contract *@
+                        <li class="list-group-item flex-fill">
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.LawfulBasisContract" id="lawful-basis-contract"
+                                    onclick="if (this.checked) { $('#lawful-basis-contract-detail').show(); } else { $('#lawful-basis-contract-detail').hide(); }" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.LawfulBasisContract)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisContract")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                            @* Lawful Basis Contract Detail *@
+                        <li class="list-group-item flex-fill" id="lawful-basis-contract-detail" style="display: none">
+                            <div class="form-group">
+                                <label asp-for="Asset.LawfulBasisContractDetail" class="control-label"></label>
+                                <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisContractDetail")"><use href=@tooltipIcon></use></svg>
+                                <textarea asp-for="Asset.LawfulBasisContractDetail" class="form-control disable" disabled></textarea>
+                                <span asp-validation-for="Asset.LawfulBasisContractDetail" class="text-danger"></span>
+                            </div>
+                        </li>
+                            @* Lawful Basis Legal Obligation *@
+                        <li class="list-group-item flex-fill">
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.LawfulBasisLegalObligation" id="lawful-basis-legal"
+                                    onclick="if (this.checked) { $('#lawful-basis-legal-detail').show(); } else { $('#lawful-basis-legal-detail').hide(); }" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.LawfulBasisLegalObligation)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisLegalObligation")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                            @* Lawful Basis Legal Obligation Detail *@
+                        <li class="list-group-item flex-fill" id="lawful-basis-legal-detail" style="display: none">
+                            <div class="form-group">
+                                <label asp-for="Asset.LawfulBasisLegalObligationDetail" class="control-label"></label>
+                                <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisLegalObligationDetail")"><use href=@tooltipIcon></use></svg>
+                                <textarea asp-for="Asset.LawfulBasisLegalObligationDetail" class="form-control disable" disabled></textarea>
+                                <span asp-validation-for="Asset.LawfulBasisLegalObligationDetail" class="text-danger"></span>
+                            </div>
+                        </li>
+                            @* Lawful Basis Vital Interest *@
+                        <li class="list-group-item flex-fill">
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.LawfulBasisVitalInterest" id="lawful-basis-vital"
+                                    onclick="if (this.checked) { $('#lawful-basis-vital-detail').show(); } else { $('#lawful-basis-vital-detail').hide(); }" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.LawfulBasisVitalInterest)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisLegalObligation")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                            @* Lawful Basis Vital Interest Detail *@
+                        <li class="list-group-item flex-fill" id="lawful-basis-vital-detail" style="display: none">
+                            <div class="form-group">
+                                <label asp-for="Asset.LawfulBasisVitalInterestDetail" class="control-label"></label>
+                                <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisVitalInterestDetail")"><use href=@tooltipIcon></use></svg>
+                                <textarea asp-for="Asset.LawfulBasisVitalInterestDetail" class="form-control disable" disabled></textarea>
+                                <span asp-validation-for="Asset.LawfulBasisVitalInterestDetail" class="text-danger"></span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                @* Special Categories *@
+                <div class="col">
+                    <h4>Special Categories</h2>
+                    <p>Description placeholder</p>
+                    <ul class="list-group">
+                        <li class="list-group-item flex-fill">
+                            @* Special Racial/Ethnic *@
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.SpecialRacialEthnic" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.SpecialRacialEthnic)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SpecialRacialEthnic")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            @* Special Politcal Opinion *@
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.SpecialPoliticalOpinion" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.SpecialPoliticalOpinion)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SpecialPoliticalOpinion")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            @* Speical Religious Philosophical *@
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.SpecialReligiousPhilosophical" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.SpecialReligiousPhilosophical)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SpecialReligiousPhilosophical")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            @* Special Trade Union *@
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.SpecialTradeUnion" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.SpecialTradeUnion)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SpecialTradeUnion")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            @* Special Genetic *@
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.SpecialGenetic" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.SpecialGenetic)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SpecialGenetic")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            @* Special Biometric *@
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.SpecialBiometric" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.SpecialBiometric)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SpecialBiometric")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            @* Special Health *@
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.SpecialHealth" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.SpecialHealth)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SpecialHealth")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            @* Special Sexual *@
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.SpecialSexual" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.SpecialSexual)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SpecialSexual")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        <li class="list-group-item flex-fill"></li>
+                        <li class="list-group-item flex-fill">
+                            @* Criminal Conviction Data *@
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.CriminalConviction" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.CriminalConviction)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("CriminalConviction")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            @* Children Data *@
+                            <label class="form-check-label">
+                                <input class="form-check-input disable" type="checkbox" asp-for="Asset.Children" disabled>
+                                @Html.DisplayNameFor(model => model.Asset.Children)
+                            </label>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("Children")"><use href=@tooltipIcon></use></svg>
+                        </li>
+                    </ul>
+                </div> 
+                <hr />
+            </div>  
+            @* Data Subjects *@
+            <div class="form-group">
+                <label asp-for="Asset.DataSubjects" class="control-label"></label>
+                <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("DataSubjects")"><use href=@tooltipIcon></use></svg>
+                <textarea asp-for="Asset.DataSubjects" class="form-control disable" disabled></textarea>
+                <span asp-validation-for="Asset.DataSubjects" class="text-danger"></span>
+            </div>
+            <hr />
+        </section>
+        @* Third Parties *@
         <section>
             <h4>Third Parties</h4>
             <p>Description placeholder</p>
             <partial name="_ThirdPartyTable", model="Model.Asset.ThirdParties"/>
             <button type="button" class="btn btn-secondary" data-toggle="ajax-modal"
-                data-url="@Url.Page("Edit","ThirdPartyModal")">
+                data-url="@Url.Page("Edit","ThirdPartyModal")" @hidden>
                 Add Third Party
             </button>
             <hr />
         </section>
-
+        @* Rentention Periods *@
+        <section>
+            <h4>Retention Periods</h4>
+            <p>Description placeholder</p>
+            <partial name="_RetentionPeriodTable", model="Model.Asset.RetentionPeriods"/>
+            <button type="button" class="btn btn-secondary" data-toggle="ajax-modal"
+                data-url="@Url.Page("Edit","RetentionPeriodModal")" @hidden>
+                Add Retention Period
+            </button>
+            <hr />
+        </section>
+        @* Notes *@
+        <section>
+            <h4>Notes</h4>
+            <p>Description placeholder</p>
+            <partial name="_NoteTable", model="Model.Asset.Notes"/>
+            <button type="button" class="btn btn-secondary" data-toggle="ajax-modal"
+                data-url="@Url.Page("Edit","NoteModal")" @hidden>
+                Add Note
+            </button>
+            <hr />
+        </section>
+        @* Save *@
         <div class="form-group">
             <input type="submit" value="Save" class="btn btn-secondary edit-show" style="margin-top: 10px; display: none" />
         </div>
@@ -142,29 +485,30 @@
             <a asp-page="View">Retun to View Assets</a>
         </div>
     </form>
-
-    <div class="modal fade" id="reviewModal" role="dialog">
+    @* Review Modal *@
+    <div class="modal fade" id="review-modal">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-body text-center">
                     <p>Are you sure you want to set the review date to today's date and time?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="btnYes">OK</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                        aria-label="Cancel">Cancel</button>
+                    <form method="post" asp-page-handler="review">
+                        <button type="submit" class="btn btn-secondary" id="review-button">Ok</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Cancel">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
 </body>
 
-@* Javascript *@
 @section Scripts {
     <script>
         $(document).ready(function() {
             $('[class$="-select2"]').select2({
                 theme: "bootstrap-5",
+                width: '100%',
                 minimumInputLength: 2,
                 allowClear: true,
                 ajax: {
@@ -209,6 +553,7 @@
             var option = new Option("", "", true, true);
             $(".executive-sponsor-select2").append(option).trigger('change');
         });
+
         // Reset select2 lists when cleared
         $('.data-owner-select2').on('select2:clear', function () {
             @* console.log("clear"); *@
@@ -216,6 +561,7 @@
             var option = new Option("", "", true, true);
             $(".data-owner-select2").append(option).trigger('change');
         });
+
         // Reset select2 lists when cleared
         $('.data-steward-select2').on('select2:clear', function () {
             @* console.log("clear"); *@
@@ -224,6 +570,44 @@
             $(".data-steward-select2").append(option).trigger('change');
 
         });
+        
+        // Expand textarea to fit content
+        $(document).ready(function () {
+            $('textarea').on('input', function () { 
+                this.style.height = 'auto'; 
+                this.style.height = (this.scrollHeight) + 'px'; 
+            });
+        });
+
+        // If subject-to-dpa is checked, show dpa-section
+        if ($("#subject-to-dpa").is(":checked")) {
+            $('#dpa-section').show();
+        }
+
+        // If secondary-purpose is checked, show secondary-purpose-details
+        if ($("#secondary-purpose").is(":checked")) {
+            $('#secondary-purpose-details').show();
+        }
+
+        // If lawful-basis-consent is checked, show lawful-basis-consent-detail
+        if ($("#lawful-basis-consent").is(":checked")) {
+            $('#lawful-basis-consent-detail').show();
+        }
+
+        // If lawful-basis-contract is checked, show lawful-basis-contract-detail
+        if ($("#lawful-basis-contract").is(":checked")) {
+            $('#lawful-basis-contract-detail').show();
+        }
+
+        // If lawful-basis-legal is checked, show lawful-basis-legal-detail
+        if ($("#lawful-basis-legal").is(":checked")) {
+            $('#lawful-basis-legal-detail').show();
+        }
+
+        // If lawful-basis-vital is checked, show lawful-basis-vital-detail
+        if ($("#lawful-basis-vital").is(":checked")) {
+            $('#lawful-basis-vital-detail').show();
+        }
 
         // If edit-mode-toggle is checked, enable edit mode
         function toggleEditMode() {
@@ -249,53 +633,6 @@
             }
         }
 
-        // Set review date to today's date and time
-        function setReviewDate() {
-            // ask for confirmation
-            $('#reviewModal').modal('show');
-
-            // When the modal is hidden (due to the user clicking "Cancel")
-            $('#reviewModal').on('hidden.bs.modal', function() {
-                // End the execution of the function without doing anything else
-                return;
-            });
-
-              // When the user clicks the "OK" button in the modal
-            $('#btnYes').click(function() {
-                $('#reviewModal').modal('hide');
-
-                //set review date to today's date and time
-                var today = new Date();
-                var dd = String(today.getDate()).padStart(2, '0');
-                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-                var yyyy = today.getFullYear();
-
-                var hh = String(today.getHours()).padStart(2, '0');
-                var min = String(today.getMinutes()).padStart(2, '0');
-                var ss = String(today.getSeconds()).padStart(2, '0');
-
-                today = yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + min + ':' + ss;
-                $("#review-date").val(today);
-                @* console.log(today); *@
-
-                //set next review date to 12 months from today
-                yyyy = yyyy + 1;
-                var nextReviewDate = yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + min + ':' + ss;
-                $("#next-review-date").val(nextReviewDate);
-                @* console.log(nextReviewDate); *@
-
-                $("#edit-form").submit();
-            });
-
-            // When the modal is hidden (due to the user clicking "Cancel")
-            $('#reviewModal').on('hidden.bs.modal', function() {
-                // End the execution of the function without doing anything else
-                return;
-            });
-
-            $('#reviewModal').modal('hide');
-        }
-
         // Initialize tooltips with default options
         $(function () {
             $('[data-bs-toggle="tooltip"]').tooltip({ 
@@ -303,6 +640,26 @@
                 placement: 'right'
             });
         });
+
+        // On review button click, PUT /api/review/{id}
+        @* $('#review-button').click(function () {
+            var id = @Model.Asset.ID;
+            $.ajax({
+                type: "PUT",
+                url: "/api/review/" + id,
+                success: function (data) {
+                    console.log("success");
+                    console.log(data);
+                    $('#review-modal').modal('hide');
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }); *@
+
+
+
 
     </script>
     

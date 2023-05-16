@@ -7,9 +7,9 @@ using IAR.Services;
 using IAR.Apis;
 using IAR.Middleware;
 using IAR.Models;
-using System.Globalization;
 using Audit.Core;
-using System.Text.Json;
+// using System.Globalization;
+// using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,31 +18,28 @@ builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
 
 builder.Services.AddSingleton<ValidateAuthentication>();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<UserResolver>();
+builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
+
 // Set the fallback authorization policy to require users to be authenticated
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "Admin"));
+    options.AddPolicy("Responsible", policy => policy.AddRequirements(new ResponsibleRequirement()));
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build();
 });
 
-builder.Services.AddTransient<IClaimsTransformation, MyClaimsTransformation>();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddTransient<UserResolver>();
-// Background service to update users from AD
-// Only load in production
+// Authorization handlers
+builder.Services.AddScoped<IAuthorizationHandler, AssetAuthorizationHandler>();
+
+// Background service to update users from AD - production only
 if (!builder.Environment.IsDevelopment())
 {
     builder.Services.AddHostedService<UpdateUsersHostedService>();
 }
-
-// Authorization handlers
-// builder.Services.AddScoped<IAuthorizationHandler,
-//                       UserIsOwnerAuthorizationHandler>();
-
-// builder.Services.AddSingleton<IAuthorizationHandler,
-//                       AdminAuthorizationHandler>();
 
 builder.Services.AddDbContext<RegisterContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RegisterContext") ?? 
@@ -54,8 +51,6 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-// app.UsePathBase("/IAR");
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
@@ -66,6 +61,8 @@ else
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 }
+
+// app.UsePathBase("/IAR");
 
 Audit.Core.Configuration.AuditDisabled = true;
 
@@ -97,11 +94,16 @@ Apis.GetApis(app);
 
 Audit.Core.Configuration.AuditDisabled = false;
 
-var _userResolver = builder.Services.BuildServiceProvider().GetService<UserResolver>();
+// var _userResolver = builder.Services.BuildServiceProvider().GetService<UserResolver>();
+
+// Audit.Core.Configuration.AddCustomAction(ActionType.OnScopeCreated, scope =>
+// {
+//     scope.Event.Environment.UserName = _userResolver?.GetAccountName();
+// });
 
 Audit.Core.Configuration.AddCustomAction(ActionType.OnScopeCreated, scope =>
 {
-    scope.Event.Environment.UserName = _userResolver?.GetUserName();
+    scope.Event.Environment.UserName = app.Services.GetService<UserResolver>()?.GetAccountName();
 });
 
 Audit.Core.Configuration.Setup()
@@ -114,7 +116,7 @@ Audit.Core.Configuration.Setup()
 	        entity.TableID = entry.PrimaryKey.First().Value as int? ?? 0;
             entity.Action = entry.Action;
             entity.AuditData = entry.ToJson();
-            entity.Changes = JsonSerializer.Serialize(entry.Changes);
+            // entity.Changes = JsonSerializer.Serialize(entry.Changes);
             entity.Date = DateTime.Now;
             entity.User = Environment.UserName;
         })

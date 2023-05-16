@@ -21,42 +21,57 @@ public class UserResolver
         return GetIdentityName().Split('\\')[1];
     }
 
-    [SupportedOSPlatform("windows")]
-    public string GetCurrentDomainPath()
+    public string GetAccountName()
     {
-        DirectoryEntry de = new DirectoryEntry("LDAP://RootDSE");
-
-        return "LDAP://" + de.Properties["defaultNamingContext"][0]?.ToString();
+        // return GetUserName().ToLower();
+        var accountName = _context.HttpContext?.User.Identity?.Name??"";
+        var accountNameSplit = accountName.Split('\\');
+        if (accountNameSplit.Length > 1)
+        {
+            return accountNameSplit[1].ToLower();
+        }
+        else
+        {
+            return "error";
+        }
     }
 
-    [SupportedOSPlatform("windows")]
-    public string GetDisplayName()
-    {
-        DirectorySearcher ds = new DirectorySearcher();
-        DirectoryEntry de = new DirectoryEntry(_configuration.GetValue<string>("LDAP"));
+    // [SupportedOSPlatform("windows")]
+    // public string GetCurrentDomainPath()
+    // {
+    //     DirectoryEntry de = new DirectoryEntry("LDAP://RootDSE");
 
-        var name = GetUserName();
-        ds = new DirectorySearcher(de);
-        ds.Filter = "(&(objectClass=user)(objectcategory=person)(sAMAccountName=" + name + "))";
-        SearchResult? userProperty = ds.FindOne();
+    //     return "LDAP://" + de.Properties["defaultNamingContext"][0]?.ToString();
+    // }
 
-        // var userEmail = userProperty?.Properties["mail"][0];
-        var userName = userProperty?.Properties["displayname"][0].ToString();
-        return userName??"";
-    }
+    // [SupportedOSPlatform("windows")]
+    // public string GetDisplayName()
+    // {
+    //     DirectorySearcher ds = new DirectorySearcher();
+    //     DirectoryEntry de = new DirectoryEntry(_configuration.GetValue<string>("LDAP"));
 
-        [SupportedOSPlatform("windows")]
-    public string GetEmail()
-    {
-        DirectorySearcher ds = new DirectorySearcher();
-        DirectoryEntry de = new DirectoryEntry(_configuration.GetValue<string>("LDAP"));
+    //     var name = GetUserName();
+    //     ds = new DirectorySearcher(de);
+    //     ds.Filter = "(&(objectClass=user)(objectcategory=person)(sAMAccountName=" + name + "))";
+    //     SearchResult? userProperty = ds.FindOne();
 
-        var name = GetUserName();
-        ds = new DirectorySearcher(de);
-        ds.Filter = "(&(objectClass=user)(objectcategory=person)(sAMAccountName=" + name + "))";
-        SearchResult? userProperty = ds.FindOne();
+    //     // var userEmail = userProperty?.Properties["mail"][0];
+    //     var userName = userProperty?.Properties["displayname"][0].ToString();
+    //     return userName??"";
+    // }
 
-        var userEmail = userProperty?.Properties["mail"][0].ToString();
-        return userEmail??"";
-    }
+    // [SupportedOSPlatform("windows")]
+    // public string GetEmail()
+    // {
+    //     DirectorySearcher ds = new DirectorySearcher();
+    //     DirectoryEntry de = new DirectoryEntry(_configuration.GetValue<string>("LDAP"));
+
+    //     var name = GetUserName();
+    //     ds = new DirectorySearcher(de);
+    //     ds.Filter = "(&(objectClass=user)(objectcategory=person)(sAMAccountName=" + name + "))";
+    //     SearchResult? userProperty = ds.FindOne();
+
+    //     var userEmail = userProperty?.Properties["mail"][0].ToString();
+    //     return userEmail??"";
+    // }
 }

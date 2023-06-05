@@ -25,7 +25,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar fixed-top navbar-expand-md bg-body-tertiary">
+        <nav class="navbar fixed-top navbar-expand-md bg-body-tertiary shadow">
         <div class="container-fluid">
             <a class="navbar-brand" asp-page="/Home">
                 <img src="~/img/navbar colour.png" alt="Logo" class="d-inline-block align-text-center" id="navbar-logo">
@@ -34,14 +34,31 @@
             <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 fs-5">
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" data-bs-toggle=".nav-item" asp-page="/Home">Home</a>
+                        <a class="nav-link" aria-current="page" data-bs-toggle=".nav-item" asp-page="/Home">
+                            <svg class="bi me-0"><use href="@icons#house-fill"></use></svg>
+                            Home
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle=".nav-item" asp-page="/View">View Assets</a>
+                        <a class="nav-link" data-bs-toggle=".nav-item" asp-page="/View">
+                            <svg class="bi me-0"><use href="@icons#binoculars-fill"></use></svg>
+                            View
+                        </a>
                     </li>
                 </ul>
+                @* Show bootstrap breakpoints in development only*@
+                <environment include="Development">            
+                    <div class="navbar-text text-nowrap rounded-3 px-2 mx-2 bg-success opacity-20">
+                        <div class="d-block d-sm-none">Extra Small (xs)</div>
+                        <div class="d-none d-sm-block d-md-none">Small (sm)</div>
+                        <div class="d-none d-md-block d-lg-none">Medium (md)</div>
+                        <div class="d-none d-lg-block d-xl-none">Large (lg)</div>
+                        <div class="d-none d-xl-block d-xxl-none">X-Large (xl)</div>
+                        <div class="d-none d-xxl-block">XX-Large (xxl)</div>
+                    </div>
+                </environment>
                 <svg class="bi" id="user-icon"><use xlink:href="@icons#person-fill"></use></svg>
                 <p class="nav navbar-text navbar-right" id="user-name">@(User.FindFirst("DisplayName")?.Value)</p>
                 <div class="vr d-none d-lg-flex h-120 mx-lg-2 text-white"></div>
@@ -104,6 +121,11 @@
             }
         });
         @* console.log(window.location.href); *@
+        // Add current bootstrap theme to viewdata when button with id bd-theme is clicked
+        @* document.getElementById("bd-theme").addEventListener("click", function () {
+            var theme = localStorage.getItem('theme');
+            console.log(theme);
+        }); *@
     </script>
 
     <environment include="Development">

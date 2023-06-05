@@ -7,11 +7,11 @@ namespace IAR.Services
     public class AssetAuthorizationHandler
                 : AuthorizationHandler<ResponsibleRequirement, Asset>
     {
-        private readonly UserResolver _userResolver;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AssetAuthorizationHandler(UserResolver userResolver)
+        public AssetAuthorizationHandler(IHttpContextAccessor httpContextAccessor)
         {
-            _userResolver = userResolver;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         protected override Task
@@ -24,10 +24,10 @@ namespace IAR.Services
                 return Task.CompletedTask;
             }
 
-            var accountName = _userResolver.GetAccountName();
-            var executiveSponsorAccountName = resource.ExecutiveSponsorAccountName?.ToString();
-            var dataOwnerAccountName = resource.DataOwnerAccountName?.ToString();
-            var dataStewardAccountName = resource.DataStewardAccountName?.ToString();
+            var accountName = _httpContextAccessor.HttpContext?.User.FindFirst("AccountName")?.Value;
+            var executiveSponsorAccountName = resource.ExecutiveSponsorAccountName;
+            var dataOwnerAccountName = resource.DataOwnerAccountName;
+            var dataStewardAccountName = resource.DataStewardAccountName;
             var isAdmin = context.User.FindFirst("Role")?.Value == "Admin";
                 
             if (isAdmin || accountName == executiveSponsorAccountName || 

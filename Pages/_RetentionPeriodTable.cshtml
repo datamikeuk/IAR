@@ -1,11 +1,9 @@
 @model IEnumerable<IAR.Models.RetentionPeriod>;
 
-<table id="retention-period-table" class="table" data-url="@Url.Page("Edit")">
+<table id="retention-period-table" class="table table-striped table-bordered" data-url="@Url.Page("Edit")">
     <thead>
-        <th> ID </th>
-        <th> Asset ID </th>
-        <th> Retained Data </th>
-        <th> Retention Period (Months) </th>
+        <th> @Html.DisplayNameFor(model => model.RetainedData) </th>
+        <th> @Html.DisplayNameFor(model => model.RetentionPeriodMonths) </th>
     </thead>
     <tbody>
         @{
@@ -13,8 +11,6 @@
             {
                 foreach (var item in Model) {
                     <tr>
-                        <td> @item.ID </td>
-                        <td> @item.AssetID </td>
                         <td> @item.RetainedData </td>
                         <td> @item.RetentionPeriodMonths </td>
                     </tr>

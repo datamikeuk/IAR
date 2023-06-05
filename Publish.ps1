@@ -11,6 +11,9 @@ invoke-command -ComputerName appbi -ScriptBlock {
     Stop-WebItem -PSPath "IIS:\Sites\$using:siteName"
 }
 
+# wait for the site to stop
+Start-Sleep -s 5
+
 # Ask for confirmation before deleting files
 $confirm = Read-Host "`nAre you sure you want to delete $sitePath\*? (y/n)"
 if ($confirm -ne "y") {

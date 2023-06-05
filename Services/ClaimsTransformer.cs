@@ -31,11 +31,19 @@ namespace IAR.Services
             }
 
             principal.AddIdentity(claimsIdentity);
+            
+            claimType = "AccountName";
+            if (!principal.HasClaim(claim => claim.Type == claimType) && accountName != null)
+            {
+                claimsIdentity.AddClaim(new Claim(claimType, accountName));
+            }
+
+            principal.AddIdentity(claimsIdentity);
 
             var displayName = _context.Users
                 .Where(u => u.AccountName == accountName)
                 .Select(u => u.DisplayName).FirstOrDefault();
-            
+
             claimType = "DisplayName";
             if (!principal.HasClaim(claim => claim.Type == claimType) && displayName != null)
             {

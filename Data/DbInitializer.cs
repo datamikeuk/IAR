@@ -24,7 +24,7 @@ namespace IAR.Data
                 new Tooltip{FieldName="DataSteward", TooltipText="The data steward of the asset"},
                 new Tooltip{FieldName="ThirdParties", TooltipText="The third parties that use the asset"},
                 new Tooltip{FieldName="Volume", TooltipText="The volume of the asset"},
-                new Tooltip{FieldName="AccesedBy", TooltipText="The users that access the asset"}
+                new Tooltip{FieldName="AccessedBy", TooltipText="The users that access the asset"}
             };
 
             context.Tooltips.AddRange(tooltips);

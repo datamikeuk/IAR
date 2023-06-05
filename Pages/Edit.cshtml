@@ -7,7 +7,14 @@
     var icons = @Url.Content("~/bootstrap-icons.svg");
     var tooltipIcon = @icons+"#question-circle";
     var userListApiUrl = Url.Content("~/api/userlist?listLength=10");
-    var hidden = @Model.CanEdit ? "" : "hidden";
+    var editHidden = @Model.CanEdit ? "" : "hidden";
+    var adminHidden = @Model.IsAdmin ? "" : "hidden";
+    var updatedText = "Updated: " + @Model.Asset.UpdatedDate.ToShortDateString() + " by " + @Model.GetDisplayName(@Model.Asset.UpdatedBy ?? "");
+    var reviewedText = " Last Reviewed: " + @Model.Asset.LastReviewDate?.ToShortDateString() + " by " + @Model.GetDisplayName(@Model.Asset.ReviewedBy ?? "");;
+    if (@Model.Asset.LastReviewDate == null)
+    {
+        reviewedText = "Never Reviewed";
+    }
 }
 
 <div id="modal-placeholder"></div>
@@ -16,20 +23,39 @@
     <form id="edit-form" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="Asset.ID" />
-        <input type="hidden" id="review-date" asp-for="Asset.LastReviewDate" />
-        <input type="hidden" id="next-review-date" asp-for="Asset.NextReviewDate" />
         @* Header Section *@
         <section>
-            <button type="button" id="edit-mode-toggle" class="btn btn-secondary" data-bs-toggle="button" onclick="toggleEditMode();" @hidden>Edit</button>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#review-modal" @hidden>Review</button>
             <div class="form-group">
-                <h1 class="edit-hide">@Model.Asset.Name</h1>
-                <input asp-for="Asset.Name" class="form-control readonly edit-show" style="font-size: 30px; width: 100%; display: none" readonly/>
+                <h1 class="display-5 text-center edit-hide pt-2">@Model.Asset.Name</h1>
+                <label asp-for="Asset.Name" class="control-label edit-show pt-2 d-none"></label>
+                <input asp-for="Asset.Name" class="form-control edit-show text-center d-none w-100 fs-3"/>
                 <span asp-validation-for="Asset.Name" class="text-danger"></span>
             </div>
-            <p>Created: @Model.Asset.CreatedDate.ToShortDateString() Created By: @Model.Asset.CreatedBy Updated: @Model.Asset.UpdatedDate.ToShortDateString() Updated By: @Model.Asset.UpdatedBy Last Reviewed: @Model.Asset.LastReviewDate Reviewed By: @Model.Asset.ReviewedBy</p>
+            <p class="text-center">@updatedText | @reviewedText</p>
+            <div class="row d-flex justify-content-center align-content-center">
+                    <button type="button" id="edit-mode-toggle" class="btn btn-secondary col-1 mx-2 mb-2" data-bs-toggle="button" onclick="toggleEditMode();" @editHidden>
+                        <svg class="bi"><use href="@icons#pencil-square"></use></svg>
+                        Edit
+                    </button>
+                    <button type="button" class="btn btn-secondary col-1 mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#review-modal" @editHidden>
+                        <svg class="bi"><use href="@icons#calendar-check"></use></svg>
+                        Review
+                    </button>
+                    <button type="submit" class="btn btn-secondary col-1 mx-2 mb-2 disable" @editHidden disabled>
+                        <svg class="bi"><use href="@icons#save"></use></svg>
+                        Save
+                    </button>
+                    <button type="button" class="btn btn-danger col-1 mx-2 mb-2" @adminHidden asp-page="/Delete/@Model.Asset.ID">
+                        <svg class="bi"><use href="@icons#trash"></use></svg>
+                        Delete
+                    </button>
+            </div>
+            <hr />
             <div class="form-group">
-                <textarea asp-for="Asset.Description" class="form-control readonly" style="width: 100%;" placeholder="Description" readonly></textarea>
+                <label asp-for="Asset.Description" class="control-label"></label>
+                <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("Description")"><use href=@tooltipIcon></use></svg>
+                <p class="edit-hide">@Model.Asset.Description</p>
+                <textarea asp-for="Asset.Description" class="form-control edit-show d-none w-100" placeholder="Description"></textarea>
                 <span asp-validation-for="Asset.Description" class="text-danger"></span>
             </div>
             @* Responsibilities Row *@
@@ -71,7 +97,9 @@
                     <div class="form-group">
                         <label asp-for="Asset.PhysicalLocation" class="control-label"></label>
                         <div class="input-group">
-                            <select asp-for="Asset.PhysicalLocation" class="form-select disable" asp-items="Html.GetEnumSelectList<PhysicalLocationEnum>()" disabled></select>
+                            <select asp-for="Asset.PhysicalLocation" class="form-select disable" asp-items="Html.GetEnumSelectList<PhysicalLocationEnum>()" disabled>
+                                    <option value=""></option>
+                            </select>
                             <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("PhysicalLocation")">
                                 <svg class="bi"><use href=@tooltipIcon></use></svg>
                             </button>
@@ -82,7 +110,9 @@
                     <div class="form-group">
                         <label asp-for="Asset.Volume" class="control-label"></label>
                         <div class="input-group">
-                            <select asp-for="Asset.Volume" class="form-select disable" asp-items="Html.GetEnumSelectList<VolumeEnum>()" disabled></select>
+                            <select asp-for="Asset.Volume" class="form-select disable" asp-items="Html.GetEnumSelectList<VolumeEnum>()" disabled>
+                                    <option value=""></option>
+                            </select>
                             <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("Volume")">
                                 <svg class="bi"><use href=@tooltipIcon></use></svg>
                             </button>
@@ -93,7 +123,9 @@
                     <div class="form-group">
                         <label asp-for="Asset.BackEndPlatform" class="control-label"></label>
                         <div class="input-group">
-                            <select asp-for="Asset.BackEndPlatformID" class="form-select disable" asp-items="@Model.BackEndPlatformNameSL" disabled></select>
+                            <select asp-for="Asset.BackEndPlatformID" class="form-select disable" asp-items="@Model.BackEndPlatformNameSL" disabled>
+                                    <option value=""></option>
+                            </select>
                             <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("BackEndPlatform")">
                                 <svg class="bi"><use href=@tooltipIcon></use></svg>
                             </button>
@@ -104,7 +136,9 @@
                     <div class="form-group">
                         <label asp-for="Asset.FrontEndPlatform" class="control-label"></label>
                         <div class="input-group">
-                            <select asp-for="Asset.FrontEndPlatformID" class="form-select disable" asp-items="@Model.FrontEndPlatformNameSL" disabled></select>
+                            <select asp-for="Asset.FrontEndPlatformID" class="form-select disable" asp-items="@Model.FrontEndPlatformNameSL" disabled>
+                                    <option value=""></option>
+                            </select>
                             <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" title="@Model.GetTooltipText("FrontEndPlatform")">
                                 <svg class="bi"><use href=@tooltipIcon></use></svg>
                             </button>
@@ -160,18 +194,20 @@
                 </div>
                 @* Secondary Purpose *@
                 <div class="form-group">
-                    <label class="form-check-label">
-                        <input class="form-check-input disable" type="checkbox" asp-for="Asset.SecondaryPurpose" id="secondary-purpose"
-                            onclick="if (this.checked) { $('#secondary-purpose-details').show(); } else { $('#secondary-purpose-details').hide(); }" disabled>
-                        @Html.DisplayNameFor(model => model.Asset.SecondaryPurpose)
-                    </label>
-                    <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SecondaryPurpose")"><use href=@tooltipIcon></use></svg>
-                </div>               
+                    <div class="form-check pt-3">
+                        <input class="form-check-input checkbox-xl disable" type="checkbox" asp-for="Asset.SecondaryPurpose" id="secondary-purpose-checkbox"
+                            onclick="if (this.checked) { $('#secondary-purpose-details').removeClass('d-none'); } else { $('#secondary-purpose-details').addClass('d-none'); }" disabled/>
+                        <label class="form-check-label checkbox-xl" for="secondary-purpose-checkbox"> 
+                            @Html.DisplayNameFor(model => model.Asset.SecondaryPurpose)
+                        </label>
+                        <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SecondaryPurpose")"><use href=@tooltipIcon></use></svg>
+                    </div>               
+                </div>
                 @* Secondary Purpose Details *@
-                <div class="form-group" id="secondary-purpose-details" style="display: none;">
-                    <label asp-for="Asset.SecondaryPurposeDetails" class="control-label"></label>
-                    <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SecondaryPurposeDetails")"><use href=@tooltipIcon></use></svg>
-                    <textarea asp-for="Asset.SecondaryPurposeDetails" class="form-control disable" disabled></textarea>
+                <div class="form-group d-none" id="secondary-purpose-details">
+                    @* <label asp-for="Asset.SecondaryPurposeDetails" class="control-label"></label>
+                    <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SecondaryPurposeDetails")"><use href=@tooltipIcon></use></svg> *@
+                    <textarea asp-for="Asset.SecondaryPurposeDetails" class="form-control disable" placeholder="Secondary purpose detail" disabled></textarea>
                     <span asp-validation-for="Asset.SecondaryPurposeDetails" class="text-danger"></span>
                 </div>
             </div>
@@ -179,15 +215,17 @@
         </section>
         @* Subject to DPA *@
         <div class="form-group">
-            <label class="form-check-label">
-                <input class="form-check-input disable" type="checkbox" asp-for="Asset.SubjectToDPA" id="subject-to-dpa"
-                    onclick="if (this.checked) { $('#dpa-section').show(); } else { $('#dpa-section').hide(); }" disabled>
-                @Html.DisplayNameFor(model => model.Asset.SubjectToDPA)
-            </label>
-            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SubjectToDPA")"><use href=@tooltipIcon></use></svg>
+            <div class="form-check">
+                <input class="form-check-input disable checkbox-xl" type="checkbox" asp-for="Asset.SubjectToDPA" id="subject-to-dpa-checkbox"
+                    onclick="if (this.checked) { $('#dpa-section').removeClass('d-none'); } else { $('#dpa-section').addClass('d-none'); }" disabled>
+                <label class="form-check-label checkbox-xl" for="subject-to-dpa-checkbox">
+                    @Html.DisplayNameFor(model => model.Asset.SubjectToDPA)
+                </label>
+                <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SubjectToDPA")"><use href=@tooltipIcon></use></svg>
+            </div>
             <hr />
         </div>
-        <section id="dpa-section" style="display: none;">
+        <section class="d-none" id="dpa-section">
             <div class="row">
                 @* DPA *@
                 <div class="col">
@@ -277,15 +315,17 @@
                         <li class="list-group-item flex-fill">
                             <label class="form-check-label">
                                 <input class="form-check-input disable" type="checkbox" asp-for="Asset.LawfulBasisConsent" id="lawful-basis-consent"
-                                onclick="if (this.checked) { $('#lawful-basis-consent-detail').show(); } else { $('#lawful-basis-consent-detail').hide(); }" disabled>
+                                onclick="if (this.checked) { $('#lawful-basis-consent-detail').removeClass('d-none'); } else { $('#lawful-basis-consent-detail').addClass('d-none'); }" disabled>
                                 @Html.DisplayNameFor(model => model.Asset.LawfulBasisConsent)
                             </label>
                             <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisConsent")"><use href=@tooltipIcon></use></svg>
                         </li>
                             @* Lawful Basis Consent Detail *@
-                        <li class="list-group-item flex-fill" id="lawful-basis-consent-detail" style="display: none">
+                        <li class="list-group-item flex-fill d-none" id="lawful-basis-consent-detail">
                             <div class="form-group">
-                                <textarea asp-for="Asset.LawfulBasisConsentDetail" class="form-control disable" placeholder="Lawful Basis Consent Detail" style="resize:none; overflow:hidden;" disabled></textarea>
+                                @* <label asp-for="Asset.LawfulBasisConsentDetail" class="control-label"></label>
+                                <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisConsentDetail")"><use href=@tooltipIcon></use></svg> *@                                
+                                <textarea asp-for="Asset.LawfulBasisConsentDetail" class="form-control disable" placeholder="Lawful Basis Consent Detail" disabled></textarea>
                                 <span asp-validation-for="Asset.LawfulBasisConsentDetail" class="text-danger"></span>
                             </div>
                         </li>
@@ -293,17 +333,17 @@
                         <li class="list-group-item flex-fill">
                             <label class="form-check-label">
                                 <input class="form-check-input disable" type="checkbox" asp-for="Asset.LawfulBasisContract" id="lawful-basis-contract"
-                                    onclick="if (this.checked) { $('#lawful-basis-contract-detail').show(); } else { $('#lawful-basis-contract-detail').hide(); }" disabled>
+                                    onclick="if (this.checked) { $('#lawful-basis-contract-detail').removeClass('d-none'); } else { $('#lawful-basis-contract-detail').addClass('d-none'); }" disabled>
                                 @Html.DisplayNameFor(model => model.Asset.LawfulBasisContract)
                             </label>
                             <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisContract")"><use href=@tooltipIcon></use></svg>
                         </li>
                             @* Lawful Basis Contract Detail *@
-                        <li class="list-group-item flex-fill" id="lawful-basis-contract-detail" style="display: none">
+                        <li class="list-group-item flex-fill d-none" id="lawful-basis-contract-detail">
                             <div class="form-group">
-                                <label asp-for="Asset.LawfulBasisContractDetail" class="control-label"></label>
-                                <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisContractDetail")"><use href=@tooltipIcon></use></svg>
-                                <textarea asp-for="Asset.LawfulBasisContractDetail" class="form-control disable" disabled></textarea>
+                                @* <label asp-for="Asset.LawfulBasisContractDetail" class="control-label"></label>
+                                <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisContractDetail")"><use href=@tooltipIcon></use></svg> *@
+                                <textarea asp-for="Asset.LawfulBasisContractDetail" class="form-control disable" placeholder="Lawful Basis Contract Detail" disabled></textarea>
                                 <span asp-validation-for="Asset.LawfulBasisContractDetail" class="text-danger"></span>
                             </div>
                         </li>
@@ -311,17 +351,17 @@
                         <li class="list-group-item flex-fill">
                             <label class="form-check-label">
                                 <input class="form-check-input disable" type="checkbox" asp-for="Asset.LawfulBasisLegalObligation" id="lawful-basis-legal"
-                                    onclick="if (this.checked) { $('#lawful-basis-legal-detail').show(); } else { $('#lawful-basis-legal-detail').hide(); }" disabled>
+                                    onclick="if (this.checked) { $('#lawful-basis-legal-detail').removeClass('d-none'); } else { $('#lawful-basis-legal-detail').addClass('d-none'); }" disabled>
                                 @Html.DisplayNameFor(model => model.Asset.LawfulBasisLegalObligation)
                             </label>
                             <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisLegalObligation")"><use href=@tooltipIcon></use></svg>
                         </li>
                             @* Lawful Basis Legal Obligation Detail *@
-                        <li class="list-group-item flex-fill" id="lawful-basis-legal-detail" style="display: none">
+                        <li class="list-group-item flex-fill d-none" id="lawful-basis-legal-detail">
                             <div class="form-group">
-                                <label asp-for="Asset.LawfulBasisLegalObligationDetail" class="control-label"></label>
-                                <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisLegalObligationDetail")"><use href=@tooltipIcon></use></svg>
-                                <textarea asp-for="Asset.LawfulBasisLegalObligationDetail" class="form-control disable" disabled></textarea>
+                                @* <label asp-for="Asset.LawfulBasisLegalObligationDetail" class="control-label"></label>
+                                <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisLegalObligationDetail")"><use href=@tooltipIcon></use></svg> *@
+                                <textarea asp-for="Asset.LawfulBasisLegalObligationDetail" class="form-control disable" placeholder="Lawful Basis Legal Obligation Detail" disabled></textarea>
                                 <span asp-validation-for="Asset.LawfulBasisLegalObligationDetail" class="text-danger"></span>
                             </div>
                         </li>
@@ -329,17 +369,17 @@
                         <li class="list-group-item flex-fill">
                             <label class="form-check-label">
                                 <input class="form-check-input disable" type="checkbox" asp-for="Asset.LawfulBasisVitalInterest" id="lawful-basis-vital"
-                                    onclick="if (this.checked) { $('#lawful-basis-vital-detail').show(); } else { $('#lawful-basis-vital-detail').hide(); }" disabled>
+                                    onclick="if (this.checked) { $('#lawful-basis-vital-detail').removeClass('d-none'); } else { $('#lawful-basis-vital-detail').addClass('d-none'); }" disabled>
                                 @Html.DisplayNameFor(model => model.Asset.LawfulBasisVitalInterest)
                             </label>
-                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisLegalObligation")"><use href=@tooltipIcon></use></svg>
+                            <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisVitalInterest")"><use href=@tooltipIcon></use></svg>
                         </li>
                             @* Lawful Basis Vital Interest Detail *@
-                        <li class="list-group-item flex-fill" id="lawful-basis-vital-detail" style="display: none">
+                        <li class="list-group-item flex-fill d-none" id="lawful-basis-vital-detail">
                             <div class="form-group">
-                                <label asp-for="Asset.LawfulBasisVitalInterestDetail" class="control-label"></label>
-                                <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisVitalInterestDetail")"><use href=@tooltipIcon></use></svg>
-                                <textarea asp-for="Asset.LawfulBasisVitalInterestDetail" class="form-control disable" disabled></textarea>
+                                @* <label asp-for="Asset.LawfulBasisVitalInterestDetail" class="control-label"></label>
+                                <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("LawfulBasisVitalInterestDetail")"><use href=@tooltipIcon></use></svg> *@
+                                <textarea asp-for="Asset.LawfulBasisVitalInterestDetail" class="form-control disable" placeholder="Lawful Basis Vital Interest Detail" disabled></textarea>
                                 <span asp-validation-for="Asset.LawfulBasisVitalInterestDetail" class="text-danger"></span>
                             </div>
                         </li>
@@ -450,7 +490,7 @@
             <p>Description placeholder</p>
             <partial name="_ThirdPartyTable", model="Model.Asset.ThirdParties"/>
             <button type="button" class="btn btn-secondary" data-toggle="ajax-modal"
-                data-url="@Url.Page("Edit","ThirdPartyModal")" @hidden>
+                data-url="@Url.Page("Edit","ThirdPartyModal")" @editHidden>
                 Add Third Party
             </button>
             <hr />
@@ -461,7 +501,7 @@
             <p>Description placeholder</p>
             <partial name="_RetentionPeriodTable", model="Model.Asset.RetentionPeriods"/>
             <button type="button" class="btn btn-secondary" data-toggle="ajax-modal"
-                data-url="@Url.Page("Edit","RetentionPeriodModal")" @hidden>
+                data-url="@Url.Page("Edit","RetentionPeriodModal")" @editHidden>
                 Add Retention Period
             </button>
             <hr />
@@ -470,17 +510,13 @@
         <section>
             <h4>Notes</h4>
             <p>Description placeholder</p>
-            <partial name="_NoteTable", model="Model.Asset.Notes"/>
+            <partial name="_NoteTable", model="Model.NoteList"/>
             <button type="button" class="btn btn-secondary" data-toggle="ajax-modal"
-                data-url="@Url.Page("Edit","NoteModal")" @hidden>
+                data-url="@Url.Page("Edit","NoteModal")" @editHidden>
                 Add Note
             </button>
             <hr />
         </section>
-        @* Save *@
-        <div class="form-group">
-            <input type="submit" value="Save" class="btn btn-secondary edit-show" style="margin-top: 10px; display: none" />
-        </div>
         <div>
             <a asp-page="View">Retun to View Assets</a>
         </div>
@@ -579,42 +615,42 @@
             });
         });
 
-        // If subject-to-dpa is checked, show dpa-section
-        if ($("#subject-to-dpa").is(":checked")) {
-            $('#dpa-section').show();
+        // If subject-to-dpa-checkbox is checked, show dpa-section
+        if ($("#subject-to-dpa-checkbox").is(":checked")) {
+            $('#dpa-section').removeClass('d-none');
         }
 
         // If secondary-purpose is checked, show secondary-purpose-details
-        if ($("#secondary-purpose").is(":checked")) {
-            $('#secondary-purpose-details').show();
+        if ($("#secondary-purpose-checkbox").is(":checked")) {
+            $('#secondary-purpose-details').removeClass('d-none');
         }
 
         // If lawful-basis-consent is checked, show lawful-basis-consent-detail
         if ($("#lawful-basis-consent").is(":checked")) {
-            $('#lawful-basis-consent-detail').show();
+            $('#lawful-basis-consent-detail').removeClass('d-none');
         }
 
         // If lawful-basis-contract is checked, show lawful-basis-contract-detail
         if ($("#lawful-basis-contract").is(":checked")) {
-            $('#lawful-basis-contract-detail').show();
+            $('#lawful-basis-contract-detail').removeClass('d-none');
         }
 
         // If lawful-basis-legal is checked, show lawful-basis-legal-detail
         if ($("#lawful-basis-legal").is(":checked")) {
-            $('#lawful-basis-legal-detail').show();
+            $('#lawful-basis-legal-detail').removeClass('d-none');
         }
 
         // If lawful-basis-vital is checked, show lawful-basis-vital-detail
         if ($("#lawful-basis-vital").is(":checked")) {
-            $('#lawful-basis-vital-detail').show();
+            $('#lawful-basis-vital-detail').removeClass('d-none');
         }
 
         // If edit-mode-toggle is checked, enable edit mode
         function toggleEditMode() {
             if ($("#edit-mode-toggle").hasClass("active")) {
                 //console.log("editMode");
-                $('.edit-show').show();
-                $('.edit-hide').hide();
+                $('.edit-show').removeClass('d-none');
+                $('.edit-hide').addClass('d-none');
                 $('.disable').prop('disabled', false);
                 $('.readonly').prop('readonly', false);
             } else {
@@ -626,8 +662,8 @@
                 // Clear validation errors
                 $('.field-validation-error').empty();
                 //console.log("viewMode");
-                $('.edit-show').hide();
-                $('.edit-hide').show();
+                $('.edit-show').addClass('d-none');
+                $('.edit-hide').removeClass('d-none');
                 $('.disable').prop('disabled', true);
                 $('.readonly').prop('readonly', true);
             }
@@ -640,27 +676,6 @@
                 placement: 'right'
             });
         });
-
-        // On review button click, PUT /api/review/{id}
-        @* $('#review-button').click(function () {
-            var id = @Model.Asset.ID;
-            $.ajax({
-                type: "PUT",
-                url: "/api/review/" + id,
-                success: function (data) {
-                    console.log("success");
-                    console.log(data);
-                    $('#review-modal').modal('hide');
-                },
-                error: function (data) {
-                    console.log(data);
-                }
-            });
-        }); *@
-
-
-
-
     </script>
     
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Audit.EntityFramework;
 
@@ -9,12 +10,13 @@ namespace IAR.Models
         
         public required int AssetID { get; set; }
         
+        [Display(Name = "Retention Data/Policy")]
         public required string RetainedData { get; set; }
 
+        [Display(Name = "Retention Period (Months)")]
         public required int RetentionPeriodMonths { get; set; } = 12;
 
         // Audit fields
-
         [JsonIgnore]
         [AuditIgnore]
         public DateTime CreatedDate { get; set; }

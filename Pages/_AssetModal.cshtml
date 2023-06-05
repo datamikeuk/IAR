@@ -4,8 +4,8 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="AssetModalLabel">Add asset</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="AssetModalLabel">Enter name of new information asset:</h5>
+                <button type="button pt-2" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     @* <span aria-hidden="true">×</span> *@
                 </button>
             </div>
@@ -13,15 +13,15 @@
                 <form asp-page-handler="AssetModal" method="post" id="assetModal">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="Asset.Name"></label>
+                        <label asp-for="Asset.Name" hidden></label>
                         <input asp-for="Asset.Name" class="form-control" />
                         <span asp-validation-for="Asset.Name" class="text-danger"></span>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-save="modal">Save</button>
+                @* <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> *@
+                <button type="button" class="btn btn-primary" data-save="modal">OK</button>
             </div>
         </div>
     </div>

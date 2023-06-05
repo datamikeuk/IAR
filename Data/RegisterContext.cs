@@ -2,16 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using IAR.Models;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Audit.EntityFramework;
-using Audit.Core;
 
 namespace IAR.Data
 {
     public class RegisterContext : AuditDbContext
     {
-        private readonly UserResolver _userResolver;
-        public RegisterContext (DbContextOptions<RegisterContext> options, UserResolver userResolver) : base(options)
+        private readonly IHttpContextAccessor _context;
+        public RegisterContext (DbContextOptions<RegisterContext> options, IHttpContextAccessor context) : base(options)
         {
-            _userResolver = userResolver;
+            _context = context;
         }
 
         public DbSet<Asset> Assets => Set<Asset>();
@@ -30,6 +29,8 @@ namespace IAR.Data
             modelBuilder.ApplyConfiguration(new AssetConfiguration());
             modelBuilder.ApplyConfiguration(new ThirdPartyConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new RetentionPeriodConfiguration());
+            modelBuilder.ApplyConfiguration(new NoteConfiguration());
 
             modelBuilder.Entity<BackEndPlatform>()
                 .HasMany(p => p.Assets)
@@ -42,7 +43,7 @@ namespace IAR.Data
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            var accountName = _userResolver.GetAccountName();
+            var accountName = _context.HttpContext?.User.FindFirst("AccountName")?.Value;
 
             var entries = ChangeTracker
                 .Entries()

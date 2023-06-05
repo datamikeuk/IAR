@@ -1,24 +1,17 @@
 using System.Runtime.Versioning;
 using System.DirectoryServices;
+using IAR.Data;
 
 public class UserResolver
 {
     public readonly IHttpContextAccessor _context;
     private readonly IConfiguration _configuration;
+    // private readonly RegisterContext _db;
     public UserResolver(IHttpContextAccessor context, IConfiguration configuration)
     {
         _context = context;
         _configuration = configuration;
-    }
-
-    public string GetIdentityName()
-    {
-        return _context.HttpContext?.User.Identity?.Name??"";
-    }
-
-    public string GetUserName()
-    {
-        return GetIdentityName().Split('\\')[1];
+        // _db = db;
     }
 
     public string GetAccountName()
@@ -35,6 +28,15 @@ public class UserResolver
             return "error";
         }
     }
+
+    // Lookup Display Name from User table based on account name
+    // public string GetDisplayName(String accountName)
+    // {
+    //     var displayName = _db.Users
+    //         .Where(u => u.AccountName == accountName)
+    //         .Select(u => u.DisplayName).FirstOrDefault();
+    //     return displayName??"";
+    // }
 
     // [SupportedOSPlatform("windows")]
     // public string GetCurrentDomainPath()

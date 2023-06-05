@@ -19,8 +19,9 @@ builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
 builder.Services.AddSingleton<ValidateAuthentication>();
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSingleton<UserResolver>();
+// builder.Services.AddSingleton<UserResolver>();
 builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
+builder.Services.AddTransient<UserTableLookup>();
 
 // Set the fallback authorization policy to require users to be authenticated
 builder.Services.AddAuthorization(options =>
@@ -53,7 +54,8 @@ var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    // app.UseExceptionHandler("/Error");
+    app.UseDeveloperExceptionPage();
     app.UseHsts();
 }
 else
@@ -70,7 +72,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<RegisterContext>();
-    context.Database.EnsureCreated();
+    // context.Database.EnsureCreated();
     DbInitializer.Initialize(context);
 }
 
@@ -94,17 +96,10 @@ Apis.GetApis(app);
 
 Audit.Core.Configuration.AuditDisabled = false;
 
-// var _userResolver = builder.Services.BuildServiceProvider().GetService<UserResolver>();
-
 // Audit.Core.Configuration.AddCustomAction(ActionType.OnScopeCreated, scope =>
 // {
-//     scope.Event.Environment.UserName = _userResolver?.GetAccountName();
+//     scope.Event.Environment.UserName = app.Services.GetService<UserResolver>()?.GetAccountName();
 // });
-
-Audit.Core.Configuration.AddCustomAction(ActionType.OnScopeCreated, scope =>
-{
-    scope.Event.Environment.UserName = app.Services.GetService<UserResolver>()?.GetAccountName();
-});
 
 Audit.Core.Configuration.Setup()
     .UseEntityFramework(_ => _

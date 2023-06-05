@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Audit.EntityFramework;
 
@@ -9,6 +10,7 @@ namespace IAR.Models
         
         public required int AssetID { get; set; }
         
+        [Display(Name = "Note")]
         public required string NoteText { get; set; }
 
         // Audit fields

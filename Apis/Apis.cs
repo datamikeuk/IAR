@@ -24,6 +24,7 @@ namespace IAR.Apis
 
             app.MapGet("/api/tabledata", async (
                 RegisterContext db,
+                // UserResolver userResolver,
                 string? accountname,
                 bool? review
             ) => await db.Assets
@@ -43,21 +44,23 @@ namespace IAR.Apis
                 .Select(a => new { 
                     a.ID,
                     a.Name,
+                    a.Description,
                     a.ExecutiveSponsorAccountName,
                     a.DataOwnerAccountName,
                     a.DataStewardAccountName,
                     ExecutiveSponsorName = a.ExecutiveSponsor != null ? a.ExecutiveSponsor.DisplayName : "",
                     DataOwnerName = a.DataOwner != null ? a.DataOwner.DisplayName : "",
                     DataStewardName = a.DataSteward != null ? a.DataSteward.DisplayName : "",
-                    LastReviewDate = a.LastReviewDate,
+                    // LastReviewDate = a.LastReviewDate,
                     NextReviewDate = a.NextReviewDate,
                     // BackEndPlatformName = a.BackEndPlatform != null ? a.BackEndPlatform.Name : "",
                     // FrontEndPlatformName  = a.FrontEndPlatform != null ? a.FrontEndPlatform.Name : "",
                     // a.ThirdParties,
-                    a.CreatedDate,
-                    a.CreatedBy,
-                    a.UpdatedDate,
-                    a.UpdatedBy
+                    // a.CreatedDate,
+                    // a.CreatedBy,
+                    // CreatedBy = userResolver.GetDisplayName(a.CreatedBy??""),
+                    // a.UpdatedDate,
+                    // a.UpdatedBy
                 })
                 .ToListAsync()
             );

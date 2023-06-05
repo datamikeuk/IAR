@@ -60,6 +60,10 @@ $navbar-light-active-color: $hg-bumblebee;
 
 @import "../wwwroot/lib/bootstrap/scss/utilities/api";
 
+.wf-active h1, .wf-active h2, .wf-active h3, .wf-active h4, .wf-active h5, .wf-active h6, h1, h2, h3, h4, h5, h6 {
+  font-family: basic-sans,sans-serif;
+}
+
 *{
   font-family: Monstserrat, sans-serif ;
 }
@@ -99,6 +103,22 @@ html {
 body {
   padding-top: 4.5em;
   margin-bottom: 60px;
+}
+
+label.control-label {
+  padding-bottom: 5px;
+  padding-top: 5px;
+  font-weight: bold;
+}
+
+.form-check-input.checkbox-xl {
+  width: 1.5rem; 
+  height: 1.5rem;
+}
+
+.checkbox-xl.form-check-label {
+  padding-top: 0.2rem;
+  padding-left: 0.6rem;
 }
 
 // Bootstrap Icons
@@ -168,8 +188,8 @@ button:focus:not(:focus-visible) {
   }
 
   .navbar-toggler-icon {
-    filter: invert(100%);
     -webkit-filter: invert(100%);
+    filter: invert(100%);
   }
 }
 

@@ -14,13 +14,12 @@ namespace IAR.Models
         [Display(Name = "Third Party Name")]
         public required string ThirdPartyName { get; set; }
 
-        [Required(ErrorMessage = "Use is required.")]
         public string? Use { get; set; }
 
         public LocationEnum? Location { get; set; }
-
+        
+        [Display(Name = "Location Detail")]
         public string? LocationDetail { get; set; }
-
 
         // Audit fields
         [JsonIgnore]

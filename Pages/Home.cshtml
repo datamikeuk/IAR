@@ -2,38 +2,90 @@
 @model IAR.Pages.HomeModel
 @{
     ViewData["Title"] = "Home";
+    var icons = @Url.Content("~/bootstrap-icons.svg");
+
+    var logoLight = @Url.Content("~/img/logo colour.png");
+    var logoDark = @Url.Content("~/img/logo colour light text.png");
+
 }
 <body>
-    <div class="d-flex justify-content-center align-items-center" style="padding-top: 9px;padding-bottom: 9px;"><img
-            class="img-fluid" src="~/img/logo colour.png" width="143" height="93" /></div>
-    <div class="text-center d-flex flex-column justify-content-center align-items-center"
-        style="padding-top: 4px;padding-bottom: 4px;">
-        <h1 class="display-1 fw-bold"
-            style="padding-left: 40px;padding-right: 40px;">Information Asset
-            Register</h1>
-        <p>Assets, systems and applications used for processing or storing personal data across the organisation</p>
-        <div class="mx-auto col-10 col-md-8 col-lg-6">
-            <input type="text" class="form-control autocomplete" id="autocompleteInput" name="autocompleteInput" placeholder="Search..." />
+  <div class="container px-1 py-2">
+      <div class="row flex-lg-row-reverse align-items-center">
+        <div class="col-10 col-sm-8 col-lg-6 d-none d-lg-block align-right">
+          <img src="~/img/header-image.png" class="d-block mx-lg-auto img-fluid" alt="Asset Image" width="470" height="250" loading="lazy" />
         </div>
-        <a asp-page="View"><button class="btn btn-secondary" type="button" style="margin-top: 10px;">View All</button></a>
+        <div class="col-lg-6 align-top pt-0 h-100">
+          <div class="d-flex justify-content-center pb-2">
+            <img class="img-fluid" id="header-logo" src="" width="130" height="100" />
+          </div>
+          <h1 class="display-6 fw-bold text-center py-2">Information Asset Register</h1>
+          <p class="lead text-center">
+            A comprehensive inventory of data, systems and documents that contain business-critical, personal and sensitive information. 
+            The goal is to identify and classify all assets and to implement appropriate security measures to protect them. 
+            This will ensure that we remain compliant with data protection laws, regulations and industry standards.</p>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-start shadow border border-1 rounded-1 py-1">
+            <input type="text" class="form-control autocomplete border-0" id="autocompleteInput" name="autocompleteInput" placeholder="Search for an asset..." />
+            <a asp-page="View"><button class="btn btn-secondary mt-2" type="button" hidden>View All</button></a>
+          </div>
+        </div>
+      </div>
+  </div>
+  <hr>
+  <h1 class="display-6 fw-bold text-center">Reviews, Roles and Responsibilities</h1>
+  <p class="lead text-center">Assets are required to be reviewed on a regular basis to ensure that they are still aligned with the group's needs and that they are being properly managed. The frequency of reviews will vary depending on the asset, however, it is important to review assets at least annually to ensure that they are still being properly protected.</p>
+  <div class="row">
+    <div class="col-4">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">
+            <svg class="bi"><use href="@icons#person"></use></svg>
+            <b>Executive Sponsor</b>
+          </h3>
+          <p class="card-text">
+              <ul class="list-group">
+                  <li class="list-group-item">• Ensure that the asset is properly identified and classified. This includes understanding the asset's value, sensitivity, and usage.</li>
+                  <li class="list-group-item">• Ensure that the asset is properly managed throughout its lifecycle. This includes tracking the asset's ownership, location, and usage.</li>
+              </ul>
+          </p>
+        </div>
+      </div>
     </div>
-        @* <div id="main" style="display: none"></div>
-        <div class="container text-center">
-            <div class="row">
-                <div class="mx-auto col-10 col-md-8 col-lg-6">
-                    <h1 class="text-center">Information Asset Register</h1>
-                    <p class="lead">A simple application to manage your information assets</p>
-                    <form>
-                        <label for="autocompleteInput" class="form-label">Search for an asset</label>
-                        <input data-bs-display="static" type="text" class="form-control autocomplete" id="autocompleteInput" name="autocompleteInput" placeholder="Search..." />
-                    </form>
-                </div>
-            </div>
-            <h1 class="text-center">What is an information asset register?</h1>
-            <p>An Information Asset Register is a catalogue of the information the business holds and processes. It records where information assets are stored, how data moves in and out of the business and who it is shared with, so that we can understand its value and ensure that it is appropriately protected.</p>
-            <h1 class="text-center">What is an information asset?</h1>
-            <p>An information asset is any data stored in any manner that has some value either to you or the business such that if it was lost/inaccessible or inaccurate it would be difficult to replace without cost, skill, time or resource. Information assets include, for example, databases, data files, contracts and agreements, system documentation, user manuals, training materials, operational/support procedure, business continuity plans, back up plans, audit trails, archived information.</p>
-        </div> *@
+    <div class="col-4">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">
+            <svg class="bi"><use href="@icons#person"></use></svg>
+            <b>Data Owner</b>
+          </h3>
+          <p class="card-text">
+              <ul class="list-group">
+                  <li class="list-group-item">• Ensure that the asset is used in accordance with its classification and security controls. This includes ensuring that the asset is only accessed by authorized users and that it is not used for unauthorized purposes.</li>
+                  <li class="list-group-item">• Report any security incidents or breaches involving the asset to the Executive Sponsor.</li>
+                  <li class="list-group-item">• Ensure that the asset is properly maintained and updated. This includes ensuring that the asset is backed up regularly and that any changes to the asset are properly documented.</li>
+                  <li class="list-group-item">• Ensure that the asset is disposed of properly when it is no longer needed. This includes ensuring that the asset is destroyed or recycled in a secure manner.</li>
+              </ul>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">
+            <svg class="bi"><use href="@icons#person"></use></svg>
+            <b>Data Steward</b>
+          </h3>
+          <p class="card-text">
+              <ul class="list-group">
+                  <li class="list-group-item">• Provide technical expertise to the Data Owner. This includes assisting with the development and implementation of security controls, and tracking the asset's location and usage.</li>
+                  <li class="list-group-item">• Assist the Data Owner in ensuring that the asset is properly maintained and updated.</li>
+                  <li class="list-group-item">• Ensure that the asset is properly maintained and updated. This includes ensuring that the asset is destroyed or recycled in a secure manner.</li>
+              </ul>
+          </p>
+        </div>
+      </div>
+    </div>    
+  </div>
 </body>
 
 @section Scripts {
@@ -49,5 +101,45 @@
             fixed: true,
             maximumItems: 10,
         });
+    </script>
+    <script>
+      const theme = document.documentElement.getAttribute('data-bs-theme');
+      const logo = document.getElementById('header-logo');
+      if (theme === 'dark') {
+        console.log('dark');
+        logo.src = "@logoDark";
+      } else {
+        console.log('light');
+        logo.src = "@logoLight";
+      }
+
+      function observeThemeChanges(callback) {
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'data-bs-theme') {
+              const theme = mutation.target.getAttribute('data-bs-theme');
+              if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                theme = 'dark';
+              } else if (theme === 'auto') {
+                theme = 'light';
+              }
+              callback(theme);
+            }
+          });
+        });
+
+        observer.observe(document.documentElement, { attributes: true });
+      }
+
+      observeThemeChanges((theme) => {
+        const logo = document.getElementById('header-logo');
+        if (theme === 'dark') {
+          console.log('dark');
+          logo.src = "@logoDark";
+        } else {
+          console.log('light');
+          logo.src = "@logoLight";
+        }
+      });
     </script>
 }

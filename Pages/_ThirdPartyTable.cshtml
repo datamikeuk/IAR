@@ -1,9 +1,12 @@
 @model IEnumerable<IAR.Models.ThirdParty>;
 
-<table id="third-party-table" class="table" data-url="@Url.Page("Edit")">
+
+<table id="third-party-table" class="table table-striped table-bordered" data-url="@Url.Page("Edit")">
     <thead>
-        <th> ID </th>
-        <th> Name </th>
+        <th> @Html.DisplayNameFor(model => model.ThirdPartyName) </th>
+        <th> @Html.DisplayNameFor(model => model.Use) </th>
+        <th> @Html.DisplayNameFor(model => model.Location) </th>
+        <th> @Html.DisplayNameFor(model => model.LocationDetail) </th>
     </thead>
     <tbody>
         @{
@@ -11,8 +14,10 @@
             {
                 foreach (var item in Model) {
                     <tr>
-                        <td> @item.ID </td>
                         <td> @item.ThirdPartyName </td>
+                        <td> @item.Use </td>
+                        <td> @item.Location?.GetDisplayName() </td>
+                        <td> @item.LocationDetail </td>
                     </tr>
                 }   
             }

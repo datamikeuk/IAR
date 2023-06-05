@@ -10,14 +10,13 @@ namespace IAR.Pages
     {
         private readonly RegisterContext _context;
         private readonly IAuthorizationService _authorizationService;
-        private readonly UserResolver _userResolver;
-
-        // userResolver is used to get the current user's account name
-        public ViewModel(RegisterContext context, IAuthorizationService authorizationService, UserResolver userResolver)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+    
+        public ViewModel(RegisterContext context, IAuthorizationService authorizationService, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _authorizationService = authorizationService;
-            _userResolver = userResolver;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [BindProperty]
@@ -29,7 +28,7 @@ namespace IAR.Pages
         {
             var authResult = await _authorizationService.AuthorizeAsync(User, "Admin");
             IsAdmin = authResult.Succeeded;
-            AccountName = _userResolver.GetAccountName();
+            AccountName = _httpContextAccessor.HttpContext?.User.FindFirst("AccountName")?.Value;
             return Page();
         }
 

@@ -11,29 +11,43 @@
 <body>
     </br>
     <div class="form-group">
-        <button type="button" class="btn btn-secondary" data-toggle="ajax-modal" data-url="@Url.Page("View","AssetModal")">
+        <button type="button" class="btn btn-success me-3" data-toggle="ajax-modal" data-url="@Url.Page("View","AssetModal")">
+            <svg class="bi"><use href="@icons#plus-square"></use></svg>
             New Asset
         </button>
-        <button type="button" id="review" class="btn btn-secondary" data-bs-toggle="button" onclick="$('#asset-table').DataTable().ajax.reload();">Needs Review</button>
-        <button type="button" id="responsible" class="btn btn-secondary" data-bs-toggle="button" onclick="$('#asset-table').DataTable().ajax.reload();">My Assets</button>
+        @* <button type="button" id="review" class="btn btn-warning" data-bs-toggle="button" onclick="$('#asset-table').DataTable().ajax.reload();">
+            <svg class="bi"><use href="@icons#funnel"></use></svg>
+            Needs Review
+        </button>
+        <button type="button" id="responsible" class="btn btn-warning" data-bs-toggle="button" onclick="$('#asset-table').DataTable().ajax.reload();">
+            <svg class="bi"><use href="@icons#funnel"></use></svg>
+            My Assets
+        </button> *@
+        <div class="form-check form-check-inline form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="review-switch" onclick="$('#asset-table').DataTable().ajax.reload();">
+            <label class="form-check-label" for="review-switch">
+                <svg class="bi"><use href="@icons#funnel"></use></svg>
+                Needs Review
+            </label>
+        </div>
+        <div class="form-check form-check-inline form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="my-assets-switch" onclick="$('#asset-table').DataTable().ajax.reload();">
+            <label class="form-check-label" for="my-assets-switch">
+                <svg class="bi"><use href="@icons#funnel"></use></svg>
+                My Assets
+            </label>
+        </div>
     </div>
     </br>
-    <table id="asset-table" class="table table-striped table-hover table-bordered">
+    <table id="asset-table" class="table table-striped table-hover table-bordered w-100">
         <thead>
             <tr>
-                <th>@Html.DisplayNameFor(model => model.Asset.ID)</th>
-                <th>@Html.DisplayNameFor(model => model.Asset.Name)</th>
-                <th>Responsibilites</th>
-                @* <th>@Html.DisplayNameFor(model => model.Asset.BackEndPlatform)</th>
-                <th>@Html.DisplayNameFor(model => model.Asset.FrontEndPlatform)</th> *@
-                @* <th>Third Parties</th> *@
-                <th>@Html.DisplayNameFor(model => model.Asset.LastReviewDate)</th>
-                <th>@Html.DisplayNameFor(model => model.Asset.NextReviewDate)</th>
-                <th>@Html.DisplayNameFor(model => model.Asset.CreatedDate)</th>
-                <th>@Html.DisplayNameFor(model => model.Asset.CreatedBy)</th>
-                <th>@Html.DisplayNameFor(model => model.Asset.UpdatedDate)</th>
-                <th>@Html.DisplayNameFor(model => model.Asset.UpdatedBy)</th>
-                <th></th> @* delete button *@
+                <th class="text-center align-middle">@Html.DisplayNameFor(model => model.Asset.ID)</th>
+                <th class="text-center align-middle">@Html.DisplayNameFor(model => model.Asset.Name)</th>
+                <th class="text-center align-middle">@Html.DisplayNameFor(model => model.Asset.Description)</th>
+                <th class="text-center align-middle">Responsibilites</th>
+                <th class="text-center align-middle">@Html.DisplayNameFor(model => model.Asset.NextReviewDate)</th>
+                @* <th></th> *@
             </tr>
         </thead>
     </table>
@@ -49,6 +63,12 @@
                 ajax: {
                     url: "@Url.Content("~/api/tabledata")",
                     data: function(d){
+                        if ($('#review-switch').is(':checked')) {
+                            d.review = true;
+                        }
+                        if ($('#my-assets-switch').is(':checked')) {
+                            d.accountname = "@Model.AccountName";
+                        }
                         if ($('#responsible').hasClass('active')) {
                             d.accountname = "@Model.AccountName";
                         }
@@ -59,25 +79,27 @@
                     // Tell datatables to expect an array
                     dataSrc: '',
                 },
+                width: '100%',
                 columns: [
                     { data: 'id', visible: false},
-                    { data: 'name' },
+                    { data: 'name', width: '25%' },
+                    { data: 'description', width: '45%'},
                     // combine executive sponsor, data owner and data steward as list
                     { data: null,
                         render: function(data, type, row){
                             var list = [];
                             if (data.executiveSponsorAccountName == "@Model.AccountName") {
-                                executiveSponsorName = ('<span class="text-danger">Executive Sponsor: ' + data.executiveSponsorName + '</span>');
+                                executiveSponsorName = ('<span class="text-success text-opacity-70 fw-bold">Executive Sponsor: ' + data.executiveSponsorName + '</span>');
                             } else {
                                 executiveSponsorName = ('Executive Sponsor: ' + data.executiveSponsorName);
                             }                        
                             if (data.dataOwnerAccountName == "@Model.AccountName") {
-                                dataOwnerName = ('<span class="text-danger">Data Owner: ' + data.dataOwnerName + '</span>');
+                                dataOwnerName = ('<span class="text-success text-opacity-70 fw-bold">Data Owner: ' + data.dataOwnerName + '</span>');
                             } else {
                                 dataOwnerName = ('Data Owner: ' + data.dataOwnerName);
                             }                        
                             if (data.dataStewardAccountName == "@Model.AccountName") {
-                                dataStewardName = ('<span class="text-danger">Data Steward: ' + data.dataStewardName + '</span>');
+                                dataStewardName = ('<span class="text-success text-opacity-70 fw-bold">Data Steward: ' + data.dataStewardName + '</span>');
                             } else {
                                 dataStewardName = ('Data Steward: ' + data.dataStewardName);
                             }                        
@@ -88,39 +110,22 @@
   
                             // list join with line breaks
                             return list.join("<br/>");
-                        }
-                    },
-                    @* { data: 'backEndPlatformName' },
-                    { data: 'frontEndPlatformName' }, *@
-                    @* { data: 'thirdPartyNames',
-                        render: function(data, type, row){
-                            return data.split(",").join("<br/>");
-                        }
-                    }, *@
-                    // render as date
-                    { data: 'lastReviewDate',
-                      render: function(data, type, row){
-                          return new Date(data).toLocaleDateString() + ' ' + new Date(data).toLocaleTimeString();
-                      } },
-                    // render as date
+                        },
+                        width: '20%'
+                    },                    
                     { data: 'nextReviewDate',
                       render: function(data, type, row){
-                          return new Date(data).toLocaleDateString() + ' ' + new Date(data).toLocaleTimeString();
-                      } },
-                    // render as date
-                    { data: 'createdDate',
-                      render: function(data, type, row){
-                          return new Date(data).toLocaleDateString() + ' ' + new Date(data).toLocaleTimeString();
-                      } },
-                    { data: 'createdBy' },
-                    //render as date
-                    { data: 'updatedDate',
-                      render: function(data, type, row){
-                          return new Date(data).toLocaleDateString();
-                      } },
-                    { data: 'updatedBy' },
+                        if (data == null) {
+                            return "Never Reviewed"
+                        }
+                        else {
+                            return new Date(data).toLocaleDateString()
+                        }
+                      },
+                        width: '10%'
+                    },
                     // delete button
-                    {
+                    @* {
                         data: null,
                         className: "dt-center",
                         render : function(data, type, row){
@@ -129,7 +134,7 @@
                         searchable: false,
                         orderable: false,
                         visible: "@Model.IsAdmin" == "True"
-                    },
+                    }, *@
                 ],
                 paging: true, 
                 @* serverSide: true *@

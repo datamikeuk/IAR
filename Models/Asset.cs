@@ -9,7 +9,6 @@ namespace IAR.Models
 
         public bool Active { get; set; } = true;
 
-        [Required(ErrorMessage = "Asset Test!")]
         [Display(Name = "Asset Name")]
         public required string Name { get; set; }
 
@@ -68,7 +67,6 @@ namespace IAR.Models
         [Display(Name = "Updated Date")]
         public DateTime UpdatedDate { get; set; }
 
-        [AuditIgnore]
         [Display(Name = "Updated By")]
         public string? UpdatedBy { get; set; }
 
@@ -76,7 +74,6 @@ namespace IAR.Models
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
-        [AuditIgnore]
         [Display(Name = "Created By")]
         public string? CreatedBy { get; set; }
 
@@ -88,7 +85,7 @@ namespace IAR.Models
         [Display(Name = "Lawful Basis Consent Detail")]
         public string? LawfulBasisConsentDetail { get; set; }
 
-        [Display(Name = "Lawful Basis Constract")]
+        [Display(Name = "Lawful Basis Contract")]
         public bool LawfulBasisContract { get; set; }
 
         [Display(Name = "Lawful Basis Contract Detail")]
@@ -183,7 +180,7 @@ namespace IAR.Models
         public bool HealthSafetySecurity { get; set; }
 
         [Display(Name = "Visual Images")]
-        public bool VisualImages { get; set; }
+        public bool VisualImages { get; set; } = false;
 
         // ----- Navigation properties -----
         [Display(Name = "Executive Sponsor")]
@@ -230,7 +227,7 @@ namespace IAR.Models
         OnSite,
         [Display(Name = "Off-Site")]
         OffSite,
-        [Display(Name = "Physical Location")]
-        PhysicalLocation
+        [Display(Name = "Physical Store")]
+        PhysicalStore
     }
 }

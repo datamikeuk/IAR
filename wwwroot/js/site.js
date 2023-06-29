@@ -30,15 +30,15 @@ $(function () {
             placeholderElement.find('.modal-body').replaceWith(newBody);
             // console.log(data);
             if (data.success) 
-            {   
+            {
                 console.log("success");
                 // If the form is the asset form, reload the table
                 if (formId == "assetModal") {
                 // window.location.href = "/Edit/" + data.id;
                 $('#asset-table').DataTable().ajax.reload();
                 }
-                
-                if (formId == "thirdPartyModal") {
+
+                if (formId == "thirdPartyModal" || formId == "thirdPartyDeleteModal") {
                     var tableElement = $('#third-party-table');
 
                     var tableUrl = tableElement.data('url') + "?partialName=ThirdParty";;

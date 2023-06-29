@@ -22,6 +22,7 @@ builder.Services.AddHttpContextAccessor();
 // builder.Services.AddSingleton<UserResolver>();
 builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
 builder.Services.AddTransient<UserTableLookup>();
+// builder.Services.AddScoped<ThirdPartyService>();
 
 // Set the fallback authorization policy to require users to be authenticated
 builder.Services.AddAuthorization(options =>
@@ -37,10 +38,10 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddScoped<IAuthorizationHandler, AssetAuthorizationHandler>();
 
 // Background service to update users from AD - production only
-if (!builder.Environment.IsDevelopment())
-{
-    builder.Services.AddHostedService<UpdateUsersHostedService>();
-}
+// if (!builder.Environment.IsDevelopment())
+// {
+//     builder.Services.AddHostedService<UpdateUsersHostedService>();
+// }
 
 builder.Services.AddDbContext<RegisterContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RegisterContext") ?? 

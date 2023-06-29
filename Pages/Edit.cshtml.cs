@@ -88,6 +88,7 @@ namespace IAR.Pages
             PopulateFrontEndPlatformsDropDownList(_context, Asset.FrontEndPlatformID);
             return Page();
         }
+
         public async Task<IActionResult> OnPostAsync(int? id)
         {
             if (id == null)
@@ -163,7 +164,8 @@ namespace IAR.Pages
             ))
             {
                 await _context.SaveChangesAsync();
-                return RedirectToPage("./View");
+                // redirect to this page
+                return RedirectToPage("./Edit", new { id = assetToUpdate.ID });
             }
 
             PopulateBackEndPlatformsDropDownList(_context, assetToUpdate.BackEndPlatformID);
@@ -218,11 +220,11 @@ namespace IAR.Pages
         }
 
         public PartialViewResult OnGetThirdPartyModal(int id)
-        {   
+        {
                 var emptyThirdParty = new ThirdParty{ThirdPartyName="", AssetID=id};
                 return Partial("_ThirdPartyModal", emptyThirdParty);
         }
-        
+
         public async Task<IActionResult> OnPostThirdPartyModal(ThirdParty thirdPartyData)
         {
             var newThirdParty = new ThirdParty {
@@ -260,7 +262,7 @@ namespace IAR.Pages
         }
 
         public PartialViewResult OnGetRetentionPeriodModal(int id)
-        {   
+        {
                 var emptyRetentionPeriod = new RetentionPeriod{RetainedData="", RetentionPeriodMonths=12, AssetID=id};
                 return Partial("_RetentionPeriodModal", emptyRetentionPeriod);
         }
@@ -299,7 +301,7 @@ namespace IAR.Pages
         }
 
         public PartialViewResult OnGetNoteModal(int id)
-        {   
+        {
                 var emptyNote = new Note{NoteText="", AssetID=id};
                 return Partial("_NoteModal", emptyNote);
         }

@@ -57,6 +57,7 @@ namespace IAR.Models
 
         public string? Restricted { get; set; }
 
+        [Display(Name = "Maintained By")]
         public string? MaintainedBy { get; set; }
 
         public string? Provider { get; set; }

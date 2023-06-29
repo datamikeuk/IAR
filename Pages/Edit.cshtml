@@ -33,15 +33,15 @@
             </div>
             <p class="text-center">@updatedText | @reviewedText</p>
             <div class="row d-flex justify-content-center align-content-center">
-                    <button type="button" id="edit-mode-toggle" class="btn btn-secondary col-1 mx-2 mb-2" data-bs-toggle="button" onclick="toggleEditMode();" @editHidden>
+                    <button type="button" id="edit-mode-toggle" class="btn btn-success col-1 mx-2 mb-2" data-bs-toggle="button" onclick="toggleEditMode();" @editHidden>
                         <svg class="bi"><use href="@icons#pencil-square"></use></svg>
                         Edit
                     </button>
-                    <button type="button" class="btn btn-secondary col-1 mx-2 mb-2" data-bs-toggle="modal" data-bs-target="#review-modal" @editHidden>
+                    <button type="button" class="btn btn-primary col-1 mx-2 mb-2 edit-hide" data-bs-toggle="modal" data-bs-target="#review-modal" @editHidden>
                         <svg class="bi"><use href="@icons#calendar-check"></use></svg>
                         Review
                     </button>
-                    <button type="submit" class="btn btn-secondary col-1 mx-2 mb-2 disable" @editHidden disabled>
+                    <button type="submit" class="btn btn-warning col-1 mx-2 mb-2 disable" @editHidden disabled>
                         <svg class="bi"><use href="@icons#save"></use></svg>
                         Save
                     </button>
@@ -85,12 +85,12 @@
                     </div>                    
                 </div>
             </div>
-            <hr />
+            @* <hr /> *@
         </section>
         @* Edit Section *@
         <section>
-            <h4>Heading</h4>
-            <p>Description placeholder</p>
+            @* <h4>Heading</h4>
+            <p>Description placeholder</p> *@
             <div class="row">
                 <div class="col">
                     @* Physical Location *@
@@ -194,20 +194,22 @@
                 </div>
                 @* Secondary Purpose *@
                 <div class="form-group">
-                    <div class="form-check pt-3">
+                    <hr />
+                    <div class="form-check">
                         <input class="form-check-input checkbox-xl disable" type="checkbox" asp-for="Asset.SecondaryPurpose" id="secondary-purpose-checkbox"
                             onclick="if (this.checked) { $('#secondary-purpose-details').removeClass('d-none'); } else { $('#secondary-purpose-details').addClass('d-none'); }" disabled/>
                         <label class="form-check-label checkbox-xl" for="secondary-purpose-checkbox"> 
-                            @Html.DisplayNameFor(model => model.Asset.SecondaryPurpose)
+                            @* @Html.DisplayNameFor(model => model.Asset.SecondaryPurpose) *@
+                            Is the information used for any secondary purposes? If so, please provide details.
                         </label>
                         <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SecondaryPurpose")"><use href=@tooltipIcon></use></svg>
                     </div>               
                 </div>
                 @* Secondary Purpose Details *@
-                <div class="form-group d-none" id="secondary-purpose-details">
+                <div class="form-group d-none pt-3" id="secondary-purpose-details">
                     @* <label asp-for="Asset.SecondaryPurposeDetails" class="control-label"></label>
                     <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SecondaryPurposeDetails")"><use href=@tooltipIcon></use></svg> *@
-                    <textarea asp-for="Asset.SecondaryPurposeDetails" class="form-control disable" placeholder="Secondary purpose detail" disabled></textarea>
+                    <textarea asp-for="Asset.SecondaryPurposeDetails" class="form-control disable" disabled></textarea>
                     <span asp-validation-for="Asset.SecondaryPurposeDetails" class="text-danger"></span>
                 </div>
             </div>
@@ -219,18 +221,19 @@
                 <input class="form-check-input disable checkbox-xl" type="checkbox" asp-for="Asset.SubjectToDPA" id="subject-to-dpa-checkbox"
                     onclick="if (this.checked) { $('#dpa-section').removeClass('d-none'); } else { $('#dpa-section').addClass('d-none'); }" disabled>
                 <label class="form-check-label checkbox-xl" for="subject-to-dpa-checkbox">
-                    @Html.DisplayNameFor(model => model.Asset.SubjectToDPA)
+                    @* @Html.DisplayNameFor(model => model.Asset.SubjectToDPA) *@
+                    Does the asset contain information that is subject to the Data Protection Act?
                 </label>
                 <svg class="bi help-icon" data-bs-toggle="tooltip" title="@Model.GetTooltipText("SubjectToDPA")"><use href=@tooltipIcon></use></svg>
             </div>
-            <hr />
+            @* <hr /> *@
         </div>
         <section class="d-none" id="dpa-section">
-            <div class="row">
+            <div class="row pt-3">
                 @* DPA *@
                 <div class="col">
                     <h4>DPA</h2>
-                    <p>Description placeholder</p>
+                    @* <p>Description placeholder</p> *@
                     <ul class="list-group">
                         @* Personal Details *@
                         <li class="list-group-item flex-fill">
@@ -309,7 +312,7 @@
                 @* Lawful Basis *@
                 <div class="col">
                     <h4>Lawful Basis</h2>
-                    <p>Description placeholder</p>
+                    @* <p>Description placeholder</p> *@
                     <ul class="list-group">
                         @* Lawful Basis Consent *@
                         <li class="list-group-item flex-fill">
@@ -388,7 +391,7 @@
                 @* Special Categories *@
                 <div class="col">
                     <h4>Special Categories</h2>
-                    <p>Description placeholder</p>
+                    @* <p>Description placeholder</p> *@
                     <ul class="list-group">
                         <li class="list-group-item flex-fill">
                             @* Special Racial/Ethnic *@
@@ -486,11 +489,13 @@
         </section>
         @* Third Parties *@
         <section>
+            <hr />
             <h4>Third Parties</h4>
-            <p>Description placeholder</p>
+            <p>Please list all known third parties that have access to this asset</p>
             <partial name="_ThirdPartyTable", model="Model.Asset.ThirdParties"/>
-            <button type="button" class="btn btn-secondary" data-toggle="ajax-modal"
+            <button type="button" class="btn btn-success" data-toggle="ajax-modal"
                 data-url="@Url.Page("Edit","ThirdPartyModal")" @editHidden>
+                <svg class="bi"><use href="@icons#plus-square"></use></svg>
                 Add Third Party
             </button>
             <hr />
@@ -498,10 +503,11 @@
         @* Rentention Periods *@
         <section>
             <h4>Retention Periods</h4>
-            <p>Description placeholder</p>
+            <p>Please list all known retention periods for this asset</p>
             <partial name="_RetentionPeriodTable", model="Model.Asset.RetentionPeriods"/>
-            <button type="button" class="btn btn-secondary" data-toggle="ajax-modal"
+            <button type="button" class="btn btn-success" data-toggle="ajax-modal"
                 data-url="@Url.Page("Edit","RetentionPeriodModal")" @editHidden>
+                <svg class="bi"><use href="@icons#plus-square"></use></svg>
                 Add Retention Period
             </button>
             <hr />
@@ -509,17 +515,18 @@
         @* Notes *@
         <section>
             <h4>Notes</h4>
-            <p>Description placeholder</p>
+            @* <p>Description placeholder</p> *@
             <partial name="_NoteTable", model="Model.NoteList"/>
-            <button type="button" class="btn btn-secondary" data-toggle="ajax-modal"
+            <button type="button" class="btn btn-success" data-toggle="ajax-modal"
                 data-url="@Url.Page("Edit","NoteModal")" @editHidden>
+                <svg class="bi"><use href="@icons#plus-square"></use></svg>
                 Add Note
             </button>
             <hr />
         </section>
-        <div>
+        @* <div>
             <a asp-page="View">Retun to View Assets</a>
-        </div>
+        </div> *@
     </form>
     @* Review Modal *@
     <div class="modal fade" id="review-modal">
@@ -530,7 +537,7 @@
                 </div>
                 <div class="modal-footer">
                     <form method="post" asp-page-handler="review">
-                        <button type="submit" class="btn btn-secondary" id="review-button">Ok</button>
+                        <button type="submit" class="btn btn-primary" id="review-button">Ok</button>
                     </form>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Cancel">Cancel</button>
                 </div>
@@ -538,7 +545,6 @@
         </div>
     </div>
 </body>
-
 @section Scripts {
     <script>
         $(document).ready(function() {
